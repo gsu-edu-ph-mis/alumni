@@ -1,0 +1,60 @@
+{% extends "document.html" %}
+
+{% block body %}
+<div class="col-md-12">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-start">
+            <h1 class="h3">Counters</h1>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <a href="/admin/counters/create" class="btn btn-sm btn-outline-primary">Add</a>
+            </div>
+        </div>
+    </div>
+    {% include 'parts/flash.html' %}
+    
+    {% if counters.length <= 0 %}
+        <p>None found.</p>
+    {% else %}
+        
+        <div class="tab-content pt-3 pb-2 pl-3 pr-3 mb-5">
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th width="5%">Group</th>
+                            <th width="10%">Counter #</th>
+                            <th>Name</th>
+                            <th width="15%">Ticket #</th>
+                            <th width="15%">Created</th>
+                            <th width="10%" class="text-center">Manage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in counters %}
+                        <tr>
+                            <td>{{row.group.name}}</td>
+                            <td class="text-center">{{row.number}}</td>
+                            <td>{{row.name}}</td>
+                            <td class="text-center">{{row.ticketId}}</td>
+                            <td class="small">{{row.createdAt|format_date('MMM DD, YYYY hh:mm A')}}</td>
+                            <td class="text-center">
+                                <a href="/admin/counters/{{row.id}}/manage">
+                                    <svg style="width:24px;height:24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Manage</title><path fill="currentColor" d="M16 17V19H2V17S2 13 9 13 16 17 16 17M12.5 7.5A3.5 3.5 0 1 0 9 11A3.5 3.5 0 0 0 12.5 7.5M15.94 13A5.32 5.32 0 0 1 18 17V19H22V17S22 13.37 15.94 13M15 4A3.39 3.39 0 0 0 13.07 4.59A5 5 0 0 1 13.07 10.41A3.39 3.39 0 0 0 15 11A3.5 3.5 0 0 0 15 4Z" /></svg>
+                                </a>
+                                
+                                <a href="/admin/counters/{{row.id}}/delete" class="text-danger">
+                                    <svg style="width:24px;height:24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Delete</title><path fill="currentColor" d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z" /></svg>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

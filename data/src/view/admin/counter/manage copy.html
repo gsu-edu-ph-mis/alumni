@@ -1,0 +1,682 @@
+{% extends "document.html" %}
+
+{% block body %}
+<div id="vApp" v-cloak class="col-md-12">
+    <div class="tab-content p-3" @click="focus">
+        <div class="row">
+            <div class="col-6">
+                <h1 class="h5">Counter {{counter.number}} - <em>{{counter.name}}</em></h1>
+            </div>
+            <div class="col-6 text-right">
+                <a href="/admin/tickets/create?counterId={{counter.id}}" class="btn btn-primary d-inline-flex"> 
+                    <svg width="18px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>plus</title><path fill="currentColor" d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" /></svg>
+                    <span class="mr-1">Ticket</span>
+                </a>
+
+                <a href="/q/group/{{counter.groupId}}" class="btn btn-primary d-inline-flex"> 
+
+                    <svg width="18px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>plus</title><path fill="currentColor" d="M15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4M15,5.9C16.16,5.9 17.1,6.84 17.1,8C17.1,9.16 16.16,10.1 15,10.1A2.1,2.1 0 0,1 12.9,8A2.1,2.1 0 0,1 15,5.9M4,7V10H1V12H4V15H6V12H9V10H6V7H4M15,13C12.33,13 7,14.33 7,17V20H23V17C23,14.33 17.67,13 15,13M15,14.9C17.97,14.9 21.1,16.36 21.1,17V18.1H8.9V17C8.9,16.36 12,14.9 15,14.9Z"></path></svg>
+                    <span class="mr-1">View</span>
+                </a>
+
+                <button @click="batchCreate" type="button"  class="btn btn-outline-primary d-inline-flex"> 
+                    <span class="mr-1">Batch Tickets</span>
+                </button>
+                
+                <button @click="deleteAll" type="button"  class="btn btn-danger d-inline-flex"> 
+                    <span class="mr-1">Clear Tickets</span>
+                </button>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-4 mb-2">
+                <p>Now Serving:</p>
+                <div @click="select($event, 'servicing')" :data-selected="servicingLineSelected" class="q-manager q-servicing">
+                    <div v-if="servingTicket" class="d-flex flex-column">
+                        <div class="ticket">
+                            <div>
+                                <div class="photo"><img :src="servingTicket.photo"></div>
+                            </div>
+                            <div>
+                                ${servingTicket.ticketNumber}
+                            </div>
+                            <div class="text-right">
+                                <template v-if="servingTicket.isPriority">
+                                    <svg style="width:20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Priority</title><path fill="orange" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" /></svg>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="controls m-auto">
+                    <button @click="up($event)" class="btn-up" :disabled="!isUpEnabled"></button>
+                    <button @click="left" class="btn-left" :disabled="!isLeftEnabled"></button>
+                    <button @click="right" class="btn-right" :disabled="!isRightEnabled"></button>
+                    <button @click="down" class="btn-down" :disabled="!isDownEnabled"></button>
+                    <button @click="speak(servingTicket, counter.name, $event)" class="btn-bell" :disabled="!isBellEnabled"></button>
+                </div>
+            </div>
+            <div class="col-4">
+                <!-- <template v-if="doneLine.length">
+                    <p>Done:</p>
+                    <div class="q-manager q-done">
+                        <div class="d-flex flex-column flex-wrap">
+                            <template v-for="done,i in doneLine">
+                                <div>${done.ticketNumber} <a onclick="return confirm('Delete permanently?')" :href="`/admin/ticket/delete/${done.id}`" class="text-danger">X</a></div>
+                            </template>
+                            ...
+                        </div>
+                    </div>
+                </template> -->
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-6">
+                <div @click="select($event, 'main')" :data-selected="mainLineSelected" class="q-manager q-main">
+                    <div>
+                        <h2 class="h6">Queue</h2>
+                    </div>
+                    <div class="d-flex flex-column">
+                        <template v-for="ticket in mainLine">
+                            <div class="ticket bg-dark m-1 d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="photo"><img :src="ticket.photo"></div>
+                                </div>
+                                <span>${ticket.ticketNumber}</span>
+                                <div class="text-right pr-3">
+                                    <template v-if="ticket.isPriority">
+                                        <svg style="width:20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Priority</title><path fill="orange" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" /></svg>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div @click="select($event, 'waiting')" :data-selected="waitingLineSelected" class="q-manager q-wait">
+                    <div>
+                        <h2 class="h6">Holding Area</h2>
+                    </div>
+                    <div class="d-flex flex-column">
+                        <template v-for="ticket in waitingLine">
+                            <div class="ticket bg-dark m-1 d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="photo"><img :src="ticket.photo"></div>
+                                </div>
+                                <span>${ticket.ticketNumber}</span>
+                                <div class="text-right pr-3">
+                                    <template v-if="ticket.isPriority">
+                                        <svg style="width:20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Priority</title><path fill="orange" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" /></svg>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{app.url}}/js/socket.io.min.js"></script>
+<script>
+    const socketUrl = '{{SOCKET_URL}}/qtclient'
+    const ROOM = 'counter-{{counter.id}}'
+    let socket = io(socketUrl, {
+        auth: {
+            token: undefined
+        },
+        query: {
+            room: ROOM,
+        }
+    });
+
+    const counter = {{counter|default({}, true)|stringify|safe}}
+    let tickets = {{tickets|default([], true)|stringify|safe}}
+
+    let index = tickets.findIndex(t => t.id === counter.ticketId && !t.deletedAt)
+    let servingTicket = null
+
+    if(index>-1){
+        servingTicket = tickets[index]
+    }
+
+    const mainLine = tickets.filter( t => {
+        return !t.onHold && !t.deletedAt && t.id !== counter.ticketId
+    })
+    const waitingLine = tickets.filter( t => {
+        return t.onHold && !t.deletedAt
+    })
+
+    let doneLine = tickets.filter( t => {
+        return t.deletedAt
+    })
+    doneLine = doneLine.reverse()
+
+    var voices = [];
+    var synth = window.speechSynthesis;
+    var voicesTimer = null;
+    var ding = new Audio('{{app.url}}/ding.mp3')
+
+    const post = (url, body, cb, fin) => {
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then(async function(response){
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error(await response.text())
+            
+        }).then(function(responseJson){
+            console.log(responseJson)
+            cb(responseJson)
+        }).catch(async function(error){
+            console.error(error)
+            alert(error);
+        }).then(function(){
+            fin()
+        });
+    }
+    const put = (url, body, cb, fin) => {
+        fetch(url, {
+            method: 'PUT',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then(async function(response){
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error(await response.text())
+            
+        }).then(function(responseJson){
+            console.log(responseJson)
+            cb(responseJson)
+        }).catch(async function(error){
+            console.error(error)
+            alert(error);
+        }).then(function(){
+            fin()
+        });
+    }
+    const del = (url, body, cb, fin) => {
+        fetch(url, {
+            method: 'DELETE',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then(async function(response){
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error(await response.text())
+            
+        }).then(function(responseJson){
+            console.log(responseJson)
+            cb(responseJson)
+        }).catch(async function(error){
+            console.error(error)
+            alert(error);
+        }).then(function(){
+            fin()
+        });
+    }
+    const get = (url, cb, fin) => {
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then(async function(response){
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error(await response.text())
+            
+        }).then(function(responseJson){
+            console.log(responseJson)
+            cb(responseJson)
+        }).catch(async function(error){
+            console.error(error)
+        }).then(function(){
+            fin()
+        });
+    }
+    var vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        data: {
+            voicesReady: false,
+            counter: counter,
+            tickets: tickets,
+            servingTicket: servingTicket,
+            mainLine: mainLine,
+            waitingLine: waitingLine,
+            doneLine: doneLine,
+
+            mainLineSelected: false,
+            waitingLineSelected: false,
+            servicingLineSelected: false,
+        },
+        mounted: function () {
+            const me = this;
+            voicesTimer = setInterval(function () {
+                voices = synth.getVoices();
+
+                if (voices.length > 0) {
+                    clearInterval(voicesTimer)
+                    me.voicesReady = true;
+                }
+            }, 100)
+
+            socket.on("connect", () => {
+                console.log('connected ', socket.id); // x8WIv7-mJelg7on_ALbx
+            });
+
+            socket.on("disconnect", () => {
+                console.log('disconnected ', socket.id); // undefined
+            });
+
+            socket.on("connect_error", (err) => {
+                console.error(err.message);
+            });
+
+            socket.on('update', () => {
+                get(
+                    `/admin/counters/${counter.id}/manage.json`,
+                    (responseJson)=>{
+                        console.log('responseJson', responseJson)
+                        let counter = responseJson.counter
+                        let tickets = responseJson.tickets
+
+                        let index = tickets.findIndex(t => t.id === counter.ticketId && !t.deletedAt)
+                        let servingTicket = null
+
+                        if(index>-1){
+                            servingTicket = tickets[index]
+                        }
+
+                        const mainLine = tickets.filter( t => {
+                            return !t.onHold && !t.deletedAt && t.id !== counter.ticketId
+                        })
+                        const waitingLine = tickets.filter( t => {
+                            return t.onHold && !t.deletedAt
+                        })
+
+                        let doneLine = tickets.filter( t => {
+                            return t.deletedAt
+                        })
+                        doneLine = doneLine.reverse()
+
+                        me.counter = counter
+                        me.tickets = tickets
+                        me.servingTicket = servingTicket
+                        me.mainLine = mainLine
+                        me.waitingLine = waitingLine
+                        me.doneLine = doneLine
+
+                        // 
+                    },
+                    ()=>{
+                        me.pending = false
+                    }
+                )
+            });
+
+            
+        },
+        computed: {
+            
+            isUpEnabled: function () {
+                const me = this
+
+                if (me.mainLineSelected) {
+                    if (me.mainLine.length > 0 && !me.servingTicket) {
+                        return true
+                    }
+                } else if (me.waitingLineSelected) {
+                    if (me.waitingLine.length > 0 && !me.servingTicket) {
+                        // return true
+                    }
+                } else if (me.servicingLineSelected) {
+                    if (me.servingTicket) {
+                        // return true
+                    }
+                }
+
+                return false
+            },
+            isDownEnabled: function () {
+                const me = this
+
+                if (me.mainLineSelected) {
+                    if (me.servingTicket) {
+                        return true
+                    }
+                } else if (me.waitingLineSelected) {
+                    if (me.servingTicket) {
+                        return true
+                    }
+                }
+
+                return false
+            },
+            isRightEnabled: function () {
+                const me = this
+
+                if (me.mainLineSelected) {
+                    if (me.mainLine.length > 0) {
+                        return true
+                    }
+                } else if (me.waitingLineSelected) {
+                    // return true
+                } else if (me.servicingLineSelected) {
+                    if (me.servingTicket) {
+                        return true
+                    }
+                }
+
+                return false
+            },
+            isLeftEnabled: function () {
+                const me = this
+
+                if (me.mainLineSelected) {
+                    
+                } else if (me.waitingLineSelected) {
+                    if (me.waitingLine.length > 0) {
+                        return true
+                    }
+                }
+
+                return false
+            },
+            isBellEnabled: function () {
+                const me = this
+
+                if (me.servingTicket && me.servicingLineSelected) {
+                    return true
+                }
+
+                return false
+            }
+        },
+        methods: {
+            deleteAll: function(){
+                const me = this;
+
+                if(confirm(`Are you sure? This will delete all tickets.`)){
+                    post(
+                        `/admin/counters/{{counter.id}}/clear-tickets`,
+                        {
+                            acsrf: `{{acsrf}}`,
+                        },
+                        ()=>{
+                            alert('Deleted.')
+                        },
+                        ()=>{
+                            me.pending = false
+                        }
+                    )
+                }
+
+            },
+            batchCreate: function(){
+                const me = this;
+
+                if(confirm(`Are you sure? This will create 1-100 tickets.`)){
+                    post(
+                        `/admin/counters/{{counter.id}}/batch-create/100`,
+                        {
+                            acsrf: `{{acsrf}}`,
+                        },
+                        ()=>{
+                            alert('Created.')
+                        },
+                        ()=>{
+                            me.pending = false
+                        }
+                    )
+                }
+
+            },
+            focus: function(){
+                const me = this;
+
+                me.mainLineSelected = false
+                me.waitingLineSelected = false
+                me.servicingLineSelected = false
+            },
+            select: function (e, name) {
+                e?.stopPropagation()
+                const me = this
+
+                if (name == 'main' && me.mainLine.length > 0) {
+                    me.mainLineSelected = true
+                    me.waitingLineSelected = false
+                    me.servicingLineSelected = false
+
+                } else if (name == 'waiting') {
+                    me.mainLineSelected = false
+                    me.waitingLineSelected = true
+                    me.servicingLineSelected = false
+
+                } else if (name == 'servicing') {
+                    me.mainLineSelected = false
+                    me.waitingLineSelected = false
+                    me.servicingLineSelected = true
+
+                }
+            },
+            up: function (e) {
+                e?.stopPropagation()
+
+                const me = this
+
+                if (me.mainLineSelected) {
+                    me.servingTicket = me.mainLine.shift()
+
+                    me.mainLineSelected = false
+                    me.servicingLineSelected = true
+
+                    post(
+                        `/admin/counters/set-serviced/${me.counter.id}`,
+                        {
+                            acsrf: `{{acsrf}}`,
+                            ticketId: me.servingTicket.id
+                        },
+                        ()=>{},
+                        ()=>{
+                            me.pending = false
+                        }
+                    )
+                    
+                } else if (me.waitingLineSelected) {
+
+                } else if (me.servicingLineSelected) {
+                    me.servingTicket = null
+                }
+            },
+            down: function(e) {
+                e?.stopPropagation()
+
+                const me = this 
+
+                if (me.mainLineSelected) {
+                    me.mainLine.unshift(me.servingTicket)
+                    me.servingTicket = null
+
+                    post(
+                        `/admin/counters/set-serviced/${me.counter.id}`,
+                        {
+                            acsrf: `{{acsrf}}`,
+                            ticketId: null
+                        },
+                        ()=>{},
+                        ()=>{
+                            me.pending = false
+                        }
+                    )
+                } else {
+                    me.waitingLine.unshift(me.servingTicket)
+
+                    post(
+                        `/admin/counters/set-serviced/${me.counter.id}`,
+                        {
+                            acsrf: `{{acsrf}}`,
+                            ticketId: null
+                        },
+                        ()=>{},
+                        ()=>{
+                            me.pending = false
+                        }
+                    )
+                    put(
+                        `/admin/tickets/${me.servingTicket.id}`,
+                        {
+                            acsrf: `{{acsrf}}`,
+                            onHold: true
+                        },
+                        ()=>{
+                            me.servingTicket = null
+
+                        },
+                        ()=>{
+                            me.pending = false
+                        }
+                    )
+                }
+            },
+            left: function(e) {
+                e?.stopPropagation()
+
+                const me = this 
+                if (me.mainLineSelected) {
+                    
+                } else if (me.waitingLineSelected) {
+                    // me.servingTicket = null
+                    let ticket = me.waitingLine.pop()
+                    me.mainLine.unshift(ticket)
+
+                    put(
+                        `/admin/tickets/${ticket.id}`,
+                        {
+                            acsrf: `{{acsrf}}`,
+                            onHold: false
+                        },
+                        ()=>{},
+                        ()=>{
+                            me.pending = false
+                        }
+                    )
+
+                }
+            },
+            right: function(e) {
+                e?.stopPropagation()
+
+                const me = this 
+                
+                if (me.mainLineSelected) {
+                    let ticket = me.mainLine.shift()
+                    me.waitingLine.push(ticket)
+
+                    put(
+                        `/admin/tickets/${ticket.id}`,
+                        {
+                            acsrf: `{{acsrf}}`,
+                            onHold: true
+                        },
+                        ()=>{},
+                        ()=>{
+                            me.pending = false
+                        }
+                    )
+
+                } else if (me.servicingLineSelected) {
+                    me.doneLine.unshift(me.servingTicket)
+                    if(me.doneLine.length>=5){
+                        me.doneLine.pop()
+                    }
+
+                    del(
+                        `/admin/tickets/${me.servingTicket.id}`,
+                        {
+                            acsrf: `{{acsrf}}`,
+                        },
+                        ()=>{
+                            me.servingTicket = null
+                        },
+                        ()=>{
+                            me.pending = false
+                        }
+                    )
+                }
+            },
+            speak: function (currentTicket, counterName, e) {
+                e?.stopPropagation()
+                if (currentTicket) {
+                    post(
+                        `/admin/tickets/${currentTicket.id}/announce`,
+                        {
+                            acsrf: `{{acsrf}}`,
+                            counterName: counterName
+                        },
+                        ()=>{
+                        },
+                        ()=>{
+                        }
+                    )
+                }
+            },
+            speak2: function (currentTicket, counterName, e) {
+                e.stopPropagation()
+                if (currentTicket) {
+                    let ticketNumber = currentTicket.ticketNumber
+                    var me = this
+                    // console.log(`Ticket,, ${ticketNumber.split('').join(', ')}, please go to ${counterName}`)
+                    ding.pause();
+                    ding.currentTime = 0;
+                    synth.cancel();
+
+                    ding.addEventListener('ended', (event) => {
+                        me.hambal(`Ticket,, ${ticketNumber.split('').join(', ')}, please proceed inside.`)
+                    });
+                    ding.play()
+                }
+            },
+            hambal: function(words){
+                try {
+                    if(this.voicesReady){
+                        var utterThis = new SpeechSynthesisUtterance(words);
+                        utterThis.voice = _.find(voices, function(v){
+                            return v.name.includes('Microsoft Zira')
+                        });
+                        utterThis.pitch = 1;
+                        utterThis.rate = 0.9;
+                        synth.cancel();
+                        synth.speak(utterThis);
+                    }
+                } catch (err){
+                    console.error(err)
+                }
+            },
+        }
+    });
+</script>
+{% endblock %}

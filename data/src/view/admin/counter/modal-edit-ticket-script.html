@@ -1,0 +1,35 @@
+const vModalEditTicket = new Vue({
+    el: '#vModalEditTicket',
+    delimiters: ["${", "}"],
+    data: {
+        ticket: {
+            priority: 0,
+            status: 1,
+        },
+        priority: 0,
+        status: 1,
+    },
+    computed: {
+        isNotServiceable: function(){
+            const me = this 
+            return me.status != 2
+        },
+    },
+    methods: {
+        setTicket: function(ticket){
+            const me = this 
+            me.priority = ticket.priority
+            me.status = ticket.status
+        },
+        
+        update: async function (ticket) {
+            const me = this
+            jQuery('#vModalEditTicket').modal('hide')
+            // let response = await postAsync(`/admin/counters/${counter.id}/batch-create/${min}/${max}`, {
+            //     acsrf: `{{acsrf}}`,
+            // })
+            // me.pending = false
+
+        }
+    }
+})

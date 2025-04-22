@@ -1,0 +1,50 @@
+{% extends "document.html" %}
+
+{% block body %}
+<div id="vApp" v-cloak class="col-md-12 tab-content">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-start">
+            <h1 class="h5 mb-0">View Ticket</h1>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <a href="/admin/counter/all" class="btn btn-sm btn-outline-primary">Back</a>
+            </div>
+        </div>
+    </div>
+    <div class=" p-5">
+        <div class="client-ticket">
+            <div class="logo">
+                <img src="/images/q-sm.png" alt="q">
+                <div>Ticket</div>
+            </div>
+            <div class="content">
+                <div class="ticket-number">${ticket.ticketNumber}</div>
+                <div class="counter-date">
+                    <div class="counter">Counter </div>
+                    <div class="date">${ticket.counter.number}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    const ticket = {{ticket|default({}, true)|stringify|safe}}
+    const vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        data: {
+            ticket: ticket,
+        },
+        mounted: function(){
+            const me = this;
+        },
+        methods: {
+            
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends "document.html" %}
+
+{% block body %}
+<div class="col-md-12">
+    <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-start">
+            <h1 class="h5 mb-0">Update Group #{{group.id}}</h1>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <a href="/admin/groups" class="btn btn-sm btn-outline-primary">Back</a>
+                <a href="/admin/groups/{{group.id}}/delete" class="btn btn-sm btn-danger">
+                    <svg style="width:16px;height:16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <title>Create</title>
+                        <path fill="currentColor"
+                            d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z" />
+                    </svg>
+                    <span>Delete</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% include 'parts/flash.html' %}
+    <div>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" class="d-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24">
+                        <title>Edit</title>
+                        <path fill="currentColor"
+                            d="M14.06,9L15,9.94L5.92,19H5V18.08L14.06,9M17.66,3C17.41,3 17.15,3.1 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18.17,3.09 17.92,3 17.66,3M14.06,6.19L3,17.25V21H6.75L17.81,9.94L14.06,6.19Z" />
+                    </svg>
+                    <span>Details</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content p-3">
+        <form ref="form" id="vApp" v-cloak v-on:submit.prevent="onSubmit"
+            action="/admin/groups/{{group.id}}?_method=patch" method="POST" class="form-default">
+            <input type="hidden" name="acsrf" value="{{acsrf}}">
+
+            <div class="form-group">
+                <label for="name">Group Name</label>
+                <input v-model="name" name="name" type="text" class="form-control" id="name">
+            </div>
+            <div class="form-group" :data-error="errors.userIds" @click="errors.userIds=false">
+                <label for="userIds">Assign Users</label>
+                <div v-for="user,i in userList" class="custom-control custom-checkbox">
+                    <input v-model="userIds[i]" :value="user.id" :id="`userId-${user.id}`" name="userIds[]" type="checkbox" class="custom-control-input">
+                    <label class="custom-control-label" :for="`userId-${user.id}`">${user.username}</label>
+                </div>
+            </div>
+            <div class="d-flex mb-2 align-items-center">
+                <h5 class="h6 mb-0 mr-2">List of Counters</h5>
+                <a type="button" class="btn btn-sm btn-success" href="/admin/counters/create?groupId={{group.id}}">+ Add Counter</a>
+            </div>
+            <ol>
+                <li v-for="counter,i in counters">
+                    <div class="form-row">
+                        <div class="col-10">
+                            ${counter.name} - 
+                            <a :href="`/admin/counters/${counter.id}/delete`" class="btn btn-sm btn-danger">X</a>
+                        </div>
+                    </div>
+                </li>
+            </ol>
+            <hr>
+            <div class="text-center">
+                <button class="btn btn-primary d-inline-flex">
+                    <svg style="width:22px;height:22px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <title>Save</title>
+                        <path fill="currentColor"
+                            d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" />
+                    </svg>
+                    <span class="ml-2 mr-2">Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    const groupCounters = {{ groupCounters|default ([], true) | stringify | safe}}
+    const userList = {{userList|default([], true)|stringify|safe}}
+    const userIds = {{userIds|default([], true)|stringify|safe}}
+
+    const vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        data: {
+            userList: userList,
+            name: '{{group.name}}',
+            userIds: userIds,
+            counters: groupCounters,
+            errors: {
+                name: false,
+                userIds: false,
+            }
+        },
+        methods: {
+            onSubmit: function () {
+                const me = this;
+                me.$nextTick(function () {
+                    me.$refs.form.submit()
+                });
+            }
+        }
+    });
+</script>
+{% endblock %}

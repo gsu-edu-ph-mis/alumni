@@ -1,0 +1,123 @@
+{% extends "document.html" %}
+
+{% block body %}
+<div class="col-md-12">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-start">
+            <h1 class="h2">Edit User {{userO.username}}</h1>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <a href="/user/all" class="btn btn-sm btn-outline-primary">Back</a>
+            </div>
+        </div>
+    </div>
+    {% include 'parts/flash.html' %}
+
+    <div class="tab-content pt-3 pb-2 pl-3 pr-3 mb-5">
+        <form ref="form" id="vApp" v-cloak v-on:submit.prevent="onSubmit" action="/user/{{userO._id}}/edit" method="POST" class="form-default">
+            <h3 class="h4">Login Info</h3>
+            {% set name = 'username' %}
+            {% include 'parts/form-group-text.html' %}
+
+            {% set name = 'active' %}
+            {% set options = [{value:'true', text:'Yes'}, {value:'false', text:'No'}] %}
+            {% include 'parts/form-group-select.html' %}
+
+
+            <h3 class="h4">Personal Info</h3>
+            {% set name = 'firstName' %}
+            {% include 'parts/form-group-text.html' %}
+
+            {% set name = 'middleName' %}
+            {% include 'parts/form-group-text.html' %}
+
+            {% set name = 'lastName' %}
+            {% include 'parts/form-group-text.html' %}
+
+            {% set name = 'email' %}
+            {% include 'parts/form-group-text.html' %}
+
+            <h3 class="h4">Role and Permissions</h3>
+            <div class="form-group">
+                <label for="roles">Roles</label>
+                <div>
+                    {% for role in roles %}
+                    <div class="form-check">
+                        <input v-model="roles" name="roles" class="form-check-input" type="checkbox" value="{{role.key}}" id="{{role.key}}">
+                        <label class="form-check-label" for="{{role.key}}">
+                            {{role.name}}
+                        </label>
+                    </div>
+                    {% endfor %}
+                    <small class="invalid-feedback">${getError('roles')}</small>
+                </div>
+            </div>
+            <div class="form-row pt-3 pb-3">
+                <div class="col-md-12">
+                    <button class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{app.url}}/js/vue-ph-address.js"></script>
+<script>
+    var vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        mixins: [
+            window.vuelidate.validationMixin,
+            window.vuelidateExtendMixin,
+            VuePhAddress.mixin
+        ],
+        components: {
+            'autocomplete': window["vuejs-autocomplete"]
+        },
+        data: {
+            username: '{{userO.username}}',
+            password: '',
+            firstName: '{{userO.firstName}}',
+            middleName: '{{userO.middleName}}',
+            lastName: '{{userO.lastName}}',
+            email: '{{userO.email}}',
+            active: '{{userO.active}}',
+            roles: {{userO.roles|default([], true)|stringify|safe}},
+        },
+        validations: {
+            username: {
+                required: window.validators.required
+            },
+            firstName: {
+                required: window.validators.required
+            },
+            lastName: {
+                required: window.validators.required
+            },
+            active: {
+                required: window.validators.required
+            },
+            roles: {
+                required: window.validators.required
+            },
+        },
+        methods: {
+            onSubmit: function(){
+                var me = this;
+                me.$v.$touch()
+                if (me.$v.$error) {
+                    alert('Please correct the errors to continue.')
+                } else {
+                    me.$nextTick(function() {
+                        me.$refs.form.submit();
+                    });
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+

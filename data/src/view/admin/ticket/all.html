@@ -1,0 +1,71 @@
+{% extends "document.html" %}
+
+{% block body %}
+<div class="col-md-12">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-start">
+            <h1 class="h2">
+                Tickets
+            </h1>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <a href="/admin/tickets/create" class="btn btn-sm btn-outline-primary">Add</a>
+            </div>
+        </div>
+    </div>
+    {% include 'parts/flash.html' %}
+
+    
+    {% if tickets.length <= 0 %}
+        <p>None found.</p>
+    {% else %}
+        
+        <div class="tab-content pt-3 pb-2 pl-3 pr-3 mb-5">
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>QT</th>
+                            <th>Counter</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in tickets %}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td>
+                                <a href="/admin/ticket/read/{{row.id}}">{{row.ticketNumber}}</a>
+                            </td>
+                            <td>{{row.counter.number}} - {{row.counter.name}}</td>
+                            <td>
+                                {{row.priority}}
+                            </td>
+                            <td>
+                                {{row.status}}
+                            </td>
+                            <td>{{row.createdAt|format_date('MMM DD, YYYY hh:mm A')}}</td>
+                          
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center text-md-left pt-3 pb-5">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center text-md-left pt-3 pb-5">
+                    {% include "parts/pagination.html" %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

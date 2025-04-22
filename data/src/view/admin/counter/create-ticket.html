@@ -1,0 +1,178 @@
+{% extends "document.html" %}
+
+{% block body %}
+<div class="col-md-12">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-start">
+            <h1 class="h5 mb-0">Create Ticket</h1>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <a href="/admin/counter/manage/{{counter.id}}" class="btn btn-sm btn-outline-primary">Back</a>
+            </div>
+        </div>
+    </div>
+    <div>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" class="d-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24"><title>Edit</title><path fill="currentColor" d="M14.06,9L15,9.94L5.92,19H5V18.08L14.06,9M17.66,3C17.41,3 17.15,3.1 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18.17,3.09 17.92,3 17.66,3M14.06,6.19L3,17.25V21H6.75L17.81,9.94L14.06,6.19Z" /></svg>
+                    <span>Details</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div id="vApp" v-cloak :data-pending="pending" class="tab-content p-3">
+        <form ref="form" v-on:submit.prevent="onSubmit" action="/admin/counter/{{counter.id}}/create-ticket" method="POST" class="form-default">
+            <input type="hidden" name="acsrf" value="{{acsrf}}">
+            <div class="form-row align-items-center">
+                <div class="form-group col-md-4">
+                    <label for="ticketNumber">Ticket Number</label>
+                    <input v-model="ticketNumber" name="ticketNumber" type="text" class="form-control" id="ticketNumber" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="counterId">Counter</label>
+                    <select required v-model="counterId" name="counterId" id="counterId" class="form-control">
+                        {% for counter in counters %}
+                        <option value="{{counter.id}}">{{counter.number}} - {{counter.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="a">&nbsp;</label>
+                    <div class="custom-control custom-switch">
+                        <input v-model="isPriority" name="isPriority" id="isPriority" type="checkbox" class="custom-control-input">
+                        <label class="custom-control-label" for="isPriority">Is Priority?</label>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mb-3">
+                <div v-if="error" class="alert alert-danger">${error}</div>
+                <div v-else>
+                    <img class="fx-expand" v-if="photo" v-bind:src="photo" alt="photo">
+                    <div v-else style="position: relative">
+                        <div v-if="webcamLoaded" class="target-left"></div>
+                        <div v-if="webcamLoaded" class="target-right"></div>
+                        <video style="max-width:100%; height: auto;" id="webcam-feed"></video>
+                        <canvas id="webcam-snapshot" hidden></canvas>
+                    </div>
+                </div>
+
+                <br>
+                <input type="hidden" name="photo" v-model="photo">
+                <button v-if="!photo && webcamLoaded === true" v-on:click.prevent="webcamSnap" class="btn btn-primary"><svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z" />
+                </svg></button>
+                <!-- <button v-if="photo" v-bind:disabled="pending" class="btn btn-primary">Save</button> -->
+            </div>
+
+            <hr>
+            <div class="text-center">
+                <button class="btn btn-primary d-inline-flex">
+                    <svg style="width:22px;height:22px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Create</title><path fill="currentColor" d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" /></svg>
+                    <span>Create</span>    
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{app.url}}/js/media-devices.js"></script>
+<script>
+    var vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        data: {
+            counterId: '{{counter.id}}',
+            ticketNumber: '{{ticketNumber}}',
+            onHold: false,
+            isPriority: false,
+            error:'',
+            
+            pending: false,
+            useWebcam: false,
+            webcamPhotoSnapper: null,
+            webcamLoaded: false,
+            photo: '',
+        },
+        mounted: function(){
+            const me = this;
+
+            document.getElementById("webcam-feed").addEventListener('loadedmetadata', function(e){
+                me.webcamLoaded = true
+            })
+            me.webcamStart()
+        },
+        methods: {
+            webcamStart: function(){
+                var me = this
+                if(!me.webcamPhotoSnapper){
+                    me.pending = true
+                    MediaDevicesPresets.createWebcamPhotoSnapper(
+                        document.getElementById("webcam-feed"),
+                        document.getElementById("webcam-snapshot"),
+                        {
+                            width: 150,
+                            height: 150,
+                            imageWidth: 150,
+                            imageHeight: 150,
+                            frontCam: false
+                        }
+                    ).then(function(webcamPhotoSnapper){
+                        me.pending = false
+                        me.webcamPhotoSnapper = webcamPhotoSnapper
+                    }).catch(function(err){
+                        me.error = err.message;
+
+                        if (err.name == "NotFoundError" || err.name == "DevicesNotFoundError") {
+                            //required track is missing 
+                            me.error += '. Please check if you have a webcam.';
+
+                        } else if (err.name == "NotReadableError" || err.name == "TrackStartError") {
+                            //webcam or mic are already in use 
+                            me.error += '. Please close the other app that is using the webcam.';
+                      
+                        } else if (err.name == "NotAllowedError" || err.name == "PermissionDeniedError") {
+                            //permission denied in browser 
+                            me.error += '. Please allow the browser to use the webcam.';
+                            
+                        }
+
+                    }).then(function(){
+                        me.pending = false
+                    })
+                }
+            },
+            webcamStop: function(){
+                var me = this
+                if(me.webcamPhotoSnapper){
+                    me.webcamPhotoSnapper.stop()
+                    me.webcamPhotoSnapper = null
+                }
+            },
+            webcamPause: function(){
+                var me = this
+                if(me.webcamPhotoSnapper){
+                    document.getElementById("webcam-feed").pause()
+                }
+            },
+            webcamSnap: function(){
+                var me = this
+                if(me.webcamPhotoSnapper){
+                    me.photo = me.webcamPhotoSnapper.snap()
+                }
+            },
+            onSubmit: function(){
+                var me = this;
+                
+                me.$nextTick(function() {
+                    me.$refs.form.submit();
+                    me.pending = true
+                });
+            }
+        }
+    });
+</script>
+{% endblock %}

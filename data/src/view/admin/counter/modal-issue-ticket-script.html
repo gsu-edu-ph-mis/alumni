@@ -1,0 +1,41 @@
+const vModalIssueTicket = new Vue({
+    el: '#vModalIssueTicket',
+    delimiters: ["${", "}"],
+    data: {
+        start: 1,
+        end: 100
+    },
+    watch: {
+        start: function (newVal, oldVal) {
+            if (newVal !== oldVal) {
+                if (newVal <= 0) {
+                    this.start = 1
+                }
+                if (newVal > this.end) {
+                    this.start = this.end
+                }
+            }
+        },
+        end: function (newVal, oldVal) {
+            if (newVal !== oldVal) {
+                if (newVal <= 0) {
+                    this.end = 1
+                }
+                if (newVal < this.start) {
+                    this.end = this.start
+                }
+            }
+        }
+    },
+    methods: {
+        addToQ: async function (min, max) {
+            const me = this
+            jQuery('#vModal').modal('hide')
+            let response = await postAsync(`/admin/counters/${counter.id}/batch-create/${min}/${max}`, {
+                acsrf: `{{acsrf}}`,
+            })
+            me.pending = false
+
+        }
+    }
+})

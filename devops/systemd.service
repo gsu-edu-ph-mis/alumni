@@ -1,0 +1,31 @@
+# SystemD Service for alumni
+# location: /etc/systemd/system/
+# file: /etc/systemd/system/alumni.service
+# update systemd: sudo systemctl daemon-reload
+# restart: sudo systemctl restart alumni
+# status: sudo systemctl status alumni
+# start-on-boot: sudo systemctl enable alumni
+
+[Unit]
+Description=alumni
+
+[Service]
+ExecStart=/home/ubuntu/.nvm/versions/node/v20.14.0/bin/node /home/ubuntu/alumni/index.js
+
+# Required on some systems
+WorkingDirectory=/home/ubuntu/alumni
+
+# Restart service after 10 seconds if node service crashes
+Restart=always
+RestartSec=10
+
+# Output to syslog
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=nodejs-alumni
+#User=<alternate user>
+#Group=<alternate group>
+Environment=NODE_ENV=live PORT=9095
+
+[Install]
+WantedBy=multi-user.target

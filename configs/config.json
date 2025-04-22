@@ -1,0 +1,69 @@
+{
+  "app": {
+    "title": "Alumni",
+    "description": "Alumni directory",
+    "port": "9099",
+    "url": "http://localhost:9099",
+    "dir": "${APP_DIR}",
+    "dirs": {
+      "data": "${APP_DIR}/data",
+      "src": "${APP_DIR}/src",
+      "public": "${APP_DIR}/data/public",
+      "view": "${APP_DIR}/data/src/view",
+      "upload": "${APP_DIR}/data/upload"
+    }
+  },
+  "express": {
+    "trustProxy": false
+  },
+  "nunjucks": {
+    "loader": {
+      "watch": false,
+      "noCache": true
+    },
+    "environment": {
+      "autoescape": true,
+      "throwOnUndefined": false,
+      "trimBlocks": false,
+      "lstripBlocks": false
+    }
+  },
+  "session": {
+    "name": "gsu_app_alumni_sid",
+    "store": {
+      "db": "sessions.db",
+      "dir": "${APP_DIR}/data"
+    },
+    "cookie": {
+      "httpOnly": false,
+      "maxAge": 31536000000,
+      "secure": false
+    }
+  },
+  "sqlite": {
+    "username": "",
+    "db": "${APP_DIR}/data/app.db"
+  },
+  "ipCheck": false,
+  "ip": {
+    "allowed": [
+      "::1"
+    ]
+  },
+  "minPasswordLength": 8,
+  "minSaltLength": 8,
+  "campuses": [
+    {
+      "value": "main",
+      "text": "Salvador (Main)"
+    },
+    {
+      "value": "mosqueda",
+      "text": "Mosqueda"
+    },
+    {
+      "value": "baterna",
+      "text": "Baterna"
+    }
+  ]
+}

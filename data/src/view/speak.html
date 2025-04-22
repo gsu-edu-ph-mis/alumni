@@ -1,0 +1,102 @@
+{% extends "document-public.html" %}
+
+{% block body %}
+<div id="vApp" class="container container-first height-medium">
+    <div class="row">
+        <div class="col-sm-6 text-sm-right text-center pt-5 pb-5">
+            <img src="/images/home.png" style="max-width:100%" alt="">
+        </div>
+        <div class="col-sm-6 text-white pt-sm-5">
+
+            <div class="text-center text-md-left pt-sm-5 intro-q">
+                <h1 class="h1 mb-4 ml-md-5 pt-md-5 intro-q-title">Introducing Q </h1>
+                <p class="ml-md-5">The digital way to queue.</p>
+                <ul class="mb-5 text-left ml-md-5">
+                    <li>No more anxiety waiting.</li>
+                    <li>No more cutting of lines.</li>
+                    <li>Avoid the crowd.</li>
+                </ul>
+                <div class="text-center">
+                    <a v-on:click="speak()" href="#" class="btn btn-light btn-lg">Start Using Q</a>
+                </div>
+                <div class="mt-5">
+                    <h6 class="text-center h6 mb-3" style="font-weight: 300;">Developed by:</h6>
+                    <div class="d-flex justify-content-around">
+                        <div class="text-center position-relative mb-4">
+                            <div> <img width="80" src="/images/logo.png" alt="GSC Gear"></div>
+                            GSC
+                        </div>
+                        <div class="text-center position-relative mb-4" style="width: 80px;">
+                            <img width="80" src="/images/logo-mis.png" alt="MIS">
+                            <div>Reiner Cafe</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    var voices = [];
+    var synth = window.speechSynthesis;
+    var voicesTimer = null;
+
+    var vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        mixins: [
+            window.vuelidate.validationMixin,
+            window.vuelidateExtendMixin,
+        ],
+        data: {
+            voicesReady: false,
+        },
+        validations: {
+        },
+        mounted: function() {
+            var me = this;
+            // Voices
+            voicesTimer = setInterval(function(){
+                voices = synth.getVoices();
+
+                if(voices.length > 0){
+                    clearInterval(voicesTimer)
+                    me.voicesReady = true;
+                }
+            }, 100)
+
+            
+            
+        },
+        methods: {
+            speak: function(){
+                var me = this
+                var ding = new Audio('/ding.mp3')
+                ding.addEventListener('ended', (event) => {
+                    me.hambal('Ticket,, A, B, C, 4, 5, 9, please go to counter 1')
+                });
+                ding.play()
+            },
+            hambal: function(words){
+                try {
+                    if(this.voicesReady){
+                        var utterThis = new SpeechSynthesisUtterance(words);
+                        utterThis.voice = _.find(voices, function(v){
+                            return v.name.includes('Microsoft Zira')
+                        });
+                        utterThis.pitch = 1;
+                        utterThis.rate = 0.9;
+                        synth.cancel();
+                        synth.speak(utterThis);
+                    }
+                } catch (err){
+                    console.error(err)
+                }
+            },
+        }
+    });
+</script>
+{% endblock %}
