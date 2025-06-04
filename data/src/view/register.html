@@ -138,10 +138,13 @@
                 me.middleName = ''
                 me.lastName = ''
                 me.suffix = ''
-                me.role = 'alumni'
+                me.role = ''
                 me.page = ''
             }
+
+            me.role = 'alumni'
             me.page = window.location.hash || '#step1';
+            
             if(me.page != ' #step1' && me.email == ''){
                 me.page = '#step1'
             }
