@@ -1,0 +1,135 @@
+{% extends "document-public-landing.html" %}
+
+{% block body %}
+<style>
+    body {
+        background: hsla(211, 80%, 33%, 1) 100% !important;
+    }
+    .footer-public {
+        display: none !important;
+    }
+</style>
+<div class="col-md-12 px-0" 
+style="
+background: hsla(0, 0%, 96%, 1);
+background: linear-gradient(315deg, 
+hsla(95, 47%, 71%, 1) 0%, 
+hsla(168, 41%, 50%, 1) 28%, 
+hsla(184, 62%, 39%, 1) 44%, 
+rgb(37, 117, 182) 54%, 
+hsla(211, 80%, 33%, 1) 100%) fixed;">
+    <div class="container">
+        <div class="row mt-md-5 mt-3 mb-md-5 mb-3">
+            <div class="col-md-6">
+                <a href="https://www.gsu.edu.ph/" target="_blank">
+                    <video title="GSU Promotional Video" autoplay muted loop preload="auto" disablepictureinpicture playsinline class="home-video-land shadow-lg">
+                        <source src="https://videos-gsu-ph.s3.ap-southeast-1.amazonaws.com/stream-home.mp4" type="video/mp4">
+                    </video>
+                </a>
+            </div>
+            <div class="col-md-6 pt-md-0 pt-3">
+                <h1 style="font-size: 28px;" class="mb-4 text-light">Update your Alumni Profile online now.</h1>
+                <div class="mb-4">
+                    <p class="text-light">The is a free service to all Guimaras State University graduates.</p>
+                </div>
+                <a href="/register" class="btn btn-warning shadow-sm rounded mb-1">Register</a>
+                <a href="/login" class="btn btn-light shadow-sm rounded mb-1">Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12 px-0" style="background-color: #FFFFFF !important;">
+    <div class="container">
+        <div class="row mt-4 mb-2">
+            <div class="col-xl-3 col-md-6 pb-3">
+                <div class="border-dashed-1 rounded-lg px-3 pt-3 h-100">
+                    <a href="https://www.gsu.edu.ph/transparency-seal"><img class="mb-4" src="/images/transparency-seal-sm.png" width="120" height="120" alt="TS"></a>
+                    <h2 class="h3 mb-2 text-dark">Transparency Seal</h2>
+                    <p class="text-left">A pearl buried inside a tightly-shut shell is practically worthless. Government information is a pearl, meant to be shared with the public in order to maximize its inherent value. </p>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 pb-3">
+                <div class="border-dashed-1 rounded-lg px-3 pt-3 h-100">
+                    <a href="https://arta.gov.ph/"><img class="mb-4" src="/images/arta-sm.png" width="120" height="120" alt="ARTA"></a>
+                    <h2 class="h3 mb-2 text-dark">ARTA</h2>
+                    <p class="text-left">A Philippine Government that is clean, just, highly efficient, technology-enabled and people-centered which enables a high-trust society with a globally competitive service and business environment.</p>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 pb-3">
+                <div class="border-dashed-1 rounded-lg px-3 pt-3 h-100">
+                    <a href="https://foi.gov.ph/agencies/gsu/"><img class="mb-4" src="/images/FOI-logo-sm.png" width="120" height="120" alt="FOI"></a>
+                    <h2 class="h3 mb-2 text-dark">Freedom of Information</h2>
+                    <p class="text-left">Freedom of Information aims to promote an open government by increasing the transparency of the executive branch and its agencies.</p>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 pb-3">
+                <div class="border-dashed-1 rounded-lg px-3 pt-3 h-100">
+                    <a href="https://www.gsu.edu.ph/citizens-charter"><img class="mb-4" src="/images/logo-gsu.png" width="120" height="120" alt="FOI"></a>
+                    <h2 class="h3 mb-2 text-dark">Citizen's Charter</h2>
+                    <p class="text-left">Contains the most current and updated service standards of the Guimaras State University.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12 px-0 for-inquiries" style="min-height: 250px;">
+    <div class="container">
+        <div class="row mt-4">
+            <div class="col-xl-5 col-lg-4 order-lg-1 order-2 d-flex flex-row justify-content-start align-items-start for-inquiries" style="min-height: 250px;">
+                <div>
+                    <p class="mb-0">Alumni Portal</p>
+                    <p class="mb-0">© Copyright 2025. All Rights Reserved.</p>
+                </div>
+                <img style="position: absolute; bottom: 20px; left: 12px; opacity: .3;" src="/images/logo-gsu-mc-op50.png" width="150" alt="">
+            </div>
+            <div class="col-xl-7 col-lg-8 order-lg-2 order-1">
+                <div class="row">
+                    <div class="col-xl-6 mb-0">
+                        <div class="row">
+                            <div class="col-xl-12 col-md-6 mb-2 text-light">
+                                <h1 class="h6 mb-1">Office Hours</h1>
+                                <div class="d-flex flex-row justify-content-start align-items-center mb-2">
+                                    <div class="mr-1 round-nums list-badge-round-nano">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14px" height="14px" viewBox="0 0 24 24">
+                                            <title>Clock</title>
+                                            <path fill="currentColor" d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm7 14h-8v-9h2v7h6v2z"/></svg>
+                                    </div>
+                                    <div>8:00 am to 5:00 pm <br>(Monday to Friday)</div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-md-6 mb-2 text-light">
+                                <h1 class="h6 mb-1">Address</h1>
+                                <div class="d-flex flex-row justify-content-start align-items-center mb-2">
+                                    <div class="mr-1 round-nums list-badge-round-nano">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14px" height="14px" viewBox="0 0 24 24">
+                                            <title>Location</title>
+                                            <path fill="currentColor" d="M12 0c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"/>
+                                        </svg>
+                                    </div>
+                                    <div>McLain, Buenavista, Guimaras <br>Salvador Campus</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 text-light mb-2">
+                        <h1 class="h6 mb-1">For inquiries, please contact:</h1>
+                        <p class="mb-0">Alumni Affairs Office</p>
+                        <div class="d-flex flex-row justify-content-start align-items-center mb-2">
+                            <div class="mr-1 round-nums list-badge-round-nano">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14px" height="14px" viewBox="0 0 24 24">
+                                    <title>Email</title>
+                                    <path fill="currentColor" d="M12 12.713l-11.985-9.713h23.971l-11.986 9.713zm-5.425-1.822l-6.575-5.329v12.501l6.575-7.172zm10.85 0l6.575 7.172v-12.501l-6.575 5.329zm-1.557 1.261l-3.868 3.135-3.868-3.135-8.11 8.848h23.956l-8.11-8.848z"/>
+                                </svg>
+                            </div>
+                            <div><a style="text-decoration: none; color: #FFFFFF;" href="mailto:alumni@gsu.edu.ph"><small>alumni@gsu.edu.ph</small></a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

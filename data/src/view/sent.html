@@ -1,0 +1,49 @@
+{% extends "document-public-landing.html" %}
+
+{% block body %}
+<div class="col-md-12">
+    <div class="container">
+        <div class="row mt-md-5 mt-3 mb-md-5 mb-3">
+            <div class="col-lg-5 col-md-7 ml-auto mr-auto">
+                <div style="border-radius: 10px; overflow: hidden;" class="row bg-white shadow">
+                    <div id="vApp" v-cloak class="col-md-12 px-3 pt-4 pb-3">
+                        <h1 class="h4 text-center mb-4">We've sent you an email.</h1>
+
+                        <div class="form-group mb-2">
+                            {% if not email %}
+                                <p class="mb-2">Please check your inbox.</p>
+                            {% else %}
+                                <p class="mb-2">Please check your inbox at:</p>
+                                <input type="text" class="form-control text-center text-success cursor-pointer" id="email" @click="copyText" readonly value="{{email}}">
+                            {% endif %}
+                        </div>
+
+                        <hr>
+
+                        {% include 'parts/for-inquiries.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    var vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        methods: {
+            copyText: function() {
+                const emailText = this.$el.querySelector('#email');
+                navigator.clipboard.writeText(emailText.value).then(() => {
+                    throw new Error('Email copied to clipboard.');
+                }).catch(err => {
+                    alert(err.message);
+                });
+            },
+        }
+    });
+</script>
+{% endblock %}

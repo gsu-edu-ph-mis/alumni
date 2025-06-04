@@ -1,0 +1,91 @@
+{% extends "document.html" %}
+
+{% block body %}
+<div class="col-md-12">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-start">
+            <h1 class="h3">Account Preview</h1>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <a href="/admin/registrations" class="btn btn-sm btn-outline-primary content-nav-btn">
+                    <svg width="18px" height="18px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+                        <title>Back</title>
+                        <path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"/><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"/>
+                    </svg>
+                    <span>Back</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="vApp" v-cloak class="tab-content p-3">
+        <p class="text-center">Store safely your username and password below:</p>
+        <div class="col-xl-6 col-lg-9 mx-auto table-responsive">
+            <table class="table table-sm table-striped">
+                <tbody>
+                    <tr>
+                        <td class="h5 text-center p-2" style="font-weight: 600;">Username</td>
+                        <td class="h5 text-center p-2">{{username}}</td>
+                    </tr>
+                    <tr>
+                        <td class="h5 text-center p-2" style="font-weight: 600;">Password</td>
+                        <td class="h5 text-center p-2 text-no-wrap text-success cursor-pointer" id="password" @click="copyText">{{password}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Next steps:</p>
+            <div class="form-group">
+                <div class="mb-4">
+                    <div class="d-flex mb-2">
+                        <div class="mr-2 round-nums list-badge-round-xs">1</div>
+                        <div class="v-align-center">Go to <span class="cursor-pointer active-link mx-1" v-on:click="redirectToLogin">${loginURL}</span> to login</div>
+                    </div>
+                    <div class="d-flex mb-2">
+                        <div class="mr-2 round-nums list-badge-round-xs">2</div>
+                        <div class="v-align-center">Fill-out your Alumni Record - Basic Info., Education and Work.</div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if isSubmitted === 'true' %}
+                <div class="form-group">
+                    <a href="/admin/alumni-records/{{refNumber}}/view" class="btn btn-md btn-light content-nav-btn">
+                        <svg width="20px" height="20px" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="m9.474 5.209s-4.501 4.505-6.254 6.259c-.147.146-.22.338-.22.53s.073.384.22.53c1.752 1.754 6.252 6.257 6.252 6.257.145.145.336.217.527.217.191-.001.383-.074.53-.221.293-.293.294-.766.004-1.057l-4.976-4.976h14.692c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-14.692l4.978-4.979c.289-.289.287-.761-.006-1.054-.147-.147-.339-.221-.53-.221-.191-.001-.38.071-.525.215z" fill-rule="nonzero"/></svg>
+                        <span>Update Alumni Record</span>
+                    </a>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{app.url}}/js/rest-helpers.js"></script>
+<script>
+    var ENV = '{{ENV}}';
+    const vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        data: {
+            loginURL: ENV === 'dev' ? 'http://localhost:9099/login' : 'https://alumni.gsu.edu.ph/login', 
+        },
+        methods: {
+            redirectToLogin() {
+                window.open(this.loginURL, '_blank');
+            },
+            copyText: function() {
+                const passwordText = this.$el.querySelector('#password');
+                navigator.clipboard.writeText(passwordText.textContent).then(() => {
+                    throw new Error('Password copied to clipboard.');
+                }).catch(err => {
+                    alert(err.message);
+                });
+            }
+        }
+    });
+</script>
+{% endblock %}

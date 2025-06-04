@@ -1,0 +1,592 @@
+{% extends "document.html" %}
+
+{% block body %}
+<div class="col-md-12">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-start">
+            <h1 class="h3">View Alumni Record</h1>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <a href="/admin/alumni-records" class="btn btn-sm btn-outline-primary content-nav-btn">
+                    <svg width="18px" height="18px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+                        <title>Back</title>
+                        <path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"/><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"/>
+                    </svg>
+                    <span>Back</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% include 'parts/flash.html' %}
+    <div id="vApp" v-cloak>
+        <div>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <button type="button" id="tab1" @click="page='#content1'" :class="['nav-link content-nav-btn', { active: page === '#content1' }]">
+                        <span>Basic Info.</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button type="button" id="tab2" @click="page='#content2'" :class="['nav-link content-nav-btn', { active: page === '#content2' }]">
+                        <span>Education</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button type="button" id="tab3" @click="page='#content3'" :class="['nav-link content-nav-btn', { active: page === '#content3' }]">
+                        <span>Work</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <div class="tab-content p-3">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="row">
+                            <div class="col-xl-4 py-2 d-flex flex-column justify-content-center align-items-center order-xl-1 order-2">
+                                <template>
+                                    <div class="d-flex flex-sm-row flex-column justify-content-center align-items-center">
+                                        <div class="profile-picture mb-2 mr-2" 
+                                        :style="{ 
+                                            background: getBackgroundStyle(),
+                                            backgroundSize: 'cover' 
+                                        }">
+                                        </div>
+        
+                                        <div class="d-flex flex-sm-column flex-row justify-content-center align-items-center">
+                                            <button class="btn btn-sm btn-outline-primary rounded mb-2 mr-2" @click="triggerFileInput">Browse</button>
+                                            <input style="display: none;" type="file" ref="fileInput" @change="onFileChange" />
+                                            <button v-if="selectedFile" @click="onUploadFile" class="btn btn-sm btn-success rounded mb-2 mr-2">Upload</button>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="col-xl-5 py-2 order-xl-2 order-3">
+                                <h1 class="h4"><u>{{viewAlm.firstName}}</u> <u>{{viewAlm.middleName[0]}}.</u> <u>{{viewAlm.lastName}}</u> <u>{{viewAlm.suffix}}</u></h1>
+                                <h1 class="h6"><i>
+                                    {% if viewAlm.presentAddress %}
+                                        <span>{{viewAlm.presentAddress}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </i></h1>
+                                <div class="form-group mt-3">
+                                    <p class="mb-1">Reach me at:</p>
+                                    <div class="mb-4">
+                                        <div class="d-flex mb-2">
+                                            <div class="mr-2 round-nums list-badge-round-xs">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14px" height="14px" viewBox="0 0 24 24">
+                                                    <title>Facebook</title>
+                                                    <path fill="currentColor" d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
+                                                </svg>
+                                            </div>
+                                            <div class="v-align-center">
+                                                {% if viewAlm.fbName %}
+                                                    <span>{{viewAlm.fbName}}</span>
+                                                {% else %}
+                                                    <span>...</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="d-flex mb-2">
+                                            <div class="mr-2 round-nums list-badge-round-xs">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14px" height="14px" viewBox="0 0 24 24">
+                                                    <title>Email</title>
+                                                    <path fill="currentColor" d="M12 12.713l-11.985-9.713h23.971l-11.986 9.713zm-5.425-1.822l-6.575-5.329v12.501l6.575-7.172zm10.85 0l6.575 7.172v-12.501l-6.575 5.329zm-1.557 1.261l-3.868 3.135-3.868-3.135-8.11 8.848h23.956l-8.11-8.848z"/>
+                                                </svg>
+                                            </div>
+                                            <div class="v-align-center">
+                                                {% if viewAlm.email %}
+                                                    <span>{{viewAlm.email}}</span>
+                                                {% else %}
+                                                    <span>...</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="d-flex mb-2">
+                                            <div class="mr-2 round-nums list-badge-round-xs">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14px" height="14px" viewBox="0 0 24 24">
+                                                    <title>Phone</title>
+                                                    <path fill="currentColor" d="M20 22.621l-3.521-6.795c-.008.004-1.974.97-2.064 1.011-2.24 1.086-6.799-7.82-4.609-8.994l2.083-1.026-3.493-6.817-2.106 1.039c-7.202 3.755 4.233 25.982 11.6 22.615.121-.055 2.102-1.029 2.11-1.033z"/>
+                                                </svg>
+                                            </div>
+                                            <div class="v-align-center">
+                                                {% if viewAlm.mobileNumber %}
+                                                    <span>{{viewAlm.mobileNumber}}</span>
+                                                {% else %}
+                                                    <span>...</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 py-2 d-flex flex-row justify-content-end align-items-center order-xl-2 order-1">
+                                <div class="d-flex flex-column justify-content-center align-items-start">
+                                    <span class="text-no-wrap mb-1">Online Access: 
+                                        {% if users.active %}
+                                            <span><b>Active</b></span>
+                                        {% else %}
+                                            <span><b>Inactive</b></span>
+                                        {% endif %}
+                                    </span>
+                                    {% if users.active %}
+                                        <a class="btn btn-danger text-no-wrap" href="/admin/users/{{users.id}}/isActive">Deactivate?</a>
+                                    {% else %}
+                                        <a class="btn btn-success text-no-wrap" href="/admin/users/{{users.id}}/isActive">Activate?</a>
+                                    {% endif %}
+
+                                    <div class="border-top pt-2 mt-3">Change Password? <a class="text-no-wrap" href="/admin/users/{{users.id}}">Click Here</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <template v-if="page=='#content1'" class="row">
+                        <div class="col-xl-6 pr-xl-5 pr-4">
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Age</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if viewAlm.birthDate|age > 0 %}
+                                    {{viewAlm.birthDate|age}} yrs.
+                                    <em>({{viewAlm.birthDate|format_date('MMM DD, YYYY')}})</em>
+                                    {% elseif viewAlm.birthDate|age == 0 %}
+                                        <span>Less than a year.</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Gender</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if viewAlm.gender == 'M' %}
+                                        <span>Male</span>
+                                    {% elseif viewAlm.gender == 'F' %}
+                                        <span>Female</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Civil Status</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if viewAlm.civilStatus %}
+                                        <span>{{viewAlm.civilStatus}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Citizenship</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if viewAlm.citizenship %}
+                                        <span>{{viewAlm.citizenship}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Religion</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if viewAlm.religion %}
+                                        <span>{{viewAlm.religion}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Permanent Address</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if viewAlm.permanentAddress %}
+                                        <span>{{viewAlm.permanentAddress}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 pr-xl-5 pr-4">
+                            <div class="row">
+                                <div class="col-4 text-right v-align-center-right"><b>Parent / Guardian</b></div>
+                                <div class="col-8">
+                                    <div class="row">
+                                        <div class="col-12 bg-light-gray rounded py-2 mb-2">
+                                            {% if viewAlm.guardianName %}
+                                                <span>{{viewAlm.guardianName}}</span>
+                                            {% else %}
+                                                <span>...</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-12 bg-light-gray rounded py-2 mb-2">
+                                            {% if viewAlm.guardianMobileNumber %}
+                                                <span>{{viewAlm.guardianMobileNumber}}</span>
+                                            {% else %}
+                                                <span>...</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 text-right v-align-center-right"><b>Emergency Person</b></div>
+                                <div class="col-8">
+                                    <div class="row">
+                                        <div class="col-12 bg-light-gray rounded py-2 mb-2">
+                                            {% if viewAlm.emergencyPersonName %}
+                                                <span>{{viewAlm.emergencyPersonName}}</span>
+                                            {% else %}
+                                                <span>...</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-12 bg-light-gray rounded py-2 mb-2">
+                                            {% if viewAlm.emergencyPersonMobileNumber %}
+                                                <span>{{viewAlm.emergencyPersonMobileNumber}}</span>
+                                            {% else %}
+                                                <span>...</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-12 pt-2 text-right">
+                            <p class="mb-0">Update Last</p>
+                            <p><strong>{{viewAlm.updatedAt|format_date('MMM DD, YYYY hh:mm A')}}</strong></p>
+                        </div>
+                        <div class="col-xl-12 pt-2 text-center">
+                            <a href="/admin/alumni-records/{{viewAlm.refNumber}}/edit/basic-info" class="btn btn-md btn-primary rounded mx-2">Edit</a>
+                            <button @click="page='#content2'" class="btn btn-md btn-light rounded">
+                                <svg width="24px" height="24px" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Next</title><path fill="currentColor" d="m14.523 18.787s4.501-4.505 6.255-6.26c.146-.146.219-.338.219-.53s-.073-.383-.219-.53c-1.753-1.754-6.255-6.258-6.255-6.258-.144-.145-.334-.217-.524-.217-.193 0-.385.074-.532.221-.293.292-.295.766-.004 1.056l4.978 4.978h-14.692c-.414 0-.75.336-.75.75s.336.75.75.75h14.692l-4.979 4.979c-.289.289-.286.762.006 1.054.148.148.341.222.533.222.19 0 .378-.072.522-.215z" fill-rule="nonzero"/></svg>
+                            </button>
+                        </div>
+                    </template>
+
+                    <template v-if="page=='#content2'" class="row">
+                        <div class="col-xl-6 pr-xl-5 pr-4">
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>ID Number</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if educ.idNumber %}
+                                        <span>{{educ.idNumber}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Year Graduated</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if educ.yearGraduated %}
+                                        <span>{{educ.yearGraduated}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Highest Degree Attained</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if educ.degree %}
+                                        <span>{{educ.degree}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 pr-xl-5 pr-4">
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Campus</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if educ.campus %}
+                                        <span>{{educ.campus}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            {% if educ.degree === 'College' or educ.degree === 'Graduate Studies' %}
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>College</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if educ.college %}
+                                        <span>{{educ.college}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Course / Program</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if educ.course %}
+                                        <span>{{educ.course}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {% if educ.degree === 'Senior High School' %}
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Track</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if educ.track %}
+                                        <span>{{educ.track}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Strand</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if educ.strand %}
+                                        <span>{{educ.strand}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+
+                        </div>
+                        <div class="col-xl-12 pt-2 text-right">
+                            <p class="mb-0">Update Last</p>
+                            <p><strong>{{educ.updatedAt|format_date('MMM DD, YYYY hh:mm A')}}</strong></p>
+                        </div>
+                        <div class="col-xl-12 pt-2 text-center">
+                            <button @click="page='#content1'" class="btn btn-md btn-light rounded">
+                                <svg width="24px" height="24px" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Previous</title><path fill="currentColor" d="m9.474 5.209s-4.501 4.505-6.254 6.259c-.147.146-.22.338-.22.53s.073.384.22.53c1.752 1.754 6.252 6.257 6.252 6.257.145.145.336.217.527.217.191-.001.383-.074.53-.221.293-.293.294-.766.004-1.057l-4.976-4.976h14.692c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-14.692l4.978-4.979c.289-.289.287-.761-.006-1.054-.147-.147-.339-.221-.53-.221-.191-.001-.38.071-.525.215z" fill-rule="nonzero"/></svg>
+                            </button>
+                            <a href="/admin/alumni-records/{{viewAlm.refNumber}}/edit/education" class="btn btn-md btn-primary rounded mx-2">Edit</a>
+                            <button @click="page='#content3'" class="btn btn-md btn-light rounded">
+                                <svg width="24px" height="24px" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Next</title><path fill="currentColor" d="m14.523 18.787s4.501-4.505 6.255-6.26c.146-.146.219-.338.219-.53s-.073-.383-.219-.53c-1.753-1.754-6.255-6.258-6.255-6.258-.144-.145-.334-.217-.524-.217-.193 0-.385.074-.532.221-.293.292-.295.766-.004 1.056l4.978 4.978h-14.692c-.414 0-.75.336-.75.75s.336.75.75.75h14.692l-4.979 4.979c-.289.289-.286.762.006 1.054.148.148.341.222.533.222.19 0 .378-.072.522-.215z" fill-rule="nonzero"/></svg>
+                            </button>
+                        </div>
+                    </template>
+
+                    <template v-if="page=='#content3'" class="row">
+                        <div class="col-xl-6 pr-xl-5 pr-4">
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Position</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if work.position %}
+                                        <span>{{work.position}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 text-right v-align-center-right"><b>Company</b></div>
+                                <div class="col-8">
+                                    <div class="row">
+                                        <div class="col-12 bg-light-gray rounded py-2 mb-2">
+                                            {% if work.companyName %}
+                                                <span>{{work.companyName}}</span>
+                                            {% else %}
+                                                <span>...</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-12 bg-light-gray rounded py-2 mb-2">
+                                            {% if work.companyAddress %}
+                                                <span>{{work.companyAddress}}</span>
+                                            {% else %}
+                                                <span>...</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Gov't. Service</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if work.govt %}
+                                        <span>{{work.govt}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 pr-xl-5 pr-4">
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Employment Status</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if work.employmentStatus %}
+                                        <span>{{work.employmentStatus}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>From</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if work.from %}
+                                        <span>{{work.from|format_date('MMM DD, YYYY')}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 text-right v-align-center-right"><b>To</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if work.to %}
+                                        {% if work.to === 'Present' %}
+                                            <span>{{work.to}}</span>
+                                        {% else %}
+                                            <span>{{work.to|format_date('MMM DD, YYYY')}}</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-12 pt-2 text-right">
+                            <p class="mb-0">Update Last</p>
+                            <p><strong>{{work.updatedAt|format_date('MMM DD, YYYY hh:mm A')}}</strong></p>
+                        </div>
+                        <div class="col-xl-12 pt-2 text-center">
+                            <button @click="page='#content2'" class="btn btn-md btn-light rounded">
+                                <svg width="24px" height="24px" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Previous</title><path fill="currentColor" d="m9.474 5.209s-4.501 4.505-6.254 6.259c-.147.146-.22.338-.22.53s.073.384.22.53c1.752 1.754 6.252 6.257 6.252 6.257.145.145.336.217.527.217.191-.001.383-.074.53-.221.293-.293.294-.766.004-1.057l-4.976-4.976h14.692c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-14.692l4.978-4.979c.289-.289.287-.761-.006-1.054-.147-.147-.339-.221-.53-.221-.191-.001-.38.071-.525.215z" fill-rule="nonzero"/></svg>
+                            </button>
+                            <a href="/admin/alumni-records/{{viewAlm.refNumber}}/edit/work" class="btn btn-md btn-primary rounded mx-2">Edit</a>
+                        </div>
+                    </template>
+
+                </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{app.url}}/js/rest-helpers.js"></script>
+<script>
+    const vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        data: {
+            page: '#content1',
+            selectedFile: null,
+            responseFile: null,
+            dbResponseFile: '{{users.imgPath}}',
+        },
+        watch: {
+            page: function page(newPage, oldPage) {
+                var me = this;
+                if (newPage === '#' || newPage === '') {
+                    me.page = '#content1';
+                } else {
+                    window.location.hash = newPage;
+                }
+
+                if(me.page != '#content1' && me.page != '#content2' && me.page != '#content3'){
+                    me.page = '#content1'
+                }
+            }
+        },
+        mounted: function mounted() {
+            var me = this;
+
+            me.page = window.location.hash || '#content1';
+            if(me.page != ' #content1' && me.page != '#content2' && me.page != '#content3'){
+                me.page = '#content1'
+            }
+        },
+        methods: {
+            getBackgroundStyle() {
+                if (this.dbResponseFile && this.responseFile == null) {
+                    return `url(${this.dbResponseFile}) no-repeat center #ffffff`;
+                } else if (this.dbResponseFile && this.responseFile) {
+                    return `url(${this.responseFile}) no-repeat center #ffffff`;
+                } else {
+                    return '#ffffff'; 
+                    // fallback color
+                }
+            },
+            triggerFileInput() {
+                this.$refs.fileInput.click();
+            },
+            onFileChange(e) {
+                const selectedFile = e.target.files[0]; // accessing file
+                this.selectedFile = selectedFile;
+            },
+            onUploadFile() {
+                try {
+                    // Acceptable MIME types
+                    const acceptedFormats = ['image/png', 'image/jpeg']; 
+
+                    // Check if a file is selected
+                    if (!this.selectedFile) {
+                        throw new Error('Please select a file to upload.');
+                    }
+
+                    // Validate the file type
+                    if (!acceptedFormats.includes(this.selectedFile.type)) {
+                        this.selectedFile = ''; // reset selected file
+                        this.$refs.fileInput.value = ''; // reset file input
+                        throw new Error('Invalid file format. Please upload a .png, .jpg, or .jpeg file.');
+                    }
+
+                    const formData = new FormData();
+                    formData.append("file", this.selectedFile);  // appending file
+
+                    // sending file to the backend
+                    axios
+                        .post(`/admin/upload/{{viewAlm.refNumber}}`, formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
+                        })
+                        .then(response => {
+                            this.selectedFile = ''; // reset selected file
+                            this.$refs.fileInput.value = ''; // reset file input
+                            window.location.reload();
+                        })
+                        .catch(error => {
+                            console.error('Upload error:', error); // Handle error
+                        });
+                } catch (err) {
+                    alert(err.message)
+                }
+            },
+            onSubmit: function(e){
+                try {
+                    const me = this;
+                    const submitterId = e.submitter.id;
+
+                    if (submitterId === 'tab1') {
+                        me.page = '#content1'
+                    } else if (submitterId === 'tab2') {
+                        me.page = '#content2'
+                    } else if (submitterId === 'tab3') {
+                        me.page = '#content3'
+                    }
+                } catch (err) {
+                    alert(err.message)
+                }
+            }
+        }
+    });
+
+    window.addEventListener("hashchange", function (event) {
+        var currentPath = window.location.hash;
+        if (vApp.page !== currentPath) {
+            vApp.page = currentPath;
+        }
+    }, false);
+</script>
+{% endblock %}

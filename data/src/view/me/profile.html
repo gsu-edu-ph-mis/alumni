@@ -1,0 +1,153 @@
+{% extends "document-me.html" %}
+
+{% block body %}
+<div class="col-md-12 px-0">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-6 col-md-8 ml-auto mr-auto">
+                <div class="row bg-white shadow" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; overflow: hidden;">
+
+                    <div class="col-lg-12 d-flex flex-row justify-content-between align-items-center py-3" style="background-color: #eeeeee;">
+                        <div class="d-flex flex-row justify-content-center align-items-center">
+                            <a href="/"><img src="/images/logo-xs.png" width="35" alt=""></a>
+                            <span class="ml-2" style="font-weight: 600; color: #00897a;">{{app.title}}</span>
+                        </div>
+                        {% include 'parts/drop-out.html' %}
+                    </div>
+
+                    <div id="vApp" v-cloak class="col-lg-12 py-3">
+                        {% include 'parts/flash.html' %}
+
+                        <div class="form-group mb-2 py-2 d-flex flex-column justify-content-center align-items-center">
+                            <div class="d-flex flex-sm-row flex-column justify-content-center align-items-center">
+                                <div class="profile-picture mb-2 mr-2" 
+                                :style="{ 
+                                    background: getBackgroundStyle(),
+                                    backgroundSize: 'cover' 
+                                }">
+                                </div>
+
+                                <div v-if="{{remDays > 0}}" class="remainingDaysNote">
+                                    <div class="col-xl-12 form-group mb-0 px-0">
+                                        <div class="alert alert-warning mb-0" role="alert">You must wait <b>{{remDays}} day(s)</b> before you can change again your profile picture.</div>
+                                    </div>
+                                </div>
+                                <div v-else class="d-flex flex-sm-column flex-row justify-content-center align-items-center">
+                                    <button class="btn btn-sm btn-outline-primary rounded mb-2 mr-2" @click="triggerFileInput">Browse</button>
+                                    <input style="display: none;" type="file" ref="fileInput" @change="onFileChange" />
+                                    <button v-if="selectedFile" @click="onUploadFile" class="btn btn-sm btn-success rounded mb-2 mr-2">Upload</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-0">
+                            <div class="row">
+                                <div class="col-xl-4 d-flex align-items-center justify-content-xl-end">
+                                    <label for="username" class="form-label">Username</label>
+                                </div>
+                                <div class="col-xl-8">
+                                    <input v-model="username" name="username" type="text" class="form-control text-center text-success cursor-pointer" id="username"  @click="copyText" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{app.url}}/js/rest-helpers.js"></script>
+<script>
+    var vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        data: {
+            username: '{{user.username}}',
+            selectedFile: null,
+            responseFile: null,
+            dbResponseFile: '{{user.imgPath}}',
+        },
+        methods: {
+            copyText: function() {
+                const usernameText = this.$el.querySelector('#username');
+                navigator.clipboard.writeText(usernameText.value).then(() => {
+                    throw new Error('Username copied to clipboard.');
+                }).catch(err => {
+                    alert(err.message);
+                });
+            },
+            getBackgroundStyle() {
+                if (this.dbResponseFile && this.responseFile == null) {
+                    return `url(${this.dbResponseFile}) no-repeat center #ffffff`;
+                } else if (this.dbResponseFile && this.responseFile) {
+                    return `url(${this.responseFile}) no-repeat center #ffffff`;
+                } else {
+                    return '#ffffff'; // fallback color
+                }
+            },
+            triggerFileInput() {
+                this.$refs.fileInput.click();
+            },
+            onFileChange(e) {
+                const selectedFile = e.target.files[0]; // accessing file
+                this.selectedFile = selectedFile;
+            },
+            onUploadFile() {
+                try {
+                    // Acceptable MIME types
+                    const acceptedFormats = ['image/png', 'image/jpeg']; 
+
+                    // Check if a file is selected
+                    if (!this.selectedFile) {
+                        throw new Error('Please select a file to upload.');
+                    }
+
+                    // Validate the file type
+                    if (!acceptedFormats.includes(this.selectedFile.type)) {
+                        this.selectedFile = ''; // reset selected file
+                        this.$refs.fileInput.value = ''; // reset file input
+                        throw new Error('Invalid file format. Please upload a .png, .jpg, or .jpeg file.');
+                    }
+
+                    const formData = new FormData();
+                    formData.append("file", this.selectedFile);  // appending file
+
+                    // sending file to the backend
+                    axios
+                        .post(`/me/upload/{{user.refNumber}}`, formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
+                        })
+                        .then(response => {
+                            this.selectedFile = ''; // reset selected file
+                            this.$refs.fileInput.value = ''; // reset file input
+                            window.location.reload();
+                        })
+                        .catch(error => {
+                            console.error('Upload error:', error); // Handle error
+                        });
+                } catch (err) {
+                    alert(err.message)
+                }
+            },
+            onSubmit: function(e){
+                try {
+                    const me = this;
+                    const submitterId = e.submitter.id;
+                } catch (err) {
+                    alert(err.message)
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+

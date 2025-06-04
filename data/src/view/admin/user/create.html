@@ -1,0 +1,141 @@
+{% extends "document.html" %}
+
+{% block body %}
+<div v-bind:data-pending="pending" class="col-md-12">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-start">
+            <h1 class="h3">Create User</h1>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <a href="/admin/users" class="btn btn-sm btn-outline-primary content-nav-btn">
+                    <svg width="18px" height="18px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+                        <title>Back</title>
+                        <path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"/><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"/>
+                    </svg>
+                    <span>Back</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active content-nav-btn" href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" viewBox="0 0 24 24"><title>Edit</title><path fill="currentColor" d="M14.06,9L15,9.94L5.92,19H5V18.08L14.06,9M17.66,3C17.41,3 17.15,3.1 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18.17,3.09 17.92,3 17.66,3M14.06,6.19L3,17.25V21H6.75L17.81,9.94L14.06,6.19Z" /></svg>
+                    <span>Details</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content p-3">
+        <form ref="form" id="vApp" v-cloak v-bind:data-pending="pending" v-on:submit.prevent="onSubmit" action="/admin/users" method="POST" class="form-default">
+            <input type="hidden" name="acsrf" value="{{acsrf}}">
+            
+            <div class="form-group mb-2" :data-error="errors.username" @click="errors.username=false">
+                <label for="username" class="form-label">Username</label>
+                <input v-model="username" name="username" type="text" class="form-control" id="username" >
+            </div>
+            <div class="form-group mb-2" :data-error="errors.password" @click="errors.password=false">
+                <label for="password" class="form-label">Password</label>
+                <div class="d-flex">
+                    <input v-model="password" name="password" type="text" class="form-control" id="password" >
+                    <button @click="regen" class="btn btn-outline-secondary ml-2" type="button">Suggest</button>
+                </div>
+            </div>
+            <div class="form-group" :data-error="errors.role" @click="errors.role=false">
+                <label for="role" class="form-label">Role</label>
+                <select v-model="role" name="role" id="role" class="form-control">
+                    <option value=""></option>
+                    <option v-for="r in rolesList" :value="r.key">${r.name} - ${r.description}</option>
+                </select>
+            </div>
+            <div class="text-center">
+                <button class="btn btn-success mx-auto content-nav-btn">
+                    <svg width="20px" height="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <title>${createText}</title>
+                        <rect x="0" fill="none" width="24" height="24"/>
+                        <g><path fill="currentColor" d="M21 14v5c0 1.105-.895 2-2 2H5c-1.105 0-2-.895-2-2V5c0-1.105.895-2 2-2h5v2H5v14h14v-5h2z"/><path fill="currentColor" d="M21 7h-4V3h-2v4h-4v2h4v4h2V9h4"/></g></svg>
+                    <span>${createText}</span>    
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{app.url}}/js/rest-helpers.js"></script>
+<script>
+    var ENV = '{{ENV}}';
+    const rolesList = {{roles|default([], true)|stringify|safe}}
+    const vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        data: {
+            pending: false,
+            rolesList: rolesList,
+            username: '',
+            password: '{{password}}',
+            role: '',
+            errors: {
+                username: false,
+                password: false,
+                role: false,
+            }
+        },
+        computed: {
+            createText: function createText() {
+                return this.pending ? 'Creating...' : 'Create';
+            }
+        },
+        mounted: function mounted() {
+            var me = this;
+
+            if (ENV === 'dev') {
+                me.username = 'gsu.'
+            }
+        },
+        methods: {
+            regen: async function(){
+                const me = this
+                let responseJson = await postAsync(`/admin/users/regen`, {
+                    acsrf: `{{acsrf}}`,
+                })
+                me.password = responseJson.data
+            },
+            onSubmit: function(){
+                try {
+                    const me = this;
+
+                    Object.keys(this.$data).forEach(key => {
+                        if(typeof this[key] === 'string'){
+                            this[key] = this[key].trim()
+                        }
+                    });
+
+                    if(!me.username){
+                        me.errors.username = true
+                        throw new Error('Username is required.')
+                    }
+                    if(!me.password){
+                        me.errors.password = true
+                        throw new Error('Password is required.')
+                    }
+                    if(!me.role){
+                        me.errors.role = true
+                        throw new Error('Role is required.')
+                    }
+                   
+                    me.$nextTick(function() {
+                        me.pending = true;
+                        me.$refs.form.submit();
+                    });
+                } catch (err) {
+                    alert(err.message)
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

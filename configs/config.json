@@ -1,0 +1,118 @@
+{
+  "app": {
+    "title": "Alumni Portal",
+    "description": "Alumni Directory",
+    "year": "2025",
+    "version": "v1.0.0",
+    "port": "9099",
+    "url": "http://localhost:9099",
+    "dir": "${APP_DIR}",
+    "dirs": {
+      "data": "${APP_DIR}/data",
+      "src": "${APP_DIR}/src",
+      "public": "${APP_DIR}/data/public",
+      "view": "${APP_DIR}/data/src/view",
+      "upload": "${APP_DIR}/data/upload"
+    }
+  },
+  "express": {
+    "trustProxy": false
+  },
+  "nunjucks": {
+    "loader": {
+      "watch": false,
+      "noCache": true
+    },
+    "environment": {
+      "autoescape": true,
+      "throwOnUndefined": false,
+      "trimBlocks": false,
+      "lstripBlocks": false
+    }
+  },
+  "session": {
+    "name": "gsu_app_alumni_sid",
+    "store": {
+      "db": "sessions.db",
+      "dir": "${APP_DIR}/data"
+    },
+    "cookie": {
+      "httpOnly": false,
+      "maxAge": 31536000000,
+      "secure": false
+    }
+  },
+  "sqlite": {
+    "username": "",
+    "db": "${APP_DIR}/data/app.db"
+  },
+  "ipCheck": false,
+  "ip": {
+    "allowed": [
+      "::1"
+    ]
+  },
+  "minPasswordLength": 8,
+  "minSaltLength": 8,
+  "campuses": [
+    {
+      "value": "main",
+      "text": "Salvador (Main)"
+    },
+    {
+      "value": "mosqueda",
+      "text": "Mosqueda"
+    },
+    {
+      "value": "baterna",
+      "text": "Baterna"
+    }
+  ],
+  "suffixes": [
+    "Jr.",
+    "II",
+    "III",
+    "IV",
+    "V",
+    "Sr."
+  ],
+  "civilStatuses": [
+    "Single",
+    "Married",
+    "Separated",
+    "Widowed"
+  ],
+  "employmentStatuses": [
+    "Permanent",
+    "Contractual",
+    "Casual",
+    "Temporary",
+    "Probationary",
+    "On-the-job Trainee",
+    "Others"
+  ],
+  "degrees": [
+    "High School",
+    "Senior High School",
+    "College",
+    "Graduate Studies",
+    "Vocational",
+    "Others"
+  ],
+  "tracks": [
+    "Academic Track",
+    "Technical-Vocational-Livelihood (TVL) Track",
+    "Others"
+  ],
+  "strands": [
+    "Science, Technology, Engineering, and Mathematics (STEM)",
+    "Humanities and Social Sciences (HUMSS)",
+    "Accountancy, Business, and Management (ABM)",
+    "General Academic Strand (GAS)",
+    "Home Economics (HE)",
+    "Information and Communications Technology (ICT)",
+    "Agri-Fishery Arts (AFA)",
+    "Industrial Arts (IA)",
+    "Others"
+  ]
+}

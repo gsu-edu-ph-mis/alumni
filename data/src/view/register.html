@@ -1,0 +1,202 @@
+{% extends "document-public-landing.html" %}
+
+{% block body %}
+<div class="col-md-12">
+    <div class="container">
+        <div class="row mt-md-5 mt-3 mb-md-5 mb-3">
+            <div id="vApp" v-cloak v-bind:data-pending="pending" class="col-lg-5 col-md-7 ml-auto mr-auto bg-white shadow" style="border-radius: 10px; overflow: hidden;">
+                <form ref="frmReg" v-on:submit.prevent="onSubmit($event)" action="/register" method="POST" class="py-4">
+                    <h1 class="h4 text-center mb-4">Create Account Page</h1>
+                    {% include 'parts/flash.html' %}
+
+                    <template v-if="page=='#step1'" class="row">
+                        <div class="form-group mb-2" :data-error="errors.firstName" @click="errors.firstName=false">
+                            <label for="firstName" class="col-form-label">First Name <span class="text-danger">*</span></label>
+                            <input v-model="firstName" name="firstName" type="text" class="form-control" id="firstName" autocomplete="off">
+                        </div>
+                        <div class="form-group mb-2" :data-error="errors.middleName" @click="errors.middleName=false">
+                            <label for="middleName" class="col-form-label">Middle Name</label>
+                            <input v-model="middleName" name="middleName" type="text" class="form-control" id="middleName" autocomplete="off">
+                        </div>
+                        <div class="form-group mb-2" :data-error="errors.lastName" @click="errors.lastName=false">
+                            <label for="lastName" class="col-form-label">Last Name <span class="text-danger">*</span></label>
+                            <input v-model="lastName" name="lastName" type="text" class="form-control" id="lastName" autocomplete="off">
+                        </div>
+                        <div class="form-group" :data-error="errors.suffix" @click="errors.suffix=false">
+                            <label for="suffix" class="col-form-label">Suffix</label>
+                            <select v-model="suffix" name="suffix" id="suffix" class="form-control">
+                                <option value=""></option>
+                                <option v-for="s in suffixesList" :value="s">${s}</option>
+                            </select>
+                        </div>
+                        <div class="form-group d-flex">
+                            <button id="btnNext" class="col-md-12 btn btn-success">Next</button>
+                        </div>
+                        <hr>
+                        <p class="mb-0 text-left">Already have an account? <a class="text-primary" href="/login">Login here</a></p>
+                    </template>
+
+                    <template v-if="page=='#step2'" class="row">
+                        <div class="form-group" :data-error="errors.role" @click="errors.role=false">
+                            <label for="role" class="col-form-label">Role <span class="text-danger">*</span></label>
+                            <select v-model="role" name="role" id="role" class="form-control">
+                                <option value="alumni">Alumni</option>
+                            </select>
+                        </div>
+                        <div class="form-group" :data-error="errors.acceptedDataPrivacy"
+                            @click="errors.acceptedDataPrivacy=false">
+                            <div class="d-flex align-items-center">
+                                <div class="custom-control custom-checkbox mb-0 ml-1">
+                                    <input v-model="acceptedDataPrivacy" name="acceptedDataPrivacy" type="checkbox" class="custom-control-input" id="acceptedDataPrivacy">
+                                    <label class="custom-control-label" for="acceptedDataPrivacy">I have read and accept the <a target="_blank" href="/data-privacy">Data Privacy and Consent Form</a></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-0 d-flex">
+                            <input :value="payload" type="hidden" name="payload" />
+                            <button id="btnBack" type="button" @click="page='#step1'"
+                                class="btn btn-sm btn-light mr-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" viewBox="0 0 24 24">
+                                    <title>Back</title>
+                                    <path fill="#222"
+                                        d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
+                                </svg>
+                            </button>
+                            <button id="btnSubmit" class="btn btn-success flex-grow-1">${registerText}</button>
+                        </div>
+                    </template>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    var ENV = '{{ENV}}';
+    var title = '{{app.title}}';
+    const suffixesList = {{suffixes|default([], true)|stringify|safe}}
+    var vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        mixins: [],
+        data: {
+            pending: false,
+            page: '#step1',
+            suffixesList: suffixesList,
+            firstName: '',
+            middleName: '',
+            lastName: '',
+            suffix: '',
+            role: '',
+            acceptedDataPrivacy: '',
+            errors: {
+                firstName: false,
+                middleName: false,
+                lastName: false,
+                suffix: false,
+                role: false,
+                acceptedDataPrivacy: false
+            }
+        },
+        computed: {
+            registerText: function registerText() {
+                return this.pending ? 'Registering...' : 'Register';
+            },
+            payload: function payload() {
+                var me = this;
+                return JSON.stringify({
+                    firstName: me.firstName,
+                    middleName: me.middleName,
+                    lastName: me.lastName,
+                    suffix: me.suffix,
+                    role: me.role,
+                    acceptedDataPrivacy: me.acceptedDataPrivacy
+                });
+            }
+        },
+        watch: {
+            page: function page(newPage, oldPage) {
+                var me = this;
+                if (newPage === '#' || newPage === '') {
+                    me.page = '#step1';
+                } else {
+                    window.location.hash = newPage;
+                }
+                if(me.page != '#step1' && me.email == ''){
+                    me.page = '#step1'
+                }
+            }
+        },
+        mounted: function mounted() {
+            var me = this;
+            document.title = `Register | ${title}`;
+
+            if (ENV === 'dev') {
+                me.firstName = ''
+                me.middleName = ''
+                me.lastName = ''
+                me.suffix = ''
+                me.role = 'alumni'
+                me.page = ''
+            }
+            me.page = window.location.hash || '#step1';
+            if(me.page != ' #step1' && me.email == ''){
+                me.page = '#step1'
+            }
+        },
+        methods: {
+            togglePassword: function togglePassword() {
+                if (this.passwordType === "password") {
+                    return this.passwordType = "text";
+                }
+                this.passwordType = "password";
+            },
+            onSubmit: function onSubmit(e) {
+                try {
+                    var me = this;
+                    const submitterId = e.submitter.id;
+
+                    if (submitterId === 'btnNext') {
+                        if (!me.firstName) {
+                            me.errors.firstName = true;
+                            throw new Error('First Name is required.');
+                        }
+                        if (!me.lastName) {
+                            me.errors.lastName = true;
+                            throw new Error('Last Name is required.');
+                        }
+                        me.page = '#step2';
+                    }
+                    if (submitterId === 'btnSubmit') {
+                        if (!me.role) {
+                            me.errors.role = true;
+                            throw new Error('Role is required.');
+                        }
+
+                        if (!me.acceptedDataPrivacy) {
+                            me.errors.acceptedDataPrivacy = true;
+                            throw new Error('You must have read and accepted the Data Privacy and Consent Form is required.');
+                        }
+
+                        me.$nextTick(function () {
+                            me.pending = true;
+                            me.$refs.frmReg.submit();
+                        });
+                    }
+                } catch (err) {
+                    alert(err.message);
+                }
+            }
+        }
+    });
+
+    window.addEventListener("hashchange", function (event) {
+        var currentPath = window.location.hash;
+        if (vApp.page !== currentPath) {
+            vApp.page = currentPath;
+        }
+    }, false);
+</script>
+{% endblock %}

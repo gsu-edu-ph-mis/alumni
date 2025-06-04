@@ -1,0 +1,110 @@
+{% extends "document-public-landing.html" %}
+
+{% block body %}
+<div class="col-md-12">
+    <div class="container">
+        <div class="row mt-md-5 mt-3 mb-md-5 mb-3">
+            <div id="vApp" v-cloak class="col-lg-5 col-md-7 ml-auto mr-auto">
+                <div style="border-radius: 10px; overflow: hidden;" class="row bg-white shadow">
+                    <form ref="form" v-on:submit.prevent="onSubmit($event)" action="/login" method="POST" class="col-md-12 px-3 pt-4 pb-3">
+                        <h1 class="h4 text-center mb-4">Login Page</h1>
+                        {% include 'parts/flash.html' %}
+                        <div class="form-group mb-2 mt-3" :data-error="errors.username"
+                        @click="errors.username=false">
+                            <label for="username" class="form-label">Username</label>
+                            <input v-bind:readonly="pending" v-model="username" type="username" id="username" name="username" class="form-control" autocomplete="off">
+                        </div>
+                        <div class="form-group" :data-error="errors.password"
+                        @click="errors.password=false">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="toggled-password-group">
+                                <input v-bind:readonly="pending" name="password" v-model="password" id="password" v-bind:type="passwordType" class="form-control" autocomplete="off">
+                                <button v-on:click="togglePassword" class="btn btn-eye d-flex align-items-center" v-bind:data-state="passwordType" type="button">
+                                    <svg style="width:18px;height:18px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2,5.27L3.28,4L20,20.72L18.73,22L15.65,18.92C14.5,19.3 13.28,19.5 12,19.5C7,19.5 2.73,16.39 1,12C1.69,10.24 2.79,8.69 4.19,7.46L2,5.27M12,9A3,3 0 0,1 15,12C15,12.35 14.94,12.69 14.83,13L11,9.17C11.31,9.06 11.65,9 12,9M12,4.5C17,4.5 21.27,7.61 23,12C22.18,14.08 20.79,15.88 19,17.19L17.58,15.76C18.94,14.82 20.06,13.54 20.82,12C19.17,8.64 15.76,6.5 12,6.5C10.91,6.5 9.84,6.68 8.84,7L7.3,5.47C8.74,4.85 10.33,4.5 12,4.5M3.18,12C4.83,15.36 8.24,17.5 12,17.5C12.69,17.5 13.37,17.43 14,17.29L11.72,15C10.29,14.85 9.15,13.71 9,12.28L5.6,8.87C4.61,9.72 3.78,10.78 3.18,12Z" /></svg>
+                                    <svg style="width:18px;height:18px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,4.5C17,4.5 21.27,7.61 23,12C21.27,16.39 17,19.5 12,19.5C7,19.5 2.73,16.39 1,12C2.73,7.61 7,4.5 12,4.5M3.18,12C4.83,15.36 8.24,17.5 12,17.5C15.76,17.5 19.17,15.36 20.82,12C19.17,8.64 15.76,6.5 12,6.5C8.24,6.5 4.83,8.64 3.18,12Z" /></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button v-bind:disabled="disabled" class="btn btn-success d-block w-100">${loginText}</button>
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            <p class="mb-0 text-left">No account yet? <a class="text-primary" href="/register">Create here</a></p>
+                            <p class="mb-0 text-left">Forgot your password? <a class="text-primary" href="/reset">Reset here</a></p>
+                        </div>
+
+                        <hr>
+
+                        {% include 'parts/for-inquiries.html' %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    var ENV = '{{ENV}}';
+    var title = '{{app.title}}';
+    var vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        data: {
+            pending: false,
+            username: '',
+            password: '',
+            passwordType: 'password',
+            recaptchaToken: '',
+            errors: {
+                username: false,
+                password: false,
+            }
+        },
+        computed: {
+            loginText: function(){
+                return this.pending ? 'Logging in...' : 'Login';
+            },
+            disabled: function(){
+                return (!this.username || !this.password || this.pending);
+            }
+        },
+        mounted: function mounted() {
+            var me = this;
+            document.title = `Login | ${title}`;
+
+            if (ENV === 'dev') {
+                me.username = ''
+                me.password = ''
+            }
+        },
+        methods: {
+            togglePassword: function () {
+                if (this.passwordType === "password") {
+                    return this.passwordType = "text";
+                }
+                this.passwordType = "password"
+            },
+            onSubmit: function(){
+                var me = this;
+
+                if (!me.username) {
+                    me.errors.username = true;
+                    throw new Error('Username is required.');
+                }
+                if (!me.password) {
+                    me.errors.password = true;
+                    throw new Error('Password is required.');
+                }
+
+                me.$nextTick(function () {
+                    me.pending = true;
+                    me.$refs.form.submit();
+                });
+            }
+        }
+    });
+</script>
+{% endblock %}

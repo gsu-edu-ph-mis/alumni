@@ -1,0 +1,167 @@
+{% extends "document.html" %}
+
+{% block body %}
+<div v-bind:data-pending="pending" class="col-md-12">
+    <div class="d-flex justify-content-start flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-start">
+            <h1 class="h3">Update User</h1>
+        </div>
+    </div>
+    {% include 'parts/flash.html' %}
+    <div class="row">
+        <div class="col-xl-5 col-lg-7">
+
+            <div>
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active content-nav-btn" href="#">
+                            <span>Details</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-content p-3">
+                
+                <form ref="form" id="vApp" v-cloak v-on:submit.prevent="onSubmit" action="/admin/account/{{user.id}}?_method=patch" method="POST" class="form-default col-xl-12 px-0">
+                    <input type="hidden" name="acsrf" value="{{acsrf}}">
+
+                    <div class="form-group mb-2" :data-error="errors.username" @click="errors.username=false">
+                        <div class="row">
+                            <div class="col-xl-12 d-flex align-items-center">
+                                <label for="username" class="form-label">Username</label>
+                            </div>
+                            <div class="col-xl-12">
+                                <input v-model="username" name="username" type="text" class="form-control" id="username" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-2" :data-error="errors.currPassword" @click="errors.currPassword=false">
+                        <div class="row">
+                            <div class="col-xl-12 d-flex align-items-center">
+                                <label for="currPassword" class="form-label">Current Password <span class="text-danger">*</span></label>
+                            </div>
+                            <div class="col-xl-12">
+                                <div class="toggled-password-group">
+                                    <input v-bind:readonly="pending" name="currPassword" v-model="currPassword" id="currPassword" v-bind:type="passwordType" class="form-control" autocomplete="off">
+                                    <button v-on:click="togglePassword" class="btn btn-eye d-flex align-items-center" v-bind:data-state="passwordType" type="button">
+                                        <svg style="width:18px;height:18px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2,5.27L3.28,4L20,20.72L18.73,22L15.65,18.92C14.5,19.3 13.28,19.5 12,19.5C7,19.5 2.73,16.39 1,12C1.69,10.24 2.79,8.69 4.19,7.46L2,5.27M12,9A3,3 0 0,1 15,12C15,12.35 14.94,12.69 14.83,13L11,9.17C11.31,9.06 11.65,9 12,9M12,4.5C17,4.5 21.27,7.61 23,12C22.18,14.08 20.79,15.88 19,17.19L17.58,15.76C18.94,14.82 20.06,13.54 20.82,12C19.17,8.64 15.76,6.5 12,6.5C10.91,6.5 9.84,6.68 8.84,7L7.3,5.47C8.74,4.85 10.33,4.5 12,4.5M3.18,12C4.83,15.36 8.24,17.5 12,17.5C12.69,17.5 13.37,17.43 14,17.29L11.72,15C10.29,14.85 9.15,13.71 9,12.28L5.6,8.87C4.61,9.72 3.78,10.78 3.18,12Z" /></svg>
+                                        <svg style="width:18px;height:18px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,4.5C17,4.5 21.27,7.61 23,12C21.27,16.39 17,19.5 12,19.5C7,19.5 2.73,16.39 1,12C2.73,7.61 7,4.5 12,4.5M3.18,12C4.83,15.36 8.24,17.5 12,17.5C15.76,17.5 19.17,15.36 20.82,12C19.17,8.64 15.76,6.5 12,6.5C8.24,6.5 4.83,8.64 3.18,12Z" /></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" :data-error="errors.newPassword" @click="errors.newPassword=false">
+                        <div class="row">
+                            <div class="col-xl-12 d-flex align-items-center">
+                                <label for="newPassword" class="form-label">New Password <span class="text-danger">*</span></label>
+                            </div>
+                            <div class="col-xl-12">
+                                <div class="d-flex">
+                                    <input v-bind:readonly="pending" v-model="newPassword" name="newPassword" type="text" class="form-control" id="newPassword" autocomplete="off">
+                                    <button @click="regen" class="btn btn-outline-secondary ml-2" type="button">Suggest</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-0 d-flex align-items-center justify-content-xl-end">
+                        <button v-bind:disabled="disabled" class="btn btn-success d-block col-xl-12">${changePassText}</button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{app.url}}/js/rest-helpers.js"></script>
+<script>
+    var ENV = '{{ENV}}';
+    var vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        data: {
+            pending: false,
+            username: '{{user.username}}',
+            currPassword: '',
+            newPassword: '',
+            passwordType: 'password',
+            errors: {
+                username: false,
+                currPassword: false,
+                newPassword: false,
+            }
+        },
+        computed: {
+            disabled: function(){
+                return (!this.currPassword || !this.newPassword || this.pending);
+            },
+            changePassText: function changePassText() {
+                return this.pending ? 'Validating...' : 'Changed Password';
+            }
+        },
+        methods: {
+            togglePassword: function () {
+                if (this.passwordType === "password") {
+                    return this.passwordType = "text";
+                }
+                this.passwordType = "password"
+            },
+            regen: async function(){
+                const me = this
+                let responseJson = await postAsync(`/admin/users/regen`, {
+                    acsrf: `{{acsrf}}`,
+                })
+                me.newPassword = responseJson.data
+            },
+            onSubmit: function(){
+                try {
+                    const me = this;
+
+                    Object.keys(this.$data).forEach(key => {
+                        if(typeof this[key] === 'string'){
+                            this[key] = this[key].trim()
+                        }
+                    });
+
+                    if(!me.currPassword){
+                        me.errors.currPassword = true
+                        throw new Error('Current password is required.')
+                    }
+                    if(me.currPassword.length < 8){
+                        me.errors.currPassword = true
+                        throw new Error('Current password is less than 8 characters long.')
+                    }
+
+                    if(!me.newPassword){
+                        me.errors.newPassword = true
+                        throw new Error('New password is required.')
+                    }
+                    if(me.newPassword.length < 8){
+                        me.errors.newPassword = true
+                        throw new Error('New password is less than 8 characters long.')
+                    }
+
+                    if(me.currPassword === me.newPassword){
+                        me.errors.newPassword = true
+                        throw new Error('The new password must be different from the current one.')
+                    }
+                   
+                    me.$nextTick(function() {
+                        me.pending = true;
+                        me.$refs.form.submit();
+                    });
+                } catch (err) {
+                    alert(err.message)
+                }
+            }
+        }
+});
+</script>
+{% endblock %}

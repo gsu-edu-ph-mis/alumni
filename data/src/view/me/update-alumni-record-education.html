@@ -1,0 +1,307 @@
+{% extends "document-me.html" %}
+
+{% block body %}
+<div v-bind:data-pending="pending" class="col-md-12 px-0">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-6 col-md-8 ml-auto mr-auto">
+                <div class="row bg-white shadow" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+
+                    <div class="col-lg-12 d-flex flex-row justify-content-between align-items-center py-3" style="background-color: #eeeeee;">
+                        <div class="d-flex flex-row justify-content-center align-items-center">
+                            <a href="/me" class="text-dark text-decor-none mr-2">
+                                <svg width="35px" height="35px" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="m9.474 5.209s-4.501 4.505-6.254 6.259c-.147.146-.22.338-.22.53s.073.384.22.53c1.752 1.754 6.252 6.257 6.252 6.257.145.145.336.217.527.217.191-.001.383-.074.53-.221.293-.293.294-.766.004-1.057l-4.976-4.976h14.692c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-14.692l4.978-4.979c.289-.289.287-.761-.006-1.054-.147-.147-.339-.221-.53-.221-.191-.001-.38.071-.525.215z" fill-rule="nonzero"/></svg>
+                            </a>
+                            <span style="font-weight: 500; font-size: 24px;">Education</span>
+                        </div>
+                        {% include 'parts/drop-out.html' %}
+                    </div>
+
+                    <div id="vApp" v-cloak class="col-lg-12 px-0">
+                        <div class="col-lg-12 pt-3">
+                            {% include 'parts/flash.html' %}
+                        </div>
+
+                        <div>
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active content-nav-btn" href="#">
+                                        <span>Educational Records</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-content p-3" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+                            <form ref="form" v-on:submit.prevent="onSubmit" action="/me/update-alumni-record/{{alumni.refNumber}}/education?_method=patch" method="POST" class="form-default">
+                                <input type="hidden" name="acsrf" value="{{acsrf}}">
+                
+                                <div class="row">
+                                    <div class="col-xl-12 form-group mb-0">
+                                        <div class="alert alert-warning" role="alert">Only include educational records from Guimaras State University.</div>
+                                    </div>
+
+                                    <div class="col-xl-6 form-group mb-2" :data-error="errors.idNumber" @click="errors.idNumber=false">
+                                        <label for="idNumber" class="form-label">ID Number </label>
+                                        <input v-model="idNumber" name="idNumber" type="text" class="form-control" id="idNumber">
+                                    </div>
+                
+                                    <div class="col-xl-6 form-group mb-2" :data-error="errors.yearGraduated" @click="errors.yearGraduated=false">
+                                        <label for="yearGraduated" class="form-label">Year Graduated <span class="text-danger">*</span></label>
+                                        <input v-model="yearGraduated" name="yearGraduated" type="text" class="form-control" id="yearGraduated" placeholder="E.g. 2020">
+                                    </div>
+
+                                    <div class="col-xl-6 form-group mb-2" :data-error="errors.degree" @click="errors.degree=false">
+                                        <label for="degree" class="form-label">Highest Degree Attained <span class="text-danger">*</span></label>
+                                        <select v-model="degree" name="degree" id="degree" class="form-control" @change="checkDegree">
+                                            <option value=""></option>
+                                            <option v-for="d in degreesList" :value="d">${d}</option>
+                                        </select>
+                                    </div>
+                
+                                    <div class="col-xl-6 form-group mb-2" :data-error="errors.campus" @click="errors.campus=false">
+                                        <label for="campus" class="form-label">Campus <span class="text-danger">*</span></label>
+                                        
+                                        <input v-model="campus" name="campus" id="campus" type="hidden" class="form-control">
+                                        <autocomplete
+                                            initial-value=""
+                                            :initial-display="campus"
+                                            placeholder="Type your campus..."
+                                            :source="dataSource1"
+                                            input-class="form-control"
+                                            :request-headers="headers"
+                                            v-on:selected="onSelect1"
+                                            v-on:clear="campus=''"
+                                            >
+                                        </autocomplete>
+                                    </div>
+                
+                                    <div v-if="degreeMatch == 'College' || degreeMatch == 'Graduate Studies'" class="col-xl-12">
+                                        <div class="row">
+                                            <div class="col-xl-12 form-group mb-2" :data-error="errors.college" @click="errors.college=false">
+                                                <label for="college" class="form-label">College <span class="text-danger">*</span></label>
+                                                
+                                                <input v-model="college" name="college" id="college" type="hidden" class="form-control">
+                                                <autocomplete
+                                                    initial-value=""
+                                                    :initial-display="college"
+                                                    placeholder="Type your college..."
+                                                    :source="dataSource2"
+                                                    input-class="form-control"
+                                                    :request-headers="headers"
+                                                    v-on:selected="onSelect2"
+                                                    v-on:clear="college=''"
+                                                    >
+                                                </autocomplete>
+                                            </div>
+                        
+                                            <div class="col-xl-12 form-group mb-2" :data-error="errors.course" @click="errors.course=false">
+                                                <label for="course" class="form-label">Course/Program <span class="text-danger">*</span></label>
+                                                
+                                                <input v-model="course" name="course" id="course" type="hidden" class="form-control">
+                                                <autocomplete
+                                                    initial-value=""
+                                                    :initial-display="course"
+                                                    placeholder="Type your course..."
+                                                    :source="dataSource3"
+                                                    input-class="form-control"
+                                                    :request-headers="headers"
+                                                    v-on:selected="onSelect3"
+                                                    v-on:clear="course=''"
+                                                    >
+                                                </autocomplete>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div v-if="degreeMatch == 'Senior High School'" class="col-xl-12">
+                                        <div class="row">
+                                            <div class="col-xl-12 form-group mb-2" :data-error="errors.track" @click="errors.track=false">
+                                                <label for="track" class="form-label">Track <span class="text-danger">*</span></label>
+                                                <select v-model="track" name="track" id="track" class="form-control">
+                                                    <option value=""></option>
+                                                    <option v-for="t in tracksList" :value="t">${t}</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xl-12 form-group mb-2" :data-error="errors.strand" @click="errors.strand=false">
+                                                <label for="strand" class="form-label">Strand <span class="text-danger">*</span></label>
+                                                <select v-model="strand" name="strand" id="strand" class="form-control">
+                                                    <option value=""></option>
+                                                    <option v-for="s in strandsList" :value="s">${s}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                
+                                    <div class="col-xl-12 mt-2">
+                                        <div class="form-group mb-0 d-flex">
+                                            <input :value="payload" type="hidden" name="payload" />
+                                            <button id="btnSubmit" class="btn btn-success flex-grow-1">${updateText}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                
+                            </form>
+                        </div>
+
+                    </div>
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{app.url}}/js/rest-helpers.js"></script>
+<script src="{{app.url}}/js/vuejs-auto-complete.js"></script>
+<script src="{{app.url}}/js/vue-ph-address.js"></script>
+<script>
+    const ENV = '{{ENV}}';
+    const degreesList = {{degrees|default([], true)|stringify|safe}}
+    const tracksList = {{tracks|default([], true)|stringify|safe}}
+    const strandsList = {{strands|default([], true)|stringify|safe}}
+    const vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        mixins: [
+            VuePhAddress.mixin
+        ],
+        components: {
+            'autocomplete': window["vuejs-autocomplete"]
+        },
+        data: {
+            pending: false,
+            degreesList: degreesList,
+            tracksList: tracksList,
+            strandsList: strandsList,
+            idNumber: `{{educ.idNumber}}`,
+            yearGraduated: `{{educ.yearGraduated}}`,
+            degree: `{{educ.degree}}`,
+            degreeMatch: `{{educ.degree}}`,
+            campus: `{{educ.campus}}`,
+            college: `{{educ.college}}`,
+            course: `{{educ.course}}`,
+            track: `{{educ.track}}`,
+            strand: `{{educ.strand}}`,
+            errors: {
+                idNumber: false,
+                yearGraduated: false,
+                degree: false,
+                campus: false,
+                college: false,
+                course: false,
+                track: false,
+                strand: false,
+            }
+        },
+        computed: {
+            updateText: function updateText() {
+                return this.pending ? 'Updating...' : 'Update';
+            },
+            payload: function payload() {
+                var me = this;
+                return JSON.stringify({
+                    idNumber: me.idNumber,
+                    yearGraduated: me.yearGraduated,
+                    degree: me.degree,
+                    campus: me.campus,
+                    college: me.college,
+                    course: me.course,
+                    track: me.track,
+                    strand: me.strand
+                });
+            }
+        },
+        methods: {
+            checkDegree: function() {
+                this.degreeMatch = this.degree
+            },
+            onSelect1: function(o){
+                this.campus = o.display
+            },
+            dataSource1: function(input) {
+                return '/campuses?s=' + input
+            },
+            onSelect2: function(o){
+                this.college = o.display
+            },
+            dataSource2: function(input) {
+                return '/colleges?s=' + input
+            },
+            onSelect3: function(o){
+                this.course = o.display
+            },
+            dataSource3: function(input) {
+                return '/courses?s=' + input
+            },
+            onSubmit: function(e){
+                try {
+                    const me = this;
+
+                    Object.keys(this.$data).forEach(key => {
+                        if(typeof this[key] === 'string'){
+                            this[key] = this[key].trim()
+                        }
+                    });
+
+                    if(!me.yearGraduated){
+                        me.errors.yearGraduated = true
+                        throw new Error('Year Graduated is required.')
+                    }
+                    if(!me.degree){
+                        me.errors.degree = true
+                        throw new Error('Degree is required.')
+                    }
+                    if(!me.campus){
+                        me.errors.campus = true
+                        throw new Error('Campus is required.')
+                    }
+
+                    if(me.degree == 'College' || me.degree == 'Graduate Studies'){
+                        if(!me.college){
+                            me.errors.college = true
+                            throw new Error('College is required.')
+                        }
+                        if(!me.course){
+                            me.errors.course = true
+                            throw new Error('Course is required.')
+                        }
+                    }
+                    
+                    if(me.degree == 'Senior High School'){
+                        if(!me.track){
+                            me.errors.track = true
+                            throw new Error('Track is required.')
+                        }
+                        if(!me.strand){
+                            me.errors.strand = true
+                            throw new Error('Strand is required.')
+                        }
+                    }
+
+                    me.$nextTick(function() {
+                        me.pending = true;
+                        me.$refs.form.submit();
+                    });
+
+                } catch (err) {
+                    alert(err.message)
+                }
+            }
+        }
+        
+    });
+
+    window.addEventListener("hashchange", function (event) {
+        var currentPath = window.location.hash;
+        if (vApp.page !== currentPath) {
+            vApp.page = currentPath;
+        }
+    }, false);
+</script>
+{% endblock %}
+

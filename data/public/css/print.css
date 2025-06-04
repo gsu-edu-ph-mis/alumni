@@ -1,0 +1,200 @@
+/* See https://stackoverflow.com/questions/49785039/printing-bootstrap-4-html-page-in-chrome-cuts-off-chrome-header-footers */
+@page {
+    size: auto;
+}
+
+body {
+    padding: 25px 0;
+    background: none;
+}
+
+body, pre {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+img {
+    max-width: 100%;
+}
+
+
+.paper h1 {
+    font-size: 26px;
+}
+
+.paper h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+.paper p {
+    margin-bottom: 10px;
+}
+
+.paper > .row {
+    margin-bottom: 25px;
+}
+.paper .row .row {
+    margin-bottom: 10px;
+}
+
+.col-1 > p:first-child,
+.col-2 > p:first-child,
+.col-3 > p:first-child,
+.col-4 > p:first-child,
+.col-5 > p:first-child,
+.col-6 > p:first-child,
+.col-7 > p:first-child,
+.col-8 > p:first-child,
+.col-9 > p:first-child,
+.col-10 > p:first-child,
+.col-11 > p:first-child,
+.col-12 > p:first-child {
+    font-size: 14px;
+}
+
+.pagebreak { 
+    page-break-before: always;
+    page-break-inside: avoid;
+} /* page-break-after works, as well */
+
+
+.fz-7 {
+    font-size: 7px;
+}
+.fz-8 {
+    font-size: 8px;
+}
+.csc-form-dtr {
+    font-family: Arial;
+    font-size: 12px;
+}
+.csc-form-dtr p.template {
+    font-size: 9px;
+    font-style: italic;
+}
+.csc-form-dtr h1 {
+    font-size: 16px;
+    font-weight: bold;
+}
+.csc-form-dtr .separator {
+    font-size: 8px;
+}
+.csc-form-dtr .name {
+    font-size: 16px;
+    font-weight: bold;
+}
+.csc-form-dtr .underline {
+    border-bottom: 1px solid #000;
+    padding-bottom: 3px;
+}
+
+.csc-form-dtr td {
+    font-size: 13px;
+    padding: 1px 0 1px 1px;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.csc-form-dtr .certify {
+    font-size: 12px;
+    font-style: italic;
+}
+
+.table-dtr th {
+    font-size: 12px;
+    text-align: center;
+}
+.table-dtr th,
+.table-dtr td {
+    border-color: #000 !important;
+}
+.table-dtr .am-pm{
+    font-size: 12px;
+    font-weight: bold;
+}
+.table-dtr .subcols th{
+    font-size: 11px;
+    font-weight: bold;
+}
+.table-dtr .total{
+    padding-right: 5px;
+    font-size: 12px;
+}
+.table-dtr .total-num{
+    font-size: 10px;
+}
+.table-sched {
+    width: 100%;
+}
+.table-sched td{
+    border: 0;
+}
+
+.print-show {
+    display: none;
+}
+/* Print Styles */
+@media print {
+    .print-hidden {
+        display: none;
+    }
+    .print-show {
+        display: block;
+    }
+    .text-underline-1 {
+        border-bottom: 1px solid #000000 !important;
+    }
+    .span-full-40 {
+        width: 40%;
+    }
+    .span-full-60 {
+        width: 60%;
+    }
+}  
+
+/* Custom Style */
+/* Text */
+.text-bold {
+    font-weight: 600;
+}
+.text-underline-1 {
+    border-bottom: 2px solid #000000;
+}
+.text-underline-2 {
+    border-bottom: 2px solid #000000;
+}
+.text-line-height {
+    line-height: 18px;
+}
+
+/* Table */
+.table-print-report thead tr th, .table-print-report tbody tr td {
+    border: 1px solid #000000 !important;
+}
+
+/* Badge */
+.list-badge-round-xs {
+    width: 30px; 
+    height: 30px; 
+    display: inline-block; 
+    min-width: 30px; 
+    min-height: 30px; 
+    line-height: 30px; 
+    text-align: center;
+    border: 1px solid #000000;
+}
+.round-nums {
+    background: #ffffff;
+    border-radius: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.v-align-center {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}

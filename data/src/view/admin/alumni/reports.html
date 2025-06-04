@@ -1,0 +1,437 @@
+{% extends "document-report.html" %}
+
+{% block body %}
+<div id="vApp" v-bind:data-pending="pending" class="col-md-12">
+    <div class="bg-white sticky-top">
+        <div class="print-hidden">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <div class="d-flex align-items-start">
+                    <h1 class="h3 ml-2">Alumni Records Report</h1>
+                </div>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group mr-2">
+                        <a href="/admin/alumni-records" class="btn btn-sm btn-outline-danger content-nav-btn px-3">
+                            <span>Back</span>
+                        </a>
+                        <a href="/admin/alumni-records/reports" class="btn btn-sm btn-outline-primary content-nav-btn px-3">
+                            <span>Refresh</span>
+                        </a>
+                        <button type="button" @click="btnPrint" class="btn btn-sm btn-success content-nav-btn px-3">
+                            <svg fill="#000000" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve">
+                                <title>Reports</title>
+                                <rect fill="currentColor" x="5" y="11" width="10" height="9"/>
+                                <path fill="currentColor" d="M19,4h-2V1c0-0.6-0.4-1-1-1H4C3.4,0,3,0.4,3,1v3H1C0.4,4,0,4.4,0,5v10c0,0.6,0.4,1,1,1h3v-2H2V6h16v8h-2v2h3c0.6,0,1-0.4,1-1V5C20,4.4,19.6,4,19,4z M5,2h10v2H5V2z"/>
+                            </svg>
+                            <span>Print</span>
+                        </button>
+                        <button type="button" @click="downloadExcel" class="btn btn-sm btn-primary content-nav-btn pl-2 pr-3">
+                            <svg width="24px" height="24px" viewBox="-5 -5 24 24" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin" class="jam jam-download">
+                                <title>Download</title>
+                                <path fill="currentColor" d='M8 6.641l1.121-1.12a1 1 0 0 1 1.415 1.413L7.707 9.763a.997.997 0 0 1-1.414 0L3.464 6.934A1 1 0 1 1 4.88 5.52L6 6.641V1a1 1 0 1 1 2 0v5.641zM1 12h12a1 1 0 0 1 0 2H1a1 1 0 0 1 0-2z'/>
+                            </svg>
+                            <span>Download CSV</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% include 'parts/flash.html' %}
+        </div>  
+
+        {% include 'parts/document-header.html' %}
+
+        <div class="row print-show">
+            <div class="col-xl-12 my-4">
+                <p class="h3 text-center">
+                    <strong>
+                        <span class="text-underline-2 mr-2">A</span>
+                        <span class="text-underline-2 mr-2">L</span>
+                        <span class="text-underline-2 mr-2">U</span>
+                        <span class="text-underline-2 mr-2">M</span>
+                        <span class="text-underline-2 mr-2">N</span>
+                        <span class="text-underline-2 mr-4">I</span>
+                        <span class="text-underline-2 mr-2">R</span>
+                        <span class="text-underline-2 mr-2">E</span>
+                        <span class="text-underline-2 mr-2">C</span>
+                        <span class="text-underline-2 mr-2">O</span>
+                        <span class="text-underline-2 mr-2">R</span>
+                        <span class="text-underline-2 mr-2">D</span>
+                        <span class="text-underline-2 mr-4">S</span>
+                        <span class="text-underline-2 mr-2">R</span>
+                        <span class="text-underline-2 mr-2">E</span>
+                        <span class="text-underline-2 mr-2">P</span>
+                        <span class="text-underline-2 mr-2">O</span>
+                        <span class="text-underline-2 mr-2">R</span>
+                        <span class="text-underline-2 mr-2">T</span>
+                    </strong>
+                </p>
+            </div>
+
+            <div class="col-xl-12 mb-3">
+                <p class="mb-0 text-line-height">Batch: <strong>{{s1}}</strong></p>
+                <p class="mb-0 text-line-height">Degree: <strong>{{s7}}</strong></p>
+                <p class="mb-0 text-line-height">Campus: <strong>{{s2}}</strong></p>
+                {% if s7 === 'College' or s7 === 'Graduate Studies' %}
+                <p class="mb-0 text-line-height">College: <strong>{{s3}}</strong></p>
+                <p class="mb-0 text-line-height">Course: <strong>{{s4}}</strong></p>
+                {% endif %}
+                {% if s7 === 'Senior High School' %}
+                <p class="mb-0 text-line-height">Track: <strong>{{s5}}</strong></p>
+                <p class="mb-0 text-line-height">Strand: <strong>{{s6}}</strong></p>
+                {% endif %}
+            </div>
+        </div>
+
+        <form ref="form" v-on:submit.prevent="onSubmit" action="/admin/alumni-records/reports" method="get" class="row mb-2 print-hidden">
+            <div class="col-xl-2 form-group mb-2">
+                <input v-model="yearGraduated" name="yearGraduated" type="search" class="form-control rounded-0" id="yearGraduated" placeholder="Type your batch...">
+            </div>
+            
+            <div class="col-xl-2 form-group mb-2">
+                <select v-model="degree" name="degree" id="degree" class="form-control" @change="checkDegree">
+                    <option value="">Select a degree</option>
+                    <option v-for="d in degreesList" :value="d">${d}</option>
+                </select>
+            </div>
+
+            <div class="col-xl-2 form-group mb-2">
+                <input v-model="campus" name="campus" id="campus" type="hidden" class="form-control">
+                <autocomplete
+                    initial-value=""
+                    :initial-display="campus"
+                    placeholder="Type your campus..."
+                    :source="dataSource1"
+                    input-class="form-control"
+                    :request-headers="headers"
+                    v-on:selected="onSelect1"
+                    v-on:clear="campus=''"
+                    >
+                </autocomplete>
+            </div>
+
+            <div v-if="degreeMatch == 'College' || degreeMatch == 'Graduate Studies'" class="col-xl-4">
+                <div class="row">
+                    <div class="col-xl-6 form-group mb-2">
+                        <input v-model="college" name="college" id="college" type="hidden" class="form-control">
+                        <autocomplete
+                            initial-value=""
+                            :initial-display="college"
+                            placeholder="Type your college..."
+                            :source="dataSource2"
+                            input-class="form-control"
+                            :request-headers="headers"
+                            v-on:selected="onSelect2"
+                            v-on:clear="college=''"
+                            >
+                        </autocomplete>
+                    </div>
+                    <div class="col-xl-6 form-group mb-2">
+                        <input v-model="course" name="course" id="course" type="hidden" class="form-control">
+                        <autocomplete
+                            initial-value=""
+                            :initial-display="course"
+                            placeholder="Type your course..."
+                            :source="dataSource3"
+                            input-class="form-control"
+                            :request-headers="headers"
+                            v-on:selected="onSelect3"
+                            v-on:clear="course=''"
+                            >
+                        </autocomplete>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="degreeMatch == 'Senior High School'" class="col-xl-4">
+                <div class="row">
+                    <div class="col-xl-6 form-group mb-2">
+                        <select v-model="track" name="track" id="track" class="form-control">
+                            <option value="">Select a track</option>
+                            <option v-for="t in tracksList" :value="t">${t}</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-6 form-group mb-2">
+                        <select v-model="strand" name="strand" id="strand" class="form-control">
+                            <option value="">Select a strand</option>
+                            <option v-for="s in strandsList" :value="s">${s}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-1 form-group mb-2">
+                <button id="btnSubmit" class="btn btn-success w-100">Filter</button>
+            </div>
+        </form>
+    </div>
+
+    {% if alumni.length <= 0 %}
+        {% if s1 or s2 or s3 or s4 %}
+            <p class="text-center">None found.</p>
+        {% else %}
+            <div class="alert alert-warning" role="alert">Type a value in the text fields above and tap the Filter button to show the search result(s).</div>
+        {% endif %}
+    {% else %}
+        <div v-cloak>
+            <table id="table-report" class="table table-sm table-striped table-print-report">
+                <thead>
+                    <tr>
+                        <th width="10px" class="text-center table-v-align-center">No.</th>
+                        <th class="table-v-align-center">Name</th>
+                        <th width="10px" class="text-center table-v-align-center">Gender</th>
+                        <th width="150px" class="table-v-align-center">Degree</th>
+                        <th width="150px" class="table-v-align-center">Campus</th>
+                        <th width="200px" class="table-v-align-center text-no-wrap">College / Track</th>
+                        <th width="300px" class="table-v-align-center text-no-wrap">Course / Strand</th>
+                        <th width="10px" class="text-center table-v-align-center">Batch</th>
+                        <th width="10px" class="text-center table-v-align-center text-no-wrap"><strong>With Work?</strong></th>
+                        <th width="10px" class="text-center table-v-align-center">Gov't. Service?</th>
+                        <th width="150px" class="table-v-align-center">Position</th>
+                        <th width="150px" class="table-v-align-center">Co. Name</th>
+                        <th width="200px" class="table-v-align-center">Co. Address</th>
+                        <th width="100px" class="text-center table-v-align-center">Length of Service</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for row in alumni %}
+                    <tr>
+                        <td class="text-center">{{loop.index}}</td>
+                        <td class="text-no-wrap">
+                            {{row.lastName}}
+                            {% if row.suffix %}
+                            {{row.suffix}}
+                            {% endif %}
+                            ,
+                            {{row.firstName}}
+                            {% if row.middleName[0] %}
+                            {{row.middleName[0]}}.
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if row.gender === 'M' %}
+                            <span>Male</span>
+                            {% elseif row.gender === 'F' %}
+                            <span>Female</span>
+                            {% else %}
+                            <span>...</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if row.Education[0].degree %}
+                                <span>{{row.Education[0].degree}}</span>
+                            {% else %}
+                                <span>...</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if row.Education[0].campus %}
+                                <span>{{row.Education[0].campus}}</span>
+                            {% else %}
+                                <span>...</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if row.Education[0].degree === 'College' or row.Education[0].degree === 'Graduate Studies' %}
+                                {% if row.Education[0].college %}
+                                    <span>{{row.Education[0].college}}</span>
+                                {% else %}
+                                    <span>...</span>
+                                {% endif %}
+                            {% elseif row.Education[0].degree === 'Senior High School' %}
+                                {% if row.Education[0].track %}
+                                    <span>{{row.Education[0].track}}</span>
+                                {% else %}
+                                    <span>...</span>
+                                {% endif %}
+                            {% else %}
+                                <span>...</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if row.Education[0].degree === 'College' or row.Education[0].degree === 'Graduate Studies' %}
+                                {% if row.Education[0].course %}
+                                    <span>{{row.Education[0].course}}</span>
+                                {% else %}
+                                    <span>...</span>
+                                {% endif %}
+                            {% elseif row.Education[0].degree === 'Senior High School' %}
+                                {% if row.Education[0].strand %}
+                                    <span>{{row.Education[0].strand}}</span>
+                                {% else %}
+                                    <span>...</span>
+                                {% endif %}
+                            {% else %}
+                                <span>...</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if row.Education[0].yearGraduated %}
+                                <span>{{row.Education[0].yearGraduated}}</span>
+                            {% else %}
+                                <span>...</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <strong>
+                                {% if row.Works[0] %}
+                                    <span>Yes</span>
+                                {% else %}
+                                    <span>No</span>
+                                {% endif %}
+                            </strong>
+                        </td>
+                        <td class="text-center">
+                            {% if row.Works[0].govt %}
+                                {% if row.Works[0].govt == 'Yes' %}
+                                    <span>Yes</span>
+                                {% else %}
+                                    <span>No</span>
+                                {% endif %}
+                            {% else %}
+                                <span>...</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if row.Works[0].position %}
+                                <span>{{row.Works[0].position}}</span>
+                            {% else %}
+                                <span>...</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if row.Works[0].companyName %}
+                                <span>{{row.Works[0].companyName}}</span>
+                            {% else %}
+                                <span>...</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if row.Works[0].companyAddress %}
+                                <span>{{row.Works[0].companyAddress}}</span>
+                            {% else %}
+                                <span>...</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if row.Works[0].from %}
+                                <span class="text-no-wrap">{{row.Works[0].from|format_date('MMM DD, YYYY')}}</span>
+                                <br><span> to </span><br>
+                                {% if row.Works[0].to == 'Present' %}
+                                    <span class="text-no-wrap">Present</span>
+                                {% else %}
+                                    <span class="text-no-wrap">{{row.Works[0].to|format_date('MMM DD, YYYY')}}</span>
+                                {% endif %}
+                            {% else %}
+                                <span>...</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+    
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{app.url}}/js/rest-helpers.js"></script>
+<script src="{{app.url}}/js/vuejs-auto-complete.js"></script>
+<script src="{{app.url}}/js/vue-ph-address.js"></script>
+<script src="{{app.url}}/js/xlsx.full.min.js"></script>
+
+<script>
+    const degreesList = {{degrees|default([], true)|stringify|safe}}
+    const tracksList = {{tracks|default([], true)|stringify|safe}}
+    const strandsList = {{strands|default([], true)|stringify|safe}}
+    const vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        mixins: [
+            VuePhAddress.mixin
+        ],
+        components: {
+            'autocomplete': window["vuejs-autocomplete"]
+        },
+        data: {
+            pending: false,
+            degreesList: degreesList,
+            tracksList: tracksList,
+            strandsList: strandsList,
+            degreeMatch: `{{s7}}`,
+            degree: `{{s7}}`,
+            yearGraduated: '{{s1}}',
+            campus: '{{s2}}',
+            college: '{{s3}}',
+            course: '{{s4}}',
+            track: `{{s5}}`,
+            strand: `{{s6}}`,
+        },
+        methods: {
+            downloadExcel() {
+                const xlsx = window.XLSX; // Access the library from the global window object
+                const ws = xlsx.utils.table_to_sheet(document.getElementById('table-report'));
+                const wb = xlsx.utils.book_new();
+                xlsx.utils.book_append_sheet(wb, ws, 'Alumni Data');
+
+                // Get the current date and time
+                const now = new Date();
+                const formattedDate = now.toISOString().slice(0, 10); // e.g., "2023-06-03"
+                const formattedTime = now.toTimeString().slice(0, 8).replace(/:/g, '-'); // e.g., "14-30-00"
+
+                // Construct the filename with date and time
+                const filename = `alumni_data_${formattedDate}_${formattedTime}.xlsx`;
+
+                // Export the workbook
+                xlsx.writeFile(wb, filename);
+            },
+            checkDegree: function() {
+                this.degreeMatch = this.degree
+            },
+            btnPrint: function(){
+                window.print();  
+            },
+            onSelect1: function(o){
+                this.campus = o.display
+            },
+            dataSource1: function(input) {
+                return '/campuses?s=' + input
+            },
+            onSelect2: function(o){
+                this.college = o.display
+            },
+            dataSource2: function(input) {
+                return '/colleges?s=' + input
+            },
+            onSelect3: function(o){
+                this.course = o.display
+            },
+            dataSource3: function(input) {
+                return '/courses?s=' + input
+            },
+            onSubmit: function onSubmit(e){
+                try {
+                    var me = this;
+                    const submitterId = e.submitter.id;
+                    
+                    Object.keys(this.$data).forEach(key => {
+                        if(typeof this[key] === 'string'){
+                            this[key] = this[key].trim()
+                        }
+                    });
+
+                    if (submitterId === 'btnSubmit') {
+                        me.$nextTick(function() {
+                            me.pending = true;
+                            me.$refs.form.submit()
+                        });
+                    }
+                } catch (err) {
+                    alert(err.message)
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+

@@ -1,0 +1,183 @@
+{% extends "document.html" %}
+
+{% block body %}
+<div v-bind:data-pending="pending" class="col-md-12">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-start">
+            <h1 class="h3">Create Account</h1>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <a href="/admin/registrations" class="btn btn-sm btn-outline-primary content-nav-btn">
+                    <svg width="18px" height="18px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+                        <title>Back</title>
+                        <path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"/><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"/>
+                    </svg>
+                    <span>Back</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active content-nav-btn" href="#">
+                    <span>Details</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content p-3">
+        <form ref="form" id="vApp" v-cloak v-on:submit.prevent="onSubmit" action="/admin/registrations/{{approveReg.refNumber}}/approve" method="POST" class="form-default">
+            <input type="hidden" name="acsrf" value="{{acsrf}}">
+            
+            <div class="row">
+                <div class="form-group mb-2 col-xl-6" :data-error="errors.username" @click="errors.username=false">
+                    <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
+                    <input v-model="username" name="username" type="text" class="form-control" id="username" >
+                </div>
+                <div class="form-group mb-2 col-xl-6" :data-error="errors.password" @click="errors.password=false">
+                    <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <input v-model="password" name="password" type="text" class="form-control" id="password" >
+                        <button @click="regen" class="btn btn-outline-secondary ml-2" type="button">Suggest</button>
+                    </div>
+                </div>
+
+                <div class="form-group mb-2 col-xl-3" :data-error="errors.firstName" @click="errors.firstName=false">
+                    <label for="firstName" class="col-form-label">First Name <span class="text-danger">*</span></label>
+                    <input v-model="firstName" name="firstName" type="text" class="form-control" id="firstName">
+                </div>
+                <div class="form-group mb-2 col-xl-3" :data-error="errors.middleName" @click="errors.middleName=false">
+                    <label for="middleName" class="col-form-label">Middle Name</label>
+                    <input v-model="middleName" name="middleName" type="text" class="form-control" id="middleName">
+                </div>
+                <div class="form-group mb-2 col-xl-3" :data-error="errors.lastName" @click="errors.lastName=false">
+                    <label for="lastName" class="col-form-label">Last Name <span class="text-danger">*</span></label>
+                    <input v-model="lastName" name="lastName" type="text" class="form-control" id="lastName">
+                </div>
+                <div class="form-group mb-2 col-xl-3" :data-error="errors.suffix" @click="errors.suffix=false">
+                    <label for="suffix" class="col-form-label">Suffix</label>
+                    <select v-model="suffix" name="suffix" id="suffix" class="form-control">
+                        <option value=""></option>
+                        <option v-for="s in suffixesList" :value="s">${s}</option>
+                    </select>
+                </div>
+                <div class="form-group col-xl-6" :data-error="errors.role" @click="errors.role=false">
+                    <label for="role" class="col-form-label">Role</label>
+                    <select v-model="role" name="role" id="role" class="form-control">
+                        <option value=""></option>
+                        <option v-for="r in rolesList" :value="r.key">${r.name} - ${r.description}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="d-flex flex-row flex-wrap justify-content-center align-items-center">
+                <button id="btnSubmit" class="btn btn-success mb-1 mr-1 content-nav-btn">
+                    <svg width="20px" height="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <title>${createText}</title>
+                        <rect x="0" fill="none" width="24" height="24"/>
+                        <g><path fill="currentColor" d="M21 14v5c0 1.105-.895 2-2 2H5c-1.105 0-2-.895-2-2V5c0-1.105.895-2 2-2h5v2H5v14h14v-5h2z"/><path fill="currentColor" d="M21 7h-4V3h-2v4h-4v2h4v4h2V9h4"/></g></svg>
+                    <span>${createText}</span>    
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{app.url}}/js/rest-helpers.js"></script>
+<script>
+    var ENV = '{{ENV}}';
+    const rolesList = {{roles|default([], true)|stringify|safe}}
+    const suffixesList = {{suffixes|default([], true)|stringify|safe}}
+    const vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        data: {
+            pending: false,
+            rolesList: rolesList,
+            suffixesList: suffixesList,
+            username: '{{username}}',
+            password: '{{password}}',
+            firstName: '{{approveReg.payload.firstName}}',
+            middleName: '{{approveReg.payload.middleName}}',
+            lastName: '{{approveReg.payload.lastName}}',
+            suffix: '{{approveReg.payload.suffix}}',
+            role: '{{approveReg.payload.role}}',
+            errors: {
+                username: false,
+                password: false,
+                firstName: false,
+                middleName: false,
+                lastName: false,
+                suffix: false,
+                role: false,
+            }
+        },
+        computed: {
+            createText: function createText() {
+                return this.pending ? 'Creating...' : 'Create Account';
+            }
+        },
+        methods: {
+            regen: async function(){
+                const me = this
+                let responseJson = await postAsync(`/admin/users/regen`, {
+                    acsrf: `{{acsrf}}`,
+                })
+                me.password = responseJson.data
+            },
+            onSubmit: function(e){
+                try {
+                    const me = this;
+                    const submitterId = e.submitter.id;
+
+                    if (submitterId === 'btnPreview') {
+                        const url = window.location.href.replace(/\/approve$/, `/preview?username=${me.username}&password=${me.password}&isSubmitted=false`);
+
+                        window.open(url, '_blank');
+                    }
+
+                    if (submitterId === 'btnSubmit') {
+                        Object.keys(this.$data).forEach(key => {
+                            if(typeof this[key] === 'string'){
+                                this[key] = this[key].trim()
+                            }
+                        });
+
+                        if(!me.username){
+                            me.errors.username = true
+                            throw new Error('Username is required.')
+                        }
+                        if(!me.password){
+                            me.errors.password = true
+                            throw new Error('Password is required.')
+                        }
+                        if(!me.firstName){
+                            me.errors.firstName = true
+                            throw new Error('First Name is required.')
+                        }
+                        if(!me.lastName){
+                            me.errors.lastName = true
+                            throw new Error('Last Name is required.')
+                        }
+                        if(!me.role){
+                            me.errors.role = true
+                            throw new Error('Role is required.')
+                        }
+                    
+                        me.$nextTick(function() {
+                            me.pending = true;
+                            me.$refs.form.submit();
+                        });
+                    }
+                } catch (err) {
+                    alert(err.message)
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

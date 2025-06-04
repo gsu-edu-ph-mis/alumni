@@ -1,0 +1,160 @@
+{% extends "document.html" %}
+
+{% block body %}
+<div v-bind:data-pending="pending" class="col-md-12">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-start">
+            <h1 class="h3">Users</h1>
+        </div>
+        {% if sessionUser.roles == 'admin' %}
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <a href="/admin/users/create" class="btn btn-sm btn-outline-primary content-nav-btn">
+                    <svg width="18px" height="18px" viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg">
+                        <title>Add</title>
+                        <path fill="currentColor" d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z" fill="#0D0D0D"/>
+                    </svg>
+                    <span>Add</span>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% include 'parts/flash.html' %}  
+
+    {% if users.length <= 0 %}
+        <p>None found. <a href="/admin/users">Go back</a></p>
+    {% else %}
+        <div id="vApp" v-cloak class="row mb-3">
+            <div class="col-xl-6 col-lg-9">
+                <form ref="form" v-on:submit.prevent="onSubmit" action="/admin/users" method="get" class="form-group mb-0">
+                    <div class="toggled-password-group" :data-error="errors.searchKey" @click="errors.searchKey=false">
+                        <input v-model="searchKey" name="searchKey" type="search" class="form-control" id="searchKey" placeholder="Search for Username..." autocomplete="off">
+                        <button class="btn btn-outline-secondary content-nav-btn">
+                            <svg fill="#000000" width="20px" height="20px" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
+                                <title>Search</title>
+                                <path fill="currentColor" d="M49.62,45.27,36.22,32a18.9,18.9,0,1,0-34.1-9.2A18.91,18.91,0,0,0,32,36.27l13.3,13.3a1.45,1.45,0,0,0,2.1,0l2.1-2.1A1.68,1.68,0,0,0,49.62,45.27Zm-28.7-11.5a12.9,12.9,0,1,1,12.9-12.9A12.87,12.87,0,0,1,20.92,33.77Z" fill-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="tab-content pt-3 pb-2 pl-3 pr-3">
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th width="5%" class="text-center">No.</th>
+                            <th width="5%"></th>
+                            <th>Username</th>
+                            <th width="15%">Role</th>
+                            <th width="15%">Created At</th>
+                            <th width="10%" class="text-center">Manage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in users %}
+                        <tr>
+                            <td class="text-center">{{loop.index  + (currentPage - 1) * 100}}</td>
+                            <td class="text-center">
+                                {% if row.active %}
+                                    <span class="list-badge-round-micro bg-success"></span>
+                                {% else %}
+                                    <span class="list-badge-round-micro bg-danger"></span>
+                                {% endif %}
+                            </td>
+                            <td><a href="/admin/users/{{row.id}}">{{row.username}}</a></td>
+                            <td>{{row.roles|capitalize}}</td>
+                            <td class="small">{{row.createdAt|format_date('MMM DD, YYYY hh:mm A')}}</td>
+                            <td class="text-center">
+                                <div class="dropdown">
+                                    <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-sm btn-outline-secondary rounded">...</button> 
+                                    <div class="dropdown-menu">
+                                        <a href="/admin/users/{{row.id}}" class="dropdown-item">Edit</a> 
+                                        <a href="/admin/users/{{row.id}}/isActive" class="dropdown-item">
+                                        {% if row.active %}
+                                            Deactivate
+                                        {% else %}
+                                            Activate
+                                        {% endif %}
+                                        </a> 
+                                        {% if sessionUser.roles == 'admin' %}
+                                        <div class="dropdown-divider"></div> 
+                                        <a href="/admin/users/{{row.id}}/delete" class="dropdown-item text-danger">Delete</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="d-flex flex-row flex-wrap justify-content-between align-items-center mb-2" style="gap: 5px;">
+                    <div class="d-flex flex-row justify-content-center align-items-center text-no-wrap pb-0" style="gap: 5px;">
+                        {% if currentPage > 1 %}
+                            <a href="?page={{ currentPage - 1 }}&searchKey={{ searchKey }}" class="btn btn-sm btn-primary">Previous</a>
+                        {% endif %}
+                        
+                        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+                        
+                        {% if currentPage < totalPages %}
+                            <a href="?page={{ currentPage + 1 }}&searchKey={{ searchKey }}" class="btn btn-sm btn-primary">Next</a>
+                        {% endif %}
+                    </div>
+                    <div class="text-no-wrap">
+                        <span>Max. of 100 rows per page.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    const vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        data: {
+            pending: false,
+            searchKey: '{{searchKey}}',
+            errors: {
+                searchKey: false,
+            }
+        },
+        watch: {
+            searchKey(newValue) {
+                if (newValue === '') {
+                    window.location.href = '/admin/users';
+                }
+            }
+        },
+        methods: {
+            onSubmit: function(){
+                try {
+                    const me = this;
+                    me.searchKey = me.searchKey.trim()
+
+                    if(!me.searchKey){
+                        me.errors.searchKey = true
+                        throw new Error('Search Key is required.')
+                    }
+
+                    me.$nextTick(function() {
+                        me.pending = true;
+                        me.$refs.form.submit()
+                    });
+                } catch (err) {
+                    alert(err.message)
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+

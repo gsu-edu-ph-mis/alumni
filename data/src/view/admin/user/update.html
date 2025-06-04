@@ -1,0 +1,125 @@
+{% extends "document.html" %}
+
+{% block body %}
+<div v-bind:data-pending="pending" class="col-md-12">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-start">
+            <h1 class="h3">Update User</h1>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <a href="/admin/users" class="btn btn-sm btn-outline-primary content-nav-btn">
+                    <svg width="18px" height="18px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+                        <title>Back</title>
+                        <path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"/><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"/>
+                    </svg>
+                    <span>Back</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% include 'parts/flash.html' %}
+    <div>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active content-nav-btn" href="#">
+                    <span>Details</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content p-3">
+        <form ref="form" id="vApp" v-cloak v-on:submit.prevent="onSubmit" action="/admin/users/{{editUser.id}}?_method=patch" method="POST" class="form-default">
+            <input type="hidden" name="acsrf" value="{{acsrf}}">
+            
+            <div class="form-group mb-2" :data-error="errors.username" @click="errors.username=false">
+                <label for="username" class="form-label">Username</label>
+                <input v-model="username" name="username" type="text" class="form-control" id="username" >
+            </div>
+            <div class="form-group mb-2" :data-error="errors.password" @click="errors.password=false">
+                <label for="password" class="form-label">Password</label>
+                <div class="d-flex">
+                    <input placeholder="Leave blank to leave password unchanged. Otherwise click Suggest." v-model="password" name="password" type="text" class="form-control" id="password" >
+                    <button @click="regen" class="btn btn-outline-secondary ml-2" type="button">Suggest</button>
+                </div>
+            </div>
+            <div class="form-group" :data-error="errors.role" @click="errors.role=false">
+                <label for="role" class="form-label">Role</label>
+                <select v-model="role" name="role" id="role" class="form-control">
+                    <option value=""></option>
+                    <option v-for="r in rolesList" :value="r.key">${r.name} - ${r.description}</option>
+                </select>
+            </div>
+            <div class="text-center">
+                <button class="btn btn-success mx-auto content-nav-btn">
+                    <svg width="20px" height="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1">
+                        <title>${updateText}</title>
+                        <path fill="currentColor" d="M20.71,9.29l-6-6a1,1,0,0,0-.32-.21A1.09,1.09,0,0,0,14,3H6A3,3,0,0,0,3,6V18a3,3,0,0,0,3,3H18a3,3,0,0,0,3-3V10A1,1,0,0,0,20.71,9.29ZM9,5h4V7H9Zm6,14H9V16a1,1,0,0,1,1-1h4a1,1,0,0,1,1,1Zm4-1a1,1,0,0,1-1,1H17V16a3,3,0,0,0-3-3H10a3,3,0,0,0-3,3v3H6a1,1,0,0,1-1-1V6A1,1,0,0,1,6,5H7V8A1,1,0,0,0,8,9h6a1,1,0,0,0,1-1V6.41l4,4Z"/></svg>
+                    <span>${updateText}</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{app.url}}/js/rest-helpers.js"></script>
+<script>
+    const rolesList = {{roles|default([], true)|stringify|safe}}
+    const roles = {{editUser.roles|default([], true)|stringify|safe}}
+    const vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        data: {
+            pending: false,
+            rolesList: rolesList,
+            username: '{{editUser.username}}',
+            password: '',
+            role: roles.at(0),
+            errors: {
+                username: false,
+                password: false,
+                role: false,
+            }
+        },
+        computed: {
+            updateText: function updateText() {
+                return this.pending ? 'Updating...' : 'Update';
+            }
+        },
+        methods: {
+            regen: async function(){
+                const me = this
+                let responseJson = await postAsync(`/admin/users/regen`, {
+                    acsrf: `{{acsrf}}`,
+                })
+                me.password = responseJson.data
+            },
+            onSubmit: function(){
+                try {
+                    const me = this;
+
+                    Object.keys(this.$data).forEach(key => {
+                        if(typeof this[key] === 'string'){
+                            this[key] = this[key].trim()
+                        }
+                    });
+
+                    if(!me.username){
+                        me.errors.username = true
+                        throw new Error('Username is required.')
+                    }
+                   
+                    me.$nextTick(function() {
+                        me.pending = true;
+                        me.$refs.form.submit();
+                    });
+                } catch (err) {
+                    alert(err.message)
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "document-public-landing.html" %}
+
+{% block body %}
+<div class="col-md-12">
+    <div class="container">
+        <div class="row mt-md-5 mt-3 mb-md-5 mb-3">
+            <div class="col-lg-8 col-md-10 col-sm-12 ml-auto mr-auto">
+                <div class="row bg-white shadow" style="border-radius: 10px; overflow: hidden;">
+
+                    <div class="col-xl-12">
+                        <div id="vApp" class="row">
+                            <div class="position-relative">
+                                <a href="/login" class="btn btn-md position-absolute cursor-pointer text-no-wrap" style="left:0; top:0; z-index: 2;">
+                                    <svg width="30px" height="30px" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <title>Return to Home</title>
+                                        <path fill="#000000" d="m9.474 5.209s-4.501 4.505-6.254 6.259c-.147.146-.22.338-.22.53s.073.384.22.53c1.752 1.754 6.252 6.257 6.252 6.257.145.145.336.217.527.217.191-.001.383-.074.53-.221.293-.293.294-.766.004-1.057l-4.976-4.976h14.692c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-14.692l4.978-4.979c.289-.289.287-.761-.006-1.054-.147-.147-.339-.221-.53-.221-.191-.001-.38.071-.525.215z" fill-rule="nonzero"/>
+                                    </svg>
+                                </a>
+                            </div>
+
+                            <h1 class="col-md-12 px-4 py-2 mt-4 mb-2 h4 text-center">Thank you <span style="font-weight: 600;">{{firstName}}</span></h1>
+
+                            <div class="col-md-12 px-4 py-2 mb-2">To complete your registration, follow these steps:</div>
+
+                            <div class="col-md-12 reqPendingCon">
+                                <div class="pl-lg-5 pl-2 mb-4">
+                                    <div class="d-flex mb-2">
+                                        <div class="mr-2 round-nums list-badge-round-xs">1</div>
+                                        <div class="v-align-center">Visit the <span class="px-1" style="font-weight: 600;">Alumni Affairs Office</span> and bring a valid ID.</div>
+                                    </div>
+                                    <div class="d-flex mb-2">
+                                        <div class="mr-2 round-nums list-badge-round-xs">2</div>
+                                        <div class="v-align-center">Show your reference number below.</div>
+                                    </div>
+                                    <div class="d-flex mb-2">
+                                        <div class="mr-2 round-nums list-badge-round-xs">3</div>
+                                        <div class="v-align-center">Registration expires after 1 month, and you must re-register afterward.</div>
+                                    </div>
+                                    <div class="d-flex mb-2">
+                                        <div class="mr-2 round-nums list-badge-round-xs">4</div>
+                                        <div class="v-align-center">
+                                            <div class="alert alert-warning" role="alert">
+                                                If you're unable to visit the school, you can request account approval via email at <a href="mailto:alumni@gsu.edu.ph">alumni@gsu.edu.ph</a>. Please attach proof of legitimacy, including your reference number below and a copy of your valid ID.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h6 class="h6 text-center">Ref. No. <span class="h4 cursor-pointer" id="refNo" style="color: #34d19b; font-weight: 600;" @click="copyText">{{refNo}}</span></h6>
+                            </div>
+
+                            <div class="col-xl-12 py-3">
+                                {% include 'parts/for-inquiries.html' %}
+                            </div>
+
+                            <img src="/images/set-business-working-people-cartoon-characters-with-different-gesture-isolated-flat-illustration-min.png" alt="" style="width:100px; position: absolute; right: 10px; bottom: 10px">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    var vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        mixins: [],
+        methods: {
+            copyText: function() {
+                const refNoText = this.$el.querySelector('#refNo');
+                navigator.clipboard.writeText(refNoText.textContent).then(() => {
+                    throw new Error('Reference Number copied to clipboard.');
+                }).catch(err => {
+                    alert(err.message);
+                });
+            }
+        }
+    });
+</script>
+{% endblock %}

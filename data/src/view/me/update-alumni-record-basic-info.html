@@ -1,0 +1,455 @@
+{% extends "document-me.html" %}
+
+{% block body %}
+<div v-bind:data-pending="pending" class="col-md-12 px-0">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-6 col-md-8 ml-auto mr-auto">
+                <div class="row bg-white shadow" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+
+                    <div class="col-lg-12 d-flex flex-row justify-content-between align-items-center py-3" style="background-color: #eeeeee;">
+                        <div class="d-flex flex-row justify-content-center align-items-center">
+                            <a href="/me" class="text-dark text-decor-none mr-2">
+                                <svg width="35px" height="35px" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="m9.474 5.209s-4.501 4.505-6.254 6.259c-.147.146-.22.338-.22.53s.073.384.22.53c1.752 1.754 6.252 6.257 6.252 6.257.145.145.336.217.527.217.191-.001.383-.074.53-.221.293-.293.294-.766.004-1.057l-4.976-4.976h14.692c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-14.692l4.978-4.979c.289-.289.287-.761-.006-1.054-.147-.147-.339-.221-.53-.221-.191-.001-.38.071-.525.215z" fill-rule="nonzero"/></svg>
+                            </a>
+                            <span style="font-weight: 500; font-size: 24px;">Basic Info.</span>
+                        </div>
+                        {% include 'parts/drop-out.html' %}
+                    </div>
+
+                    <div id="vApp" v-cloak class="col-lg-12 px-0">
+                        <div class="col-lg-12 pt-3">
+                            {% include 'parts/flash.html' %}
+                        </div>
+
+                        <div>
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active content-nav-btn" href="#">
+                                        <span>${tabText}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-content p-3" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+                            <form ref="form" v-on:submit.prevent="onSubmit" action="/me/update-alumni-record/{{alumni.refNumber}}/basic-info?_method=patch" method="POST" class="form-default">
+                                <input type="hidden" name="acsrf" value="{{acsrf}}">
+                                
+                                <template v-if="page=='#step1'">
+                                    <div class="row">
+                                        <div class="col-xl-6 form-group mb-2" :data-error="errors.firstName" @click="errors.firstName=false">
+                                            <label for="firstName" class="form-label">First Name <span class="text-danger">*</span></label>
+                                            <input v-model="firstName" name="firstName" type="text" class="form-control" id="firstName">
+                                        </div>
+                
+                                        <div class="col-xl-6 form-group mb-2" :data-error="errors.middleName" @click="errors.middleName=false">
+                                            <label for="middleName" class="form-label">Middle Name</label>
+                                            <input v-model="middleName" name="middleName" type="text" class="form-control" id="middleName">
+                                        </div>
+                
+                                        <div class="col-xl-6 form-group mb-2" :data-error="errors.lastName" @click="errors.lastName=false">
+                                            <label for="lastName" class="form-label">Last Name <span class="text-danger">*</span></label>
+                                            <input v-model="lastName" name="lastName" type="text" class="form-control" id="lastName">
+                                        </div>
+                
+                                        <div class="col-xl-6 form-group mb-2" :data-error="errors.suffix" @click="errors.suffix=false">
+                                            <label for="suffix" class="form-label">Suffix</label>
+                                            <select v-model="suffix" name="suffix" id="suffix" class="form-control">
+                                                <option value=""></option>
+                                                <option v-for="s in suffixesList" :value="s">${s}</option>
+                                            </select>
+                                        </div>
+                
+                                        <div class="col-xl-6 form-group mb-2" :data-error="errors.birthDate" @click="errors.birthDate=false">
+                                            <label for="birthDate" class="form-label">Birth Date <span class="text-danger">*</span></label>
+                                            <input v-model="birthDate" name="birthDate" type="date" class="form-control" id="birthDate">
+                                        </div>
+                
+                                        <div class="col-xl-6 form-group mb-2" :data-error="errors.gender" @click="errors.gender=false">
+                                            <label for="gender" class="form-label">Gender <span class="text-danger">*</span></label>
+                                            <select v-model="gender" name="gender" id="gender" class="form-control">
+                                                <option value=""></option>
+                                                <option value="F">Female</option>
+                                                <option value="M">Male</option>
+                                            </select>
+                                        </div>
+                
+                                        <div class="col-xl-6 form-group mb-2" :data-error="errors.civilStatus" @click="errors.civilStatus=false">
+                                            <label for="civilStatus" class="form-label">Civil Status <span class="text-danger">*</span></label>
+                                            <select v-model="civilStatus" name="civilStatus" id="civilStatus" class="form-control">
+                                                <option value=""></option>
+                                                <option v-for="cs in civilStatusesList" :value="cs">${cs}</option>
+                                            </select>
+                                        </div>
+                
+                                        <div class="col-xl-6 form-group mb-2" :data-error="errors.citizenship" @click="errors.citizenship=false">
+                                            <label for="citizenship" class="form-label">Citizenship <span class="text-danger">*</span></label>
+                                            <input v-model="citizenship" name="citizenship" type="text" class="form-control" id="citizenship">
+                                        </div>
+                
+                                        <div class="col-xl-12 form-group" :data-error="errors.religion" @click="errors.religion=false">
+                                            <label for="religion" class="form-label">Religion <span class="text-danger">*</span></label>
+                                            <input v-model="religion" name="religion" type="text" class="form-control" id="religion">
+                                        </div>
+                
+                                        <div class="col-xl-12">
+                                            <div class="form-group mb-0 d-flex">
+                                                <button id="btnNext" class="btn btn-success flex-grow-1">Next</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                
+                                <template v-if="page=='#step2'">
+                                    <div class="row">
+                                        <div class="col-xl-6 form-group mb-2" :data-error="errors.email" @click="errors.email=false">
+                                            <label for="email" class="form-label">Valid Email</label>
+                                            <input v-model="email" name="email" type="text" class="form-control" id="email">
+                                        </div>
+                                        <div class="col-xl-6 form-group mb-2" :data-error="errors.mobileNumber" @click="errors.mobileNumber=false">
+                                            <label for="mobileNumber" class="form-label">Mobile Number</label>
+                                            <input v-model="mobileNumber" name="mobileNumber" type="text" class="form-control" id="mobileNumber">
+                                        </div>
+                                        <div class="col-xl-12 form-group mb-2" :data-error="errors.fbName" @click="errors.fbName=false">
+                                            <label for="fbName" class="form-label">Facebook/Messenger Name</label>
+                                            <input v-model="fbName" name="fbName" type="text" class="form-control" id="fbName">
+                                        </div>
+                                        <div class="col-xl-12 form-group mb-2" :data-error="errors.presentAddress" @click="errors.presentAddress=false">
+                                            <label for="presentAddress" class="form-label">Present Address</label>
+                                            
+                                            <input v-model="presentAddress" name="presentAddress" id="presentAddress" type="hidden" class="form-control">
+                                            <autocomplete
+                                                initial-value=""
+                                                :initial-display="presentAddress"
+                                                placeholder="Type your barangay and city/municipality..."
+                                                :source="dataSource1"
+                                                input-class="form-control"
+                                                :request-headers="headers"
+                                                v-on:selected="onSelect1"
+                                                v-on:clear="presentAddress=''"
+                                                >
+                                            </autocomplete>
+                                        </div>
+                                        <div class="col-xl-12 form-group" :data-error="errors.permanentAddress" @click="errors.permanentAddress=false">
+                                            <label for="permanentAddress" class="form-label">Permanent Address</label>
+                                            
+                                            <input v-model="permanentAddress" name="permanentAddress" id="permanentAddress" type="hidden" class="form-control">
+                                            <autocomplete
+                                                initial-value=""
+                                                :initial-display="permanentAddress"
+                                                placeholder="Type your barangay and city/municipality..."
+                                                :source="dataSource2"
+                                                input-class="form-control"
+                                                :request-headers="headers"
+                                                v-on:selected="onSelect2"
+                                                v-on:clear="permanentAddress=''"
+                                                >
+                                            </autocomplete>
+                                        </div>
+                
+                                        <div class="col-xl-12">
+                                            <div class="form-group mb-0 d-flex">
+                                                <button id="btnBack" type="button" @click="page='#step1'" class="btn btn-sm btn-light mr-1">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" viewBox="0 0 24 24">
+                                                        <title>Back</title>
+                                                        <path fill="#222"
+                                                            d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
+                                                    </svg>
+                                                </button>
+                                                <button id="btnNext2" class="btn btn-success flex-grow-1">Next</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                
+                                <template v-if="page=='#step3'">
+                                    <div class="row">
+                                        <div class="col-xl-12 form-group mb-2" :data-error="errors.guardianName" @click="errors.guardianName=false">
+                                            <label for="guardianName" class="form-label">Parent/Guardian <span class="text-danger">*</span></label>
+                                            <input v-model="guardianName" @input="updateEmergencyPersonName" name="guardianName" type="text" class="form-control" id="guardianName">
+                                        </div>
+                                        <div class="col-xl-12 form-group mb-2" :data-error="errors.guardianMobileNumber" @click="errors.guardianMobileNumber=false">
+                                            <label for="guardianMobileNumber" class="form-label">Mobile Number</label>
+                                            <input v-model="guardianMobileNumber" name="guardianMobileNumber" type="text" class="form-control" id="guardianMobileNumber">
+                                        </div>
+                                    </div>
+                                    <div class="row pt-4">
+                                        <div class="col-xl-12 d-flex justify-content-end">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="customSwitch1" v-model="isTheSame" @change="toggleParentGuardian">
+                                                <label class="custom-control-label" for="customSwitch1">Same as Parent/Guardian?</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-12 form-group mb-2" :data-error="errors.emergencyPersonName" @click="errors.emergencyPersonName=false">
+                                            <label for="emergencyPersonName" class="form-label">Emergency Person <span class="text-danger">*</span></label>
+                                            <input v-model="emergencyPersonName" @input="updateEmergencyPersonMobileNumber" name="emergencyPersonName" type="text" class="form-control" id="emergencyPersonName" :disabled="(isTheSame || isTheSame == null)">
+                                        </div>
+                                        <div class="col-xl-12 form-group" :data-error="errors.emergencyPersonMobileNumber" @click="errors.emergencyPersonMobileNumber=false">
+                                            <label for="emergencyPersonMobileNumber" class="form-label">Mobile Number</label>
+                                            <input v-model="emergencyPersonMobileNumber" name="emergencyPersonMobileNumber" type="text" class="form-control" id="emergencyPersonMobileNumber" :disabled="(isTheSame || isTheSame == null)">
+                                        </div>
+                
+                                        <div class="col-xl-12">
+                                            <div class="form-group mb-0 d-flex">
+                                                <input :value="payload" type="hidden" name="payload" />
+                                                <button id="btnBack2" type="button" @click="page='#step2'" class="btn btn-sm btn-light mr-1">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" viewBox="0 0 24 24">
+                                                        <title>Back</title>
+                                                        <path fill="#222"
+                                                            d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
+                                                    </svg>
+                                                </button>
+                                                <button id="btnSubmit" class="btn btn-success flex-grow-1">${updateText}</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                                
+                            </form>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{app.url}}/js/rest-helpers.js"></script>
+<script src="{{app.url}}/js/vuejs-auto-complete.js"></script>
+<script src="{{app.url}}/js/vue-ph-address.js"></script>
+<script>
+    const ENV = '{{ENV}}';
+    const civilStatusesList = {{civilStatuses|default([], true)|stringify|safe}}
+    const suffixesList = {{suffixes|default([], true)|stringify|safe}}
+    const vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        mixins: [
+            VuePhAddress.mixin
+        ],
+        components: {
+            'autocomplete': window["vuejs-autocomplete"]
+        },
+        data: {
+            pending: false,
+            isTheSame: '{{alumni.isTheSame}}' === 'true',
+            tabText: 'Personal Details',
+            page: '#step1',
+            civilStatusesList: civilStatusesList,
+            suffixesList: suffixesList,
+            firstName: '{{alumni.firstName}}',
+            middleName: '{{alumni.middleName}}',
+            lastName: '{{alumni.lastName}}',
+            suffix: '{{alumni.suffix}}',
+            birthDate: '{{alumni.birthDate|format_date("YYYY-MM-DD")}}',
+            gender: '{{alumni.gender}}',
+            civilStatus: '{{alumni.civilStatus|default("Single", true)}}',
+            citizenship: '{{alumni.citizenship|default("Filipino", true)}}',
+            religion: '{{alumni.religion}}',
+            email: '{{alumni.email}}',
+            mobileNumber: '{{alumni.mobileNumber}}',
+            fbName: '{{alumni.fbName}}',
+            presentAddress: '{{alumni.presentAddress}}',
+            permanentAddress: '{{alumni.permanentAddress}}',
+            guardianName: '{{alumni.guardianName}}',
+            guardianMobileNumber: '{{alumni.guardianMobileNumber}}',
+            emergencyPersonName: '{{alumni.emergencyPersonName}}',
+            emergencyPersonMobileNumber: '{{alumni.emergencyPersonMobileNumber}}',
+            errors: {
+                firstName: false,
+                middleName: false,
+                lastName: false,
+                suffix: false,
+                birthDate: false,
+                gender: false,
+                civilStatus: false,
+                citizenship: false,
+                religion: false,
+                email: false,
+                mobileNumber: false,
+                fbName: false,
+                presentAddress: false,
+                permanentAddress: false,
+                guardianName: false,
+                guardianMobileNumber: false,
+                emergencyPersonName: false,
+                emergencyPersonMobileNumber: false
+            }
+        },
+        computed: {
+            updateText: function updateText() {
+                return this.pending ? 'Updating...' : 'Update';
+            },
+            payload: function payload() {
+                var me = this;
+                return JSON.stringify({
+                    firstName: me.firstName,
+                    middleName: me.middleName,
+                    lastName: me.lastName,
+                    suffix: me.suffix,
+                    birthDate: me.birthDate,
+                    gender: me.gender,
+                    civilStatus: me.civilStatus,
+                    citizenship: me.citizenship,
+                    religion: me.religion,
+                    email: me.email,
+                    mobileNumber: me.mobileNumber,
+                    fbName: me.fbName,
+                    presentAddress: me.presentAddress,
+                    permanentAddress: me.permanentAddress,
+                    guardianName: me.guardianName,
+                    guardianMobileNumber: me.guardianMobileNumber,
+                    emergencyPersonName: me.emergencyPersonName,
+                    emergencyPersonMobileNumber: me.emergencyPersonMobileNumber,
+                    isTheSame: me.isTheSame
+                });
+            }
+        },
+        watch: {
+            page: function page(newPage, oldPage) {
+                var me = this;
+                if (newPage === '#' || newPage === '') {
+                    me.page = '#step1';
+                } else {
+                    window.location.hash = newPage;
+                }
+                if(me.page != '#step1' && me.page != '#step2' && me.page != '#step3'){
+                    me.page = '#step1'
+                }
+                if(me.page == '#step1'){
+                    me.tabText = 'Personal Details'
+                }
+                if(me.page == '#step2'){
+                    me.tabText = 'Contact Details'
+                }
+                if(me.page == '#step3'){
+                    me.tabText = 'In case of Emergency'
+                }
+            },
+            isTheSame: 'toggleParentGuardian'
+        },
+        mounted: function mounted() {
+            var me = this;
+
+            me.page = window.location.hash || '#step1';
+            if(me.page != ' #step1' && me.page != '#step2' && me.page != '#step3'){
+                me.page = '#step1'
+            }
+        },
+        methods: {
+            updateEmergencyPersonName() {
+                if(this.isTheSame) {
+                    this.emergencyPersonName = this.guardianName;
+                }
+            },
+            updateEmergencyPersonMobileNumber() {
+                if(this.isTheSame) {
+                    this.emergencyPersonMobileNumber = this.guardianMobileNumber;
+                }
+            },
+            toggleParentGuardian() {
+                if (this.isTheSame) {
+                    this.emergencyPersonName = this.guardianName;
+                    this.emergencyPersonMobileNumber = this.guardianMobileNumber;
+                } else {
+                    this.emergencyPersonName = '';
+                    this.emergencyPersonMobileNumber = '';
+                }
+            },
+            onSelect1: function(o){
+                this.presentAddress = o.display
+            },
+            dataSource1: function(input) {
+                return '/address?s=' + input
+            },
+            onSelect2: function(o){
+                this.permanentAddress = o.display
+            },
+            dataSource2: function(input) {
+                return '/address?s=' + input
+            },
+            onSubmit: function(e){
+                try {
+                    const me = this;
+                    const submitterId = e.submitter.id;
+
+                    Object.keys(this.$data).forEach(key => {
+                        if(typeof this[key] === 'string'){
+                            this[key] = this[key].trim()
+                        }
+                    });
+
+                    if (submitterId === 'btnNext') {
+                        if(!me.firstName){
+                            me.errors.firstName = true
+                            throw new Error('First Name is required.')
+                        }
+                        if(!me.lastName){
+                            me.errors.lastName = true
+                            throw new Error('Last Name is required.')
+                        }
+                        if(!me.birthDate){
+                            me.errors.birthDate = true
+                            throw new Error('Birth Date is required.')
+                        }
+                        if(!me.gender){
+                            me.errors.gender = true
+                            throw new Error('Gender is required.')
+                        }
+                        if(!me.civilStatus){
+                            me.errors.civilStatus = true
+                            throw new Error('Civil Status is required.')
+                        }
+                        if(!me.citizenship){
+                            me.errors.citizenship = true
+                            throw new Error('Citizenship is required.')
+                        }
+                        if(!me.religion){
+                            me.errors.religion = true
+                            throw new Error('Religion is required.')
+                        }
+                        me.page = '#step2'
+                    }
+
+                    if (submitterId === 'btnNext2') {
+                        me.page = '#step3'
+                    }
+                   
+                    if (submitterId === 'btnSubmit') {
+                        if(!me.guardianName){
+                            me.errors.guardianName = true
+                            throw new Error('Parent/Guardian is required.')
+                        }
+                        if(!me.emergencyPersonName){
+                            me.errors.emergencyPersonName = true
+                            throw new Error('Emergency Person is required.')
+                        }
+
+                        me.$nextTick(function() {
+                            me.pending = true;
+                            me.$refs.form.submit();
+                        });
+                    }
+                } catch (err) {
+                    alert(err.message)
+                }
+            }
+        }
+        
+    });
+
+    window.addEventListener("hashchange", function (event) {
+        var currentPath = window.location.hash;
+        if (vApp.page !== currentPath) {
+            vApp.page = currentPath;
+        }
+    }, false);
+</script>
+{% endblock %}
+

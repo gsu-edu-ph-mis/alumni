@@ -1,0 +1,81 @@
+{% extends "document-public-landing.html" %}
+
+{% block body %}
+<div class="col-md-12">
+    <div class="container">
+        <div class="row mt-md-5 mt-3 mb-md-5 mb-3">
+            <div id="vApp" v-cloak class="col-lg-5 col-md-7 ml-auto mr-auto">
+                <div style="border-radius: 10px; overflow: hidden;" class="row bg-white shadow">
+                    <form ref="form" v-on:submit.prevent="onSubmit($event)" action="/reset" method="POST" class="col-md-12 px-3 pt-4 pb-3">
+                        <h1 class="h4 text-center mb-4">Password Reset Page</h1>
+                        {% include 'parts/flash.html' %}
+
+                        <div class="form-group" :data-error="errors.username" @click="errors.username=false">
+                            <label for="username" class="col-form-label">Username <span class="text-danger">*</span></label>
+                            <input v-bind:readonly="pending" v-model="username" name="username" type="text" class="form-control" id="username" autocomplete="off" placeholder="E.g. juan.cruz">
+                        </div>
+
+                        <div class="form-group">
+                            <button v-bind:disabled="disabled" class="btn btn-success d-block w-100">${resetText}</button>
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            <p class="mb-0 text-left">No account yet? <a class="text-primary" href="/register">Create here</a></p>
+                            <p class="mb-0 text-left">Already remember your password? <a class="text-primary" href="/login">Login here</a></p>
+                        </div>
+
+                        <hr>
+
+                        {% include 'parts/for-inquiries.html' %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    var ENV = '{{ENV}}';
+    var title = '{{app.title}}';
+    var vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        data: {
+            pending: false,
+            username: '',
+            errors: {
+                username: false,
+            }
+        },
+        computed: {
+            resetText: function(){
+                return this.pending ? 'Resetting...' : 'Reset';
+            },
+            disabled: function(){
+                return (!this.username || this.pending);
+            }
+        },
+        mounted: function mounted() {
+            var me = this;
+            document.title = `Reset | ${title}`;
+        },
+        methods: {
+            onSubmit: function(){
+                var me = this;
+
+                if (!me.username) {
+                    me.errors.username = true;
+                    throw new Error('Username is required.');
+                }
+
+                me.$nextTick(function () {
+                    me.pending = true;
+                    me.$refs.form.submit();
+                });
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "document-email.html" %}
+
+{% block body %}
+<p>Hello <strong>{{firstName}}</strong>,</p>
+
+<p>We received a request to reset the password associated with your account. If you did not make this request, please ignore this email.</p>
+
+<p>To reset your password, please click the link below:</p>
+
+<p style="text-align: center;">
+    <a href="{{resetLink}}" style="border: 1px solid #4caf50; border-radius: 100px; background: #4caf50; color: #fefefe; text-decoration: none; padding: 5px 20px">Reset Password</a>
+</p>
+
+<p>If the link doesn't work, you can copy and paste the following URL into your browser's address bar:</p>
+
+<div style="text-align: center;">
+    <input type="text" style="width: 50%; margin: auto; border: 1px solid #ccc; background: #fefefe; padding: 5px 7px; text-align: center; border-radius: 3px;" readonly value="{{resetLink}}">
+</div>
+
+<p>Please note that this link is valid for 1 hour. After that, you may need to request a new password reset link.</p>
+
+<p>
+    Best regards,<br>
+    The GSU Alumni Affairs
+</p>
+
+{% endblock %}

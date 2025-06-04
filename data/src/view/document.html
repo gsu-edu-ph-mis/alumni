@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="{{app.description}}">
+    <title>{{title}}</title>
+
+    <!-- Bootstrap -->
+    <link rel="shortcut icon" href="{{app.url}}/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Poppins:wght@300;400;700&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="{{app.url}}/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="{{app.url}}/css/style.css" />
+</head>
+
+{% if user %}
+<body class="{% if hideNav == 'true' %}hide-menu{% endif %}">
+{% include 'parts/sidebar.html' %}
+{% else %}
+<body class="hide-menu">
+{% endif %}
+<main role="main" class="main">
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'parts/header-private.html' %}
+        </div>
+        <div class="row">
+            {% block body %}{% endblock %}
+        </div>
+        <div class="row mt-5">
+            {% include 'parts/footer-private.html' %}
+        </div>
+    </div>
+</main>
+{% block scripts %}
+<script src="{{app.url}}/js/jquery.min.js"></script>
+<script src="{{app.url}}/js/popper.min.js"></script>
+<script src="{{app.url}}/js/bootstrap.min.js"></script>
+<script src="{{app.url}}/js/lodash.min.js"></script>
+<script src="{{app.url}}/js/moment.min.js"></script>
+<script src="{{app.url}}/js/axios.min.js"></script>
+{% if ENV === 'dev' %}
+<script src="{{app.url}}/js/vue.js"></script>
+{% else %}
+<script src="{{app.url}}/js/vue.min.js"></script>
+{% endif %}
+<script src="{{app.url}}/js/vuejs-auto-complete.js"></script>
+<!--<script src="{{app.url}}/js/zxcvbn.js"></script>-->
+<script src="{{app.url}}/js/vuelidate.min.js"></script>
+<script src="{{app.url}}/js/validators.min.js"></script>
+<script src="{{app.url}}/js/vuelidate-extend.js"></script>
+<script src="{{app.url}}/js/script-cookies.js"></script>
+<script src="{{app.url}}/js/script.js"></script>
+{% endblock %}
+</html>

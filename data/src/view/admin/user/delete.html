@@ -1,0 +1,53 @@
+{% extends "document.html" %}
+
+{% block body %}
+<div class="col-md-12">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-start">
+            <h1 class="h3">Delete User</h1>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <a href="/admin/users" class="btn btn-sm btn-outline-primary content-nav-btn">
+                    <svg width="18px" height="18px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+                        <title>Back</title>
+                        <path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"/><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"/>
+                    </svg>
+                    <span>Back</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% include 'parts/flash.html' %}
+    <div class="tab-content p-3">
+        <form ref="form" id="vApp" v-cloak v-on:submit.prevent="onSubmit" action="/admin/users/{{deleteUser.id}}?_method=delete" method="POST" class="form-default">
+            <input type="hidden" name="acsrf" value="{{acsrf}}">
+            
+            <div class="alert alert-danger">Delete user "{{deleteUser.username}}" - {{deleteUser.roles|capitalize}}?</div>
+            <div class="text-center">
+                <button class="btn btn-danger mx-auto content-nav-btn">
+                    <svg style="width:22px;height:22px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Delete</title><path fill="currentColor" d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z" /></svg>
+                    <span>Delete</span>    
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    const vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        methods: {
+            onSubmit: function(){
+                const me = this;
+                me.$nextTick(function() {
+                    me.$refs.form.submit()
+                });
+            }
+        }
+    });
+</script>
+{% endblock %}

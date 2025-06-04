@@ -1,0 +1,77 @@
+{% extends "document-public-landing.html" %}
+
+{% block body %}
+<div class="col-md-12">
+    <div class="container">
+        <div class="row mt-md-5 mt-3 mb-md-5 mb-3">
+            <div class="col-lg-5 col-md-7 ml-auto mr-auto">
+                <div style="border-radius: 10px; overflow: hidden;" class="row bg-white shadow">
+                    <div id="vApp" v-cloak class="col-md-12 px-3 pt-4 pb-3">
+
+                        <div class="form-group mb-2">
+                            <div class="position-relative">
+                                <a href="/login?username={{username}}" class="btn btn-sm position-absolute" style="left:0; top:0; z-index: 2;">
+                                    <svg width="30px" height="30px" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <title>Return to Home</title>
+                                        <path fill="#000000" d="m9.474 5.209s-4.501 4.505-6.254 6.259c-.147.146-.22.338-.22.53s.073.384.22.53c1.752 1.754 6.252 6.257 6.252 6.257.145.145.336.217.527.217.191-.001.383-.074.53-.221.293-.293.294-.766.004-1.057l-4.976-4.976h14.692c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-14.692l4.978-4.979c.289-.289.287-.761-.006-1.054-.147-.147-.339-.221-.53-.221-.191-.001-.38.071-.525.215z" fill-rule="nonzero"/>
+                                    </svg>
+                                </a>
+                            </div>
+                            <div class="text-center">
+                                <img class="mb-4" style="width:200px; height:auto;" src="/images/undraw_personal-email_hfut.png" width="400" height="400" alt="Logo">
+                                <h1 class="h6 mb-3">Here's the password we generated for you:</h1>
+                                <h2 class="h4 mb-3 text-center text-mono">
+                                    <input id="password" type="text" class="text-center form-control cursor-pointer" @click="copyText" value="{{password}}" readonly>
+                                </h2>
+                                <p class="text-danger h6 mb-3">
+                                    <em>Please <strong>SAVE A COPY</strong> of it <br>as you will see this only once.</em>
+                                </p>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="form-group mb-0">
+                            <p class="text-center mb-2"><small>For inquiries, please contact:</small></p>
+                            <p class="text-center mb-0" style="font-weight: 600;">Alumni Affairs Office</p>
+                            <div class="d-flex flex-row justify-content-center align-items-center mb-2">
+                                <div class="mr-1 round-nums list-badge-round-nano">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14px" height="14px" viewBox="0 0 24 24">
+                                        <title>Email</title>
+                                        <path fill="currentColor" d="M12 12.713l-11.985-9.713h23.971l-11.986 9.713zm-5.425-1.822l-6.575-5.329v12.501l6.575-7.172zm10.85 0l6.575 7.172v-12.501l-6.575 5.329zm-1.557 1.261l-3.868 3.135-3.868-3.135-8.11 8.848h23.956l-8.11-8.848z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <a href="mailto:alumni@gsu.edu.ph"><small>alumni@gsu.edu.ph</small></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    document.getElementById('password').focus();
+    document.getElementById('password').select();
+
+    var vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        methods: {
+            copyText: function() {
+                const passwordText = this.$el.querySelector('#password');
+                navigator.clipboard.writeText(passwordText.value).then(() => {
+                    throw new Error('Password copied to clipboard.');
+                }).catch(err => {
+                    alert(err.message);
+                });
+            },
+        }
+    });
+</script>
+{% endblock %}
