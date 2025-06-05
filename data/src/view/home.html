@@ -39,6 +39,91 @@ hsla(211, 80%, 33%, 1) 100%) fixed;">
     </div>
 </div>
 
+<div class="col-md-12 bg-white px-0">
+    <div class="container">
+        <div class="row my-4">
+            <div class="col-xl-4 d-flex flex-row justify-content-center align-items-center">
+                <h1 class="h4 font-weight-bold mb-2">Frequently Asked Questions (FAQs)</h1>
+            </div>
+            <div class="col-xl-8">
+                <div class="accordion" id="accordionExample">
+                    <div class="card">
+                      <div class="card-header" id="headingOne">
+                        <h2 class="mb-0">
+                          <button class="btn btn-block text-left" type="button" data-toggle="collapse" data-target="#c2" aria-expanded="true" aria-controls="c2">
+                                What is Alumni Portal?
+                          </button>
+                        </h2>
+                      </div>
+                  
+                      <div id="c2" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                        <div class="card-body border-left-teal">
+                            It is an online platform designed to help the university manage and connect with its graduates.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-header" id="headingThree">
+                        <h2 class="mb-0">
+                          <button class="btn btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#c3" aria-expanded="false" aria-controls="c3">
+                                What do I need to access the Alumni Portal?
+                          </button>
+                        </h2>
+                      </div>
+                      <div id="c3" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                        <div class="card-body border-left-teal">
+                            You need a computer or mobile device, an internet connection, a web brower (E.g. <a href="https://www.google.com/intl/en_ph/chrome/next-steps.html?statcb=1&installdataindex=empty&defaultbrowser=0">Google Chrome</a>, <a href="https://www.microsoft.com/en-us/edge/download?form=MA13FJ">Microsoft Edge</a>, etc.), and a username and password issued by the Alumni Affairs Office.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingThree">
+                          <h2 class="mb-0">
+                            <button class="btn btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#c4" aria-expanded="false" aria-controls="c4">
+                                What if I can't visit the Alumni Affairs Office to complete my registration?
+                            </button>
+                          </h2>
+                        </div>
+                        <div id="c4" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                          <div class="card-body border-left-teal">
+                            You can request account approval via email at <a href="mailto:alumni@gsu.edu.ph">alumni@gsu.edu.ph</a>. Please attach proof of legitimacy, including your reference number issued during registration and a copy of your valid ID.
+                          </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingThree">
+                          <h2 class="mb-0">
+                            <button class="btn btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#c5" aria-expanded="false" aria-controls="c5">
+                                What should I do if I forget my password?
+                            </button>
+                          </h2>
+                        </div>
+                        <div id="c5" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                          <div class="card-body border-left-teal">
+                            On the login page, look for "Forgot your password? <a href="https://alumni.gsu.edu.ph/reset">Reset here</a>," then click the link. Once redirected to the password reset page, enter a valid email address associated to your alumni account and click <span class="text-danger">Reset</span>. You will receive an email with instructions to verify your request. If you do not receive the email, check your spam folder or contact the Alumni Affairs Office for assistance.
+                          </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingTwo">
+                          <h2 class="mb-0">
+                            <button class="btn btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#c6" aria-expanded="false" aria-controls="c6">
+                                  Who developed the Alumni Portal?
+                            </button>
+                          </h2>
+                        </div>
+                        <div id="c6" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                          <div class="card-body border-left-teal">
+                              It was developed through a collaboration between the university’s Alumni Affairs Office and the Information and Communications Technology Unit (ICTU).
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="col-md-12 px-0 for-inquiries" style="min-height: 250px;">
     <div class="container">
         <div class="row mt-4">
@@ -97,4 +182,11 @@ hsla(211, 80%, 33%, 1) 100%) fixed;">
     </div>
 </div>
 
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    $(document).ready(function(){
+    });
+</script>
 {% endblock %}

@@ -285,6 +285,9 @@ div[data-pending="true"]:after {
 .border-dashed-1 {
     border: 1px dashed #AAAAAA;
 }
+.border-left-teal {
+    border-left: 5px solid #34d19b;
+}
 
 /* Button */
 .btn-register {
