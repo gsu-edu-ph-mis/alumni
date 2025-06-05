@@ -81,7 +81,7 @@
             </div>
         </div>
 
-        <form ref="form" v-on:submit.prevent="onSubmit" action="/admin/alumni-records/reports" method="get" class="row mb-2 print-hidden">
+        <form ref="form" v-cloak v-on:submit.prevent="onSubmit" action="/admin/alumni-records/reports" method="get" class="row mb-2 print-hidden">
             <div class="col-xl-2 form-group mb-2">
                 <input v-model="yearGraduated" name="yearGraduated" type="search" class="form-control rounded-0" id="yearGraduated" placeholder="Type your batch...">
             </div>
