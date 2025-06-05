@@ -10,7 +10,8 @@
     const moment = require('moment')
     const socketIo = require('socket.io')
     const methodOverride = require('method-override')
-    const fileUpload = require('express-fileupload');
+    const cors = require('cors')
+    const fileUpload = require('express-fileupload')
 
     // Modules
     const db = require('./db-connect')
@@ -79,6 +80,7 @@
     // Sane titles
     app.use(middlewares.saneTitles);
 
+    app.use(cors());
     app.use(fileUpload());
 
     // Socket IO 
