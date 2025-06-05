@@ -34,9 +34,9 @@
                                     </div>
                                 </div> -->
                                 <div class="d-flex flex-sm-column flex-row justify-content-center align-items-center">
-                                    <button class="btn btn-sm btn-outline-primary rounded mb-2 mr-2" @click="triggerFileInput">Browse</button>
+                                    <button class="btn btn-sm btn-outline-primary rounded mb-2 mr-2" @click="triggerFileInput" :disabled="pending">Browse</button>
                                     <input style="display: none;" type="file" ref="fileInput" @change="onFileChange" />
-                                    <button v-if="selectedFile" @click="onUploadFile" class="btn btn-sm btn-success rounded mb-2 mr-2">${uploadText}</button>
+                                    <button v-if="selectedFile" @click="onUploadFile" :disabled="pending" class="btn btn-sm btn-success rounded mb-2 mr-2">${uploadText}</button>
                                 </div>
                             </div>
                         </div>
