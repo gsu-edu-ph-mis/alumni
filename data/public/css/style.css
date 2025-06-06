@@ -435,7 +435,6 @@ div[data-pending="true"]:after {
 .text-note-sm {
     font-size: 12px;
     line-height: 12px;
-    gap: 5px;
 }
 
 /* Form */

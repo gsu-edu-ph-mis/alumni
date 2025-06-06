@@ -715,9 +715,9 @@ router.get('/admin/alumni-records', middlewares.guardRoute(['read_all_alumni']),
 
         if(searchKey) {
             if (alumni.length <= 0) {
-                flash.error(req, 'alumni', `Found ${alumni.length} request(s) with Name "${searchKey}".`);
+                flash.error(req, 'alumni', `Found ${alumni.length} record(s) with Name "${searchKey}".`);
             } else {
-                flash.ok(req, 'alumni', `Found ${alumni.length} request(s) with Name "${searchKey}".`);
+                flash.ok(req, 'alumni', `Found ${alumni.length} record(s) with Name "${searchKey}".`);
             }
         }
 
