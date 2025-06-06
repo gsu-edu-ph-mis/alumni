@@ -103,11 +103,14 @@
                 
                                 <template v-if="page=='#step2'">
                                     <div class="row">
-                                        <div class="col-xl-6 form-group mb-2" :data-error="errors.email" @click="errors.email=false">
-                                            <label for="email" class="form-label">Valid Email <span class="text-danger">*</span></label>
-                                            <input v-model="email" name="email" type="text" class="form-control" id="email">
+                                        <div class="col-xl-12 form-group mb-2" :data-error="errors.email" @click="errors.email=false">
+                                            <label for="email" class="form-label">Valid Email Address <span class="text-danger">*</span></label>
+                                            <input v-model="email" name="email" type="text" class="form-control mb-1" id="email" autocomplete="off" placeholder="E.g. juancruz@gmail.com">
+                                            <p class="alert alert-warning p-2 mb-0 text-note-sm">
+                                                Use your personal email address that ends with <strong>@gmail.com</strong>
+                                            </p>
                                         </div>
-                                        <div class="col-xl-6 form-group mb-2" :data-error="errors.mobileNumber" @click="errors.mobileNumber=false">
+                                        <div class="col-xl-12 form-group mb-2" :data-error="errors.mobileNumber" @click="errors.mobileNumber=false">
                                             <label for="mobileNumber" class="form-label">Mobile Number</label>
                                             <input v-model="mobileNumber" name="mobileNumber" type="text" class="form-control" id="mobileNumber">
                                         </div>
@@ -418,6 +421,28 @@
                     }
 
                     if (submitterId === 'btnNext2') {
+                        if (!me.email) {
+                            me.errors.email = true;
+                            throw new Error('Email Address is required.');
+                        } else {
+                            me.email = me.email.trim();
+                            
+                            // Regular expression to validate email format
+                            const emailRegex = /^[\w-.\+]+@([\w-]+\.)+[\w-]{2,4}$/g;
+                            
+                            // Check if the email format is valid
+                            if (!emailRegex.test(me.email)) {
+                                me.errors.email = true;
+                                throw new Error('Invalid email address.');
+                            }
+                            
+                            // Check if the email ends with @gsu.edu.ph
+                            if (me.email.endsWith('@gsu.edu.ph')) {
+                                me.errors.email = true;
+                                throw new Error('Use your personal email address instead of the one issued by the school.');
+                            }
+                        }
+
                         me.page = '#step3'
                     }
                    

@@ -432,6 +432,11 @@ div[data-pending="true"]:after {
     background: #2573b5;
     background: linear-gradient(45deg, #2573b5 0%, #2799a3 100%);
 }
+.text-note-sm {
+    font-size: 12px;
+    line-height: 12px;
+    gap: 5px;
+}
 
 /* Form */
 .form-control {

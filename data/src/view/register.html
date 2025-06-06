@@ -38,8 +38,11 @@
 
                     <template v-if="page=='#step2'" class="row">
                         <div class="form-group mb-2" :data-error="errors.email" @click="errors.email=false">
-                            <label for="email" class="form-label">Valid Email <span class="text-danger">*</span></label>
-                            <input v-model="email" name="email" type="text" class="form-control" id="email">
+                            <label for="email" class="form-label">Valid Email Address <span class="text-danger">*</span></label>
+                            <input v-model="email" name="email" type="text" class="form-control mb-1" id="email" autocomplete="off" placeholder="E.g. juancruz@gmail.com">
+                            <p class="alert alert-warning p-2 mb-0 text-note-sm">
+                                Use your personal email address that ends with <strong>@gmail.com</strong>
+                            </p>
                         </div>
                         <div class="form-group" :data-error="errors.role" @click="errors.role=false">
                             <label for="role" class="col-form-label">Role <span class="text-danger">*</span></label>
@@ -166,12 +169,23 @@
                     if (submitterId === 'btnSubmit') {
                         if (!me.email) {
                             me.errors.email = true;
-                            throw new Error('Email is required.');
+                            throw new Error('Email Address is required.');
                         } else {
                             me.email = me.email.trim();
-                            if (/^[\w-\.+]+@([\w-]+\.)+[\w-]{2,4}$/g.test(me.email) === false) {
+                            
+                            // Regular expression to validate email format
+                            const emailRegex = /^[\w-.\+]+@([\w-]+\.)+[\w-]{2,4}$/g;
+                            
+                            // Check if the email format is valid
+                            if (!emailRegex.test(me.email)) {
                                 me.errors.email = true;
-                                throw new Error('Invalid email.');
+                                throw new Error('Invalid email address.');
+                            }
+                            
+                            // Check if the email ends with @gsu.edu.ph
+                            if (me.email.endsWith('@gsu.edu.ph')) {
+                                me.errors.email = true;
+                                throw new Error('Use your personal email address instead of the one issued by the school.');
                             }
                         }
                         if (!me.role) {
