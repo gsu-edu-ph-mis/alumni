@@ -14,6 +14,7 @@ const sharp = require('sharp')
 
 // Modules
 const middlewares = require('../../middlewares')
+const mailer = require('../../mailer')
 const passwordMan = require('../../password-man')
 
 // Router
@@ -549,6 +550,22 @@ router.post('/admin/registrations/:regId/approve', middlewares.antiCsrfCheck, mi
         if (!body.role) {
             throw new Error('Role is required.')
         }
+        if (!body.email) {
+            throw new Error('Email is required.')
+        } else {
+            body.email = body.email.trim()
+            if (/^[\w-\.+]+@([\w-]+\.)+[\w-]{2,4}$/g.test(body.email) === false) {
+                throw new Error('Invalid email.')
+            }
+            let existEmail = await req.app.locals.db.models.Alumni.findOne({
+                where: {
+                    email: body.email
+                }
+            })
+            if (existEmail) {
+                throw new Error(`Email ${existEmail.email} already exists.`)
+            }
+        }
 
         let salt = passwordMan.randomString(16)
         let passwordHash = passwordMan.hashPassword(body.password, salt)
@@ -569,6 +586,7 @@ router.post('/admin/registrations/:regId/approve', middlewares.antiCsrfCheck, mi
             middleName: body.middleName,
             lastName: body.lastName,
             suffix: body.suffix,
+            email: body.email,
             userId: createdUser.id
         })
 
@@ -581,6 +599,17 @@ router.post('/admin/registrations/:regId/approve', middlewares.antiCsrfCheck, mi
                 id: approveReg.id
             }
         });
+
+        let verifyLink = `${CONFIG.app.url}/login`
+        let data = {
+            email: createdAlumni.email,
+            firstName: createdAlumni.firstName,
+            username: body.username,
+            password: body.password,
+            verifyLink: `${verifyLink}`
+        }
+
+        await mailer.sendVerify(data)
         
         flash.ok(req, 'registration', 'Created alumni account.')
         res.redirect(`/admin/registrations/${createdAlumni.refNumber}/preview?username=${body.username}&password=${body.password}&isSubmitted=true`)
@@ -1114,6 +1143,8 @@ router.get('/admin/alumni-records/:almId/edit/work', middlewares.guardRoute(['up
         let data = {
             flash: flash.get(req, 'alumni'),
             employmentStatuses: CONFIG.employmentStatuses,
+            employmentSectors: CONFIG.employmentSectors,
+            employmentLocations: CONFIG.employmentLocations,
             editAlmWork,
             editAlm
         }
@@ -1132,38 +1163,63 @@ router.patch('/admin/alumni-records/:almId/edit/work', middlewares.antiCsrfCheck
         let payload = JSON.parse(req?.body?.payload)
         console.log(payload)
 
+        let employmentStatus = lodash.trim(lodash.get(payload, 'employmentStatus', ''))
+        let employmentSector = lodash.trim(lodash.get(payload, 'employmentSector', ''))
+        let workProgramAlignment = lodash.trim(lodash.get(payload, 'workProgramAlignment', ''))
+        let employmentLocation = lodash.trim(lodash.get(payload, 'employmentLocation', ''))
         let position = lodash.trim(lodash.get(payload, 'position', ''))
         let companyName = lodash.trim(lodash.get(payload, 'companyName', ''))
         let companyAddress = lodash.trim(lodash.get(payload, 'companyAddress', ''))
-        let employmentStatus = lodash.trim(lodash.get(payload, 'employmentStatus', ''))
-        let govt = lodash.trim(lodash.get(payload, 'govt', ''))
         let from = lodash.trim(lodash.get(payload, 'from', ''))
         let to = lodash.trim(lodash.get(payload, 'to', ''))
         let isPresent = lodash.trim(lodash.get(payload, 'isPresent', false))
 
-        if (!position) {
-            throw new Error('Position is required.')
-        }
-        if (!companyName) {
-            throw new Error('Company Name is required.')
-        }
-        if (!companyAddress) {
-            throw new Error('Company Address is required.')
-        }
         if (!employmentStatus) {
             throw new Error('Employment Status is required.')
         }
-        if (!govt) {
-            throw new Error(`Gov't Service is required.`)
+        if(employmentStatus == 'Unemployed') {
+            employmentSector = ''
+            workProgramAlignment = ''
+            employmentLocation = ''
+            position = ''
+            companyName = ''
+            companyAddress = ''
+            from = '00-00-0000'
+            to = ''
+            isPresent = false
         }
-        if (!from) {
-            throw new Error('From is required.')
-        }
-        if (!to) {
-            throw new Error('To is required.')
-        }
-        if (from >= to) {
-            throw new Error('To date should be later than the From date')
+        if(employmentStatus == 'Employed') {
+            if (!employmentSector) {
+                throw new Error('Employment Sector is required.')
+            }
+            if (!workProgramAlignment) {
+                throw new Error('Work Alignment to the Course/Program is required.')
+            }
+            if (!employmentLocation) {
+                throw new Error('Employment Location is required.')
+            }
+            if (employmentLocation == 'Philippines') {
+                if (!companyAddress) {
+                    throw new Error('Company Address is required.')
+                }
+            } else {
+                companyAddress = ''
+            }
+            if (!position) {
+                throw new Error('Position is required.')
+            }
+            if (!companyName) {
+                throw new Error('Company Name is required.')
+            }
+            if (!from) {
+                throw new Error('From is required.')
+            }
+            if (!to) {
+                throw new Error('To is required.')
+            }
+            if (from >= to) {
+                throw new Error('To date should be later than the From date')
+            }
         }
 
         let editAlmWork = await req.app.locals.db.models.Work.findOne({
@@ -1176,11 +1232,13 @@ router.patch('/admin/alumni-records/:almId/edit/work', middlewares.antiCsrfCheck
             let refNo = passwordMan.randomString(16)
             await req.app.locals.db.models.Work.create({
                 refNumber: refNo,
+                employmentStatus: employmentStatus,
+                employmentSector: employmentSector,
+                workProgramAlignment: workProgramAlignment,
+                employmentLocation: employmentLocation,
                 position: position,
                 companyName: companyName,
                 companyAddress: companyAddress,
-                employmentStatus: employmentStatus,
-                govt: govt,
                 from: from,
                 to: to,
                 isPresent: isPresent,
@@ -1188,11 +1246,14 @@ router.patch('/admin/alumni-records/:almId/edit/work', middlewares.antiCsrfCheck
             })
         } else {
             editAlmWork.set({
+                employmentStatus: employmentStatus,
+                employmentSector: employmentSector,
+                workProgramAlignment: workProgramAlignment,
+                employmentLocation: employmentLocation,
                 position: position,
                 companyName: companyName,
                 companyAddress: companyAddress,
                 employmentStatus: employmentStatus,
-                govt: govt,
                 from: from,
                 to: to,
                 isPresent: isPresent

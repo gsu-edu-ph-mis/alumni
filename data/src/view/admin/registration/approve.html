@@ -63,12 +63,16 @@
                         <option v-for="s in suffixesList" :value="s">${s}</option>
                     </select>
                 </div>
-                <div class="form-group col-xl-6" :data-error="errors.role" @click="errors.role=false">
+                <div class="form-group mb-2 col-xl-6" :data-error="errors.role" @click="errors.role=false">
                     <label for="role" class="col-form-label">Role</label>
                     <select v-model="role" name="role" id="role" class="form-control">
                         <option value=""></option>
                         <option v-for="r in rolesList" :value="r.key">${r.name} - ${r.description}</option>
                     </select>
+                </div>
+                <div class="form-group col-xl-6" :data-error="errors.email" @click="errors.email=false">
+                    <label for="email" class="col-form-label">Valid Email <span class="text-danger">*</span></label>
+                    <input v-model="email" name="email" type="text" class="form-control" id="email">
                 </div>
             </div>
 
@@ -105,6 +109,7 @@
             middleName: '{{approveReg.payload.middleName}}',
             lastName: '{{approveReg.payload.lastName}}',
             suffix: '{{approveReg.payload.suffix}}',
+            email: '{{approveReg.payload.email}}',
             role: '{{approveReg.payload.role}}',
             errors: {
                 username: false,
@@ -113,6 +118,7 @@
                 middleName: false,
                 lastName: false,
                 suffix: false,
+                email: false,
                 role: false,
             }
         },
@@ -166,6 +172,16 @@
                         if(!me.role){
                             me.errors.role = true
                             throw new Error('Role is required.')
+                        }
+                        if (!me.email) {
+                            me.errors.email = true;
+                            throw new Error('Email is required.');
+                        } else {
+                            me.email = me.email.trim();
+                            if (/^[\w-\.+]+@([\w-]+\.)+[\w-]{2,4}$/g.test(me.email) === false) {
+                                me.errors.email = true;
+                                throw new Error('Invalid email.');
+                            }
                         }
                     
                         me.$nextTick(function() {

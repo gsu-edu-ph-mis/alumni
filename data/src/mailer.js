@@ -36,5 +36,17 @@ module.exports = {
         }
         let info = await transport2.sendMail(mailOptions)
         return info
+    },
+    sendVerify: async (templateVars) => {
+        templateVars['baseUrl'] = `${CONFIG.app.url}`
+        templateVars['previewText'] = templateVars['previewText'] || `Account credentials...`
+        let mailOptions = {
+            from: `Alumni Portal <alumni-noreply@gsu.edu.ph>`,
+            to: templateVars['email'],
+            subject: `Alumni Portal - ${templateVars['previewText']}`,
+            html: nunjucksEnv.render('emails/verify.html', templateVars),
+        }
+        let info = await transport2.sendMail(mailOptions)
+        return info
     }
 }

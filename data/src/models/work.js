@@ -6,6 +6,18 @@ module.exports = (modelName, sequelize) => {
         refNumber: {
             type: DataTypes.STRING
         },
+        employmentStatus: {
+            type: DataTypes.STRING
+        },
+        employmentSector: {
+            type: DataTypes.STRING
+        },
+        workProgramAlignment: {
+            type: DataTypes.STRING
+        },
+        employmentLocation: {
+            type: DataTypes.STRING
+        },
         position: {
             type: DataTypes.STRING
         },
@@ -13,12 +25,6 @@ module.exports = (modelName, sequelize) => {
             type: DataTypes.STRING
         },
         companyAddress: {
-            type: DataTypes.STRING
-        },
-        employmentStatus: {
-            type: DataTypes.STRING
-        },
-        govt: {
             type: DataTypes.STRING
         },
         from: {

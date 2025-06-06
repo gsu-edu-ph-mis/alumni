@@ -55,7 +55,9 @@ router.get('/login', async (req, res, next) => {
             username: lodash.get(req, 'query.username', ''),
         });
     } catch (err) {
-        next(err);
+        console.error(err)
+        flash.error(req, 'login', err.message);
+        return res.redirect('/login');
     }
 });
 
@@ -147,6 +149,7 @@ router.post('/register', async (req, res, next) => {
         let middleName = lodash.trim(lodash.get(payload, 'middleName', ''))
         let lastName = lodash.trim(lodash.get(payload, 'lastName', ''))
         let suffix = lodash.trim(lodash.get(payload, 'suffix', ''))
+        let email = lodash.trim(lodash.get(payload, 'email', ''))
         let acceptedDataPrivacy = lodash.trim(lodash.get(payload, 'acceptedDataPrivacy'))
 
         if (!firstName) {
@@ -163,9 +166,28 @@ router.post('/register', async (req, res, next) => {
         if (!lastName) {
             throw new Error('Last Name is required.')
         }
+
+        if (!email) {
+            throw new Error('Email is required.')
+        } else {
+            email = email.trim()
+            if (/^[\w-\.+]+@([\w-]+\.)+[\w-]{2,4}$/g.test(email) === false) {
+                throw new Error('Invalid email.')
+            }
+        }
         
         if (!acceptedDataPrivacy) {
             throw new Error('You must have read and accepted the Data Privacy and Consent Form is required.')
+        }
+
+        // Check email availability
+        let existingEmail = await req.app.locals.db.models.Alumni.findOne({
+            where: {
+                email: email
+            }
+        })
+        if (existingEmail) {
+            throw new Error(`Email "${email}" is already registered.`)
         }
 
         // Delete expired
@@ -180,16 +202,13 @@ router.post('/register', async (req, res, next) => {
         // Rate limit creation of unverified accounts
         let unverified = await req.app.locals.db.models.UserVerification.findOne({
             where: { 
-                [Op.and]: [
-                    { payload: { firstName: { [Op.like]: `%${firstName}%` } } },
-                    { payload: { middleName: { [Op.like]: `%${middleName}%` } } },
-                    { payload: { lastName: { [Op.like]: `%${lastName}%` } } },
-                    { payload: { suffix: { [Op.like]: `%${suffix}%` } } }
-                ]
+                payload: { 
+                    email: email
+                }
             } 
         })
         if (unverified) {
-            throw new Error(`You still have a pending account registration. Please visit the Alumni Affiars Office to verify your account.`)
+            throw new Error(`You still have a pending registration. Please wait patiently while the Alumni Affairs Office verifies your request.`)
         }
 
         let refNo = await passwordMan.randomEightDigit()
@@ -198,6 +217,7 @@ router.post('/register', async (req, res, next) => {
             middleName: middleName,
             lastName: lastName,
             suffix: suffix,
+            email: email,
             role: 'alumni',
             acceptedDataPrivacy: acceptedDataPrivacy,
         }
@@ -210,7 +230,7 @@ router.post('/register', async (req, res, next) => {
             expiredAt: momentNow.clone().add(30, 'days').toDate(),
         })
 
-        res.redirect(`/register-pending?ref=${refNo}&firstName=${firstName}`)
+        res.redirect(`/register-pending?ref=${refNo}&firstName=${firstName}&email=${email}`)
     } catch (err) {
         console.error(err)
         flash.error(req, 'register', err.message)
@@ -222,6 +242,7 @@ router.get('/register-pending', async (req, res, next) => {
     try {
         const refNo = req.query.ref || '';
         const firstName = req.query.firstName || '';
+        const email = req.query.email || '';
 
         const existingRefNo = await req.app.locals.db.models.UserVerification.findOne({
              where: { 
@@ -235,6 +256,7 @@ router.get('/register-pending', async (req, res, next) => {
         res.render('register-pending.html', {
             refNo,
             firstName,
+            email,
         });
     } catch (err) {
         console.error(err)

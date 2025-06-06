@@ -83,13 +83,18 @@
     "Widowed"
   ],
   "employmentStatuses": [
-    "Permanent",
-    "Contractual",
-    "Casual",
-    "Temporary",
-    "Probationary",
-    "On-the-job Trainee",
-    "Others"
+    "Employed",
+    "Unemployed",
+    "Self-Employed"
+  ],
+  "employmentSectors": [
+    "Government",
+    "Private",
+    "Entrepreneurial/Freelance"
+  ],
+  "employmentLocations": [
+    "Philippines",
+    "Abroad"
   ],
   "degrees": [
     "High School",

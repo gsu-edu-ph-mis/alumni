@@ -180,11 +180,13 @@
                         <th width="10px" class="text-center table-v-align-center">Gender</th>
                         <th width="150px" class="table-v-align-center">Degree</th>
                         <th width="150px" class="table-v-align-center">Campus</th>
-                        <th width="200px" class="table-v-align-center text-no-wrap">College / Track</th>
-                        <th width="300px" class="table-v-align-center text-no-wrap">Course / Strand</th>
+                        <th width="200px" class="table-v-align-center">College / Track</th>
+                        <th width="300px" class="table-v-align-center">Course / Strand</th>
                         <th width="10px" class="text-center table-v-align-center">Batch</th>
-                        <th width="10px" class="text-center table-v-align-center text-no-wrap"><strong>With Work?</strong></th>
-                        <th width="10px" class="text-center table-v-align-center">Gov't. Service?</th>
+                        <th width="10px" class="text-center table-v-align-center">Emp. Status</th>
+                        <th width="10px" class="text-center table-v-align-center">Emp. Sector</th>
+                        <th width="10px" class="text-center table-v-align-center">Emp. Location</th>
+                        <th width="10px" class="text-center table-v-align-center">Course Alignment</th>
                         <th width="150px" class="table-v-align-center">Position</th>
                         <th width="150px" class="table-v-align-center">Co. Name</th>
                         <th width="200px" class="table-v-align-center">Co. Address</th>
@@ -270,22 +272,30 @@
                                 <span>...</span>
                             {% endif %}
                         </td>
-                        <td class="text-center">
-                            <strong>
-                                {% if row.Works[0] %}
-                                    <span>Yes</span>
-                                {% else %}
-                                    <span>No</span>
-                                {% endif %}
-                            </strong>
+                        <td>
+                            {% if row.Works[0].employmentStatus %}
+                                <span>{{row.Works[0].employmentStatus}}</span>
+                            {% else %}
+                                <span>...</span>
+                            {% endif %}
                         </td>
-                        <td class="text-center">
-                            {% if row.Works[0].govt %}
-                                {% if row.Works[0].govt == 'Yes' %}
-                                    <span>Yes</span>
-                                {% else %}
-                                    <span>No</span>
-                                {% endif %}
+                        <td>
+                            {% if row.Works[0].employmentSector %}
+                                <span>{{row.Works[0].employmentSector}}</span>
+                            {% else %}
+                                <span>...</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if row.Works[0].employmentLocation %}
+                                <span>{{row.Works[0].employmentLocation}}</span>
+                            {% else %}
+                                <span>...</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if row.Works[0].workProgramAlignment %}
+                                <span>{{row.Works[0].workProgramAlignment}}</span>
                             {% else %}
                                 <span>...</span>
                             {% endif %}

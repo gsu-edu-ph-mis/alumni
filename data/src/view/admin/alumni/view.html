@@ -376,6 +376,48 @@
                     <template v-if="page=='#content3'" class="row">
                         <div class="col-xl-6 pr-xl-5 pr-4">
                             <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Employment Status</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if work.employmentStatus %}
+                                        <span>{{work.employmentStatus}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Employment Sector</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if work.employmentSector %}
+                                        <span>{{work.employmentSector}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Employment Location</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if work.employmentLocation %}
+                                        <span>{{work.employmentLocation}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Work Alignment to the Course/Program</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if work.workProgramAlignment %}
+                                        <span>{{work.workProgramAlignment}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 pr-xl-5 pr-4">
+                            <div class="row mb-2">
                                 <div class="col-4 text-right v-align-center-right"><b>Position</b></div>
                                 <div class="col-8 bg-light-gray rounded py-2">
                                     {% if work.position %}
@@ -404,28 +446,6 @@
                                             {% endif %}
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-right v-align-center-right"><b>Gov't. Service</b></div>
-                                <div class="col-8 bg-light-gray rounded py-2">
-                                    {% if work.govt %}
-                                        <span>{{work.govt}}</span>
-                                    {% else %}
-                                        <span>...</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-6 pr-xl-5 pr-4">
-                            <div class="row mb-2">
-                                <div class="col-4 text-right v-align-center-right"><b>Employment Status</b></div>
-                                <div class="col-8 bg-light-gray rounded py-2">
-                                    {% if work.employmentStatus %}
-                                        <span>{{work.employmentStatus}}</span>
-                                    {% else %}
-                                        <span>...</span>
-                                    {% endif %}
                                 </div>
                             </div>
                             <div class="row mb-2">

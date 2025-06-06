@@ -337,6 +337,8 @@ router.get('/me/update-alumni-record/work', middlewares.guardRoute(['read_own_re
         let data = {
             flash: flash.get(req, 'work'),
             employmentStatuses: CONFIG.employmentStatuses,
+            employmentSectors: CONFIG.employmentSectors,
+            employmentLocations: CONFIG.employmentLocations,
             alumni,
             work
         }
@@ -353,39 +355,63 @@ router.patch('/me/update-alumni-record/:almId/work', middlewares.antiCsrfCheck, 
         let payload = JSON.parse(req?.body?.payload)
         console.log(payload)
 
+        let employmentStatus = lodash.trim(lodash.get(payload, 'employmentStatus', ''))
+        let employmentSector = lodash.trim(lodash.get(payload, 'employmentSector', ''))
+        let workProgramAlignment = lodash.trim(lodash.get(payload, 'workProgramAlignment', ''))
+        let employmentLocation = lodash.trim(lodash.get(payload, 'employmentLocation', ''))
         let position = lodash.trim(lodash.get(payload, 'position', ''))
         let companyName = lodash.trim(lodash.get(payload, 'companyName', ''))
         let companyAddress = lodash.trim(lodash.get(payload, 'companyAddress', ''))
-        let employmentStatus = lodash.trim(lodash.get(payload, 'employmentStatus', ''))
-        let govt = lodash.trim(lodash.get(payload, 'govt', ''))
         let from = lodash.trim(lodash.get(payload, 'from', ''))
         let to = lodash.trim(lodash.get(payload, 'to', ''))
         let isPresent = lodash.trim(lodash.get(payload, 'isPresent', false))
 
-        if (!position) {
-            throw new Error('Position is required.')
-        }
-        if (!companyName) {
-            throw new Error('Company Name is required.')
-        }
-        if (!companyAddress) {
-            throw new Error('Company Address is required.')
-        }
         if (!employmentStatus) {
             throw new Error('Employment Status is required.')
         }
-        if (!govt) {
-            throw new Error(`Gov't Service is required.`)
+        if(employmentStatus == 'Unemployed') {
+            employmentSector = ''
+            workProgramAlignment = ''
+            employmentLocation = ''
+            position = ''
+            companyName = ''
+            companyAddress = ''
+            from = '00-00-0000'
+            to = ''
+            isPresent = false
         }
-        if (!from) {
-            throw new Error('From is required.')
-        }
-        if (!to) {
-            throw new Error('To is required.')
-        }
-
-        if (from >= to) {
-            throw new Error('To date should be later than the From date')
+        if(employmentStatus == 'Employed') {
+            if (!employmentSector) {
+                throw new Error('Employment Sector is required.')
+            }
+            if (!workProgramAlignment) {
+                throw new Error('Work Alignment to the Course/Program is required.')
+            }
+            if (!employmentLocation) {
+                throw new Error('Employment Location is required.')
+            }
+            if (employmentLocation == 'Philippines') {
+                if (!companyAddress) {
+                    throw new Error('Company Address is required.')
+                }
+            } else {
+                companyAddress = ''
+            }
+            if (!position) {
+                throw new Error('Position is required.')
+            }
+            if (!companyName) {
+                throw new Error('Company Name is required.')
+            }
+            if (!from) {
+                throw new Error('From is required.')
+            }
+            if (!to) {
+                throw new Error('To is required.')
+            }
+            if (from >= to) {
+                throw new Error('To date should be later than the From date')
+            }
         }
 
         let editAlmWork = await req.app.locals.db.models.Work.findOne({
@@ -398,11 +424,13 @@ router.patch('/me/update-alumni-record/:almId/work', middlewares.antiCsrfCheck, 
             let refNo = passwordMan.randomString(16)
             await req.app.locals.db.models.Work.create({
                 refNumber: refNo,
+                employmentStatus: employmentStatus,
+                employmentSector: employmentSector,
+                workProgramAlignment: workProgramAlignment,
+                employmentLocation: employmentLocation,
                 position: position,
                 companyName: companyName,
                 companyAddress: companyAddress,
-                employmentStatus: employmentStatus,
-                govt: govt,
                 from: from,
                 to: to,
                 isPresent: isPresent,
@@ -410,11 +438,13 @@ router.patch('/me/update-alumni-record/:almId/work', middlewares.antiCsrfCheck, 
             })
         } else {
             editAlmWork.set({
+                employmentStatus: employmentStatus,
+                employmentSector: employmentSector,
+                workProgramAlignment: workProgramAlignment,
+                employmentLocation: employmentLocation,
                 position: position,
                 companyName: companyName,
                 companyAddress: companyAddress,
-                employmentStatus: employmentStatus,
-                govt: govt,
                 from: from,
                 to: to,
                 isPresent: isPresent

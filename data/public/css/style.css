@@ -258,7 +258,7 @@ div[data-pending="true"]:after {
     width: 250px;
 }
 .reqPendingCon {
-    min-height: 380px;
+    min-height: 280px;
 }
 .line-height-1 {
     line-height: 15px;
@@ -312,7 +312,7 @@ div[data-pending="true"]:after {
         margin-top: 10px;
     }
     .reqPendingCon {
-        min-height: 425px;
+        min-height: 320px;
     }
 }
 @media screen and (max-width: 1199px) {

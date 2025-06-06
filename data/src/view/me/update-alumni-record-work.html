@@ -37,54 +37,67 @@
                                 <input type="hidden" name="acsrf" value="{{acsrf}}">
                 
                                 <div class="row">
-                                    <div class="col-xl-12 form-group mb-0">
-                                        <div class="alert alert-warning" role="alert">Leave the form blank if you are not yet able to work.</div>
-                                    </div>
-
-                                    <div class="col-xl-12 form-group mb-2" :data-error="errors.position" @click="errors.position=false">
-                                        <label for="position" class="form-label">Position <span class="text-danger">*</span></label>
-                                        <input v-model="position" name="position" type="text" class="form-control" id="position">
-                                    </div>
-                                    <div class="col-xl-12 form-group mb-2" :data-error="errors.companyName" @click="errors.companyName=false">
-                                        <label for="companyName" class="form-label">Company Name <span class="text-danger">*</span></label>
-                                        <input v-model="companyName" name="companyName" type="text" class="form-control" id="companyName">
-                                    </div>
-                                    <div class="col-xl-12 form-group mb-2" :data-error="errors.companyAddress" @click="errors.companyAddress=false">
-                                        <label for="companyAddress" class="form-label">Company Address <span class="text-danger">*</span></label>
-                                        
-                                        <input v-model="companyAddress" name="companyAddress" id="companyAddress" type="hidden" class="form-control">
-                                        <autocomplete
-                                            initial-value=""
-                                            :initial-display="companyAddress"
-                                            placeholder="Type your company address..."
-                                            :source="dataSource1"
-                                            input-class="form-control"
-                                            :request-headers="headers"
-                                            v-on:selected="onSelect1"
-                                            v-on:clear="companyAddress=''"
-                                            >
-                                        </autocomplete>
-                                    </div>
                                     <div class="col-xl-6 form-group mb-2" :data-error="errors.employmentStatus" @click="errors.employmentStatus=false">
                                         <label for="employmentStatus" class="form-label">Employment Status <span class="text-danger">*</span></label>
-                                        <select v-model="employmentStatus" name="employmentStatus" id="employmentStatus" class="form-control">
+                                        <select v-model="employmentStatus" name="employmentStatus" id="employmentStatus" class="form-control" @change="checkEmpStat">
                                             <option value=""></option>
                                             <option v-for="s in employmentStatusesList" :value="s">${s}</option>
                                         </select>
                                     </div>
-                                    <div class="col-xl-6 form-group mb-2" :data-error="errors.govt" @click="errors.govt=false">
-                                        <label for="govt" class="form-label">Gov't Service? <span class="text-danger">*</span></label>
-                                        <select v-model="govt" name="govt" id="govt" class="form-control">
+                                    <div v-if="empStat == 'Employed'" class="col-xl-6 form-group mb-2" :data-error="errors.employmentSector" @click="errors.employmentSector=false">
+                                        <label for="employmentSector" class="form-label">Employment Sector <span class="text-danger">*</span></label>
+                                        <select v-model="employmentSector" name="employmentSector" id="employmentSector" class="form-control">
+                                            <option value=""></option>
+                                            <option v-for="ss in employmentSectorsList" :value="ss">${ss}</option>
+                                        </select>
+                                    </div>
+                                    <div v-if="empStat == 'Employed'" class="col-xl-12 form-group mb-2" :data-error="errors.employmentLocation" @click="errors.employmentLocation=false">
+                                        <label for="employmentLocation" class="form-label">Employment Location <span class="text-danger">*</span></label>
+                                        <select v-model="employmentLocation" name="employmentLocation" id="employmentLocation" class="form-control" @change="checkEmpLoc">
+                                            <option value=""></option>
+                                            <option v-for="sl in employmentLocationsList" :value="sl">${sl}</option>
+                                        </select>
+                                    </div>
+                                    <div v-if="empStat == 'Employed'" class="col-xl-12 form-group mb-2" :data-error="errors.workProgramAlignment" @click="errors.workProgramAlignment=false">
+                                        <label for="workProgramAlignment" class="form-label">Work Alignment to the Course/Program <span class="text-danger">*</span></label>
+                                        <select v-model="workProgramAlignment" name="workProgramAlignment" id="workProgramAlignment" class="form-control">
                                             <option value=""></option>
                                             <option value="Yes">Yes</option>
                                             <option value="No">No</option>
                                         </select>
                                     </div>
-                                    <div class="col-xl-6 form-group mb-2" :data-error="errors.from" @click="errors.from=false">
+                                    <div v-if="empStat == 'Employed'" class="col-xl-6 form-group mb-2" :data-error="errors.position" @click="errors.position=false">
+                                        <label for="position" class="form-label">Position <span class="text-danger">*</span></label>
+                                        <input v-model="position" name="position" type="text" class="form-control" id="position">
+                                    </div>
+                                    <div v-if="empStat == 'Employed'" class="col-xl-6 form-group mb-2" :data-error="errors.companyName" @click="errors.companyName=false">
+                                        <label for="companyName" class="form-label">Company Name <span class="text-danger">*</span></label>
+                                        <input v-model="companyName" name="companyName" type="text" class="form-control" id="companyName">
+                                    </div>
+                                    <div v-if="empStat == 'Employed'" class="col-xl-12 form-group mb-2">
+                                        <div class="row">
+                                            <div v-if="empLoc == 'Philippines'" class="col-xl-12 form-group mb-2" :data-error="errors.companyAddress" @click="errors.companyAddress=false">
+                                                <label for="companyAddress" class="form-label">Company Address </label>
+                                                <input v-model="companyAddress" name="companyAddress" id="companyAddress" type="hidden" class="form-control">
+                                                <autocomplete
+                                                    initial-value=""
+                                                    :initial-display="companyAddress"
+                                                    placeholder="Type your company address..."
+                                                    :source="dataSource1"
+                                                    input-class="form-control"
+                                                    :request-headers="headers"
+                                                    v-on:selected="onSelect1"
+                                                    v-on:clear="companyAddress=''"
+                                                    >
+                                                </autocomplete>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-if="empStat == 'Employed'" class="col-xl-6 form-group mb-2" :data-error="errors.from" @click="errors.from=false">
                                         <label for="from" class="form-label">From <span class="text-danger">*</span></label>
                                         <input v-model="from" name="from" type="date" class="form-control" id="from">
                                     </div>
-                                    <div class="col-xl-6 form-group" :data-error="errors.to" @click="errors.to=false">
+                                    <div v-if="empStat == 'Employed'" class="col-xl-6 form-group" :data-error="errors.to" @click="errors.to=false">
                                         <div class="d-flex justify-content-between">
                                             <label for="to" class="form-label">To <span class="text-danger">*</span></label>
                                             <div class="custom-control custom-switch">
@@ -124,6 +137,8 @@
 <script>
     const ENV = '{{ENV}}';
     const employmentStatusesList = {{employmentStatuses|default([], true)|stringify|safe}}
+    const employmentSectorsList = {{employmentSectors|default([], true)|stringify|safe}}
+    const employmentLocationsList = {{employmentLocations|default([], true)|stringify|safe}}
     const vApp = new Vue({
         el: '#vApp',
         delimiters: ["${", "}"],
@@ -137,19 +152,28 @@
             pending: false,
             isPresent: '{{work.isPresent}}' === 'true',
             employmentStatusesList: employmentStatusesList,
+            employmentSectorsList: employmentSectorsList,
+            employmentLocationsList: employmentLocationsList,
+            empStat: '{{work.employmentStatus}}',
+            empLoc: '{{work.employmentLocation}}',
+            employmentStatus: '{{work.employmentStatus}}',
+            employmentSector: '{{work.employmentSector}}',
+            employmentLocation: '{{work.employmentLocation}}',
+            workProgramAlignment: '{{work.workProgramAlignment}}',
             position: `{{work.position}}`,
             companyName: `{{work.companyName}}`,
             companyAddress: `{{work.companyAddress}}`,
             employmentStatus: `{{work.employmentStatus}}`,
-            govt: `{{work.govt}}`,
             from: `{{work.from|format_date('YYYY-MM-DD')}}`,
             to: `{{work.to}}`,
             errors: {
+                employmentStatus: false,
+                employmentSector: false,
+                employmentLocation: false,
+                workProgramAlignment: false,
                 position: false,
                 companyName: false,
                 companyAddress: false,
-                employmentStatus: false,
-                govt: false,
                 from: false,
                 to: false
             }
@@ -164,11 +188,13 @@
             payload: function payload() {
                 var me = this;
                 return JSON.stringify({
+                    employmentStatus: me.employmentStatus,
+                    employmentSector: me.employmentSector,
+                    employmentLocation: me.employmentLocation,
+                    workProgramAlignment: me.workProgramAlignment,
                     position: me.position,
                     companyName: me.companyName,
                     companyAddress: me.companyAddress,
-                    employmentStatus: me.employmentStatus,
-                    govt: me.govt,
                     from: me.from,
                     to: me.to,
                     isPresent: me.isPresent
@@ -176,6 +202,12 @@
             }
         },
         methods: {
+            checkEmpLoc: function() {
+                this.empLoc = this.employmentLocation
+            },
+            checkEmpStat: function() {
+                this.empStat = this.employmentStatus
+            },
             togglePresent() {
                 if (this.isPresent) {
                     this.to = 'Present'
@@ -198,35 +230,6 @@
                             this[key] = this[key].trim()
                         }
                     });
-
-                    if(!me.position){
-                        me.errors.position = true
-                        throw new Error('Position is required.')
-                    }
-                    if(!me.companyName){
-                        me.errors.companyName = true
-                        throw new Error('Company Name is required.')
-                    }
-                    if(!me.companyAddress){
-                        me.errors.companyAddress = true
-                        throw new Error('Company Address is required.')
-                    }
-                    if(!me.employmentStatus){
-                        me.errors.employmentStatus = true
-                        throw new Error('Employment Status is required.')
-                    }
-                    if(!me.govt){
-                        me.errors.govt = true
-                        throw new Error(`Gov't Service is required.`)
-                    }
-                    if(!me.from){
-                        me.errors.from = true
-                        throw new Error('From is required.')
-                    }
-                    if(!me.to){
-                        me.errors.to = true
-                        throw new Error('To is required.')
-                    }
 
                     me.$nextTick(function() {
                         me.pending = true;
