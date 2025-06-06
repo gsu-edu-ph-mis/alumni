@@ -288,14 +288,6 @@
             <table class="table table-sm table-bordered table-print-report">
                 <tbody>
                     <tr>
-                        <td width="20%" class="text-right text-bold">Position</td>
-                        <td width="30%" class="text-center">
-                            {% if work.position %}
-                                <span>{{work.position}}</span>
-                            {% else %}
-                                <span>...</span>
-                            {% endif %}
-                        </td>
                         <td width="20%" class="text-right text-bold">Employment Status</td>
                         <td width="30%" class="text-center">
                             {% if work.employmentStatus %}
@@ -304,8 +296,42 @@
                                 <span>...</span>
                             {% endif %}
                         </td>
+                        <td width="20%" class="text-right text-bold">Employment Sector</td>
+                        <td width="30%" class="text-center">
+                            {% if work.employmentSector %}
+                                <span>{{work.employmentSector}}</span>
+                            {% else %}
+                                <span>...</span>
+                            {% endif %}
+                        </td>
                     </tr>
                     <tr>
+                        <td width="20%" class="text-right text-bold">Employment Location</td>
+                        <td width="30%" class="text-center">
+                            {% if work.employmentLocation %}
+                                <span>{{work.employmentLocation}}</span>
+                            {% else %}
+                                <span>...</span>
+                            {% endif %}
+                        </td>
+                        <td width="20%" class="text-right text-bold">Work Alignment to the Course / Program</td>
+                        <td width="30%" class="text-center">
+                            {% if work.workProgramAlignment %}
+                                <span>{{work.workProgramAlignment}}</span>
+                            {% else %}
+                                <span>...</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%" class="text-right text-bold">Position</td>
+                        <td width="30%" class="text-center">
+                            {% if work.position %}
+                                <span>{{work.position}}</span>
+                            {% else %}
+                                <span>...</span>
+                            {% endif %}
+                        </td>
                         <td width="20%" class="text-right text-bold">Company Name</td>
                         <td width="30%" class="text-center">
                             {% if work.companyName %}
@@ -314,20 +340,12 @@
                                 <span>...</span>
                             {% endif %}
                         </td>
+                    </tr>
+                    <tr>
                         <td width="20%" class="text-right text-bold">Company Address</td>
                         <td width="30%" class="text-center">
                             {% if work.companyAddress %}
                                 <span>{{work.companyAddress}}</span>
-                            {% else %}
-                                <span>...</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="20%" class="text-right text-bold">Gov't. Service</td>
-                        <td width="30%" class="text-center">
-                            {% if work.govt %}
-                                <span>{{work.govt}}</span>
                             {% else %}
                                 <span>...</span>
                             {% endif %}
