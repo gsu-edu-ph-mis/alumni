@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{{app.url}}/css/style.css" />
 </head>
 
-{% if user %}
+{% if user.roles == 'admin' or user.roles == 'manager' %}
 <body class="{% if hideNav == 'true' %}hide-menu{% endif %}">
 {% include 'parts/sidebar.html' %}
 {% else %}
