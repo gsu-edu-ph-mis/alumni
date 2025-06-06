@@ -6,7 +6,7 @@
         <div class="row mt-md-5 mt-3 mb-md-5 mb-3">
             <div id="vApp" v-cloak v-bind:data-pending="pending" class="col-lg-5 col-md-7 ml-auto mr-auto bg-white shadow" style="border-radius: 10px; overflow: hidden;">
                 <form ref="frmReg" v-on:submit.prevent="onSubmit($event)" action="/register" method="POST" class="py-4">
-                    <h1 class="h4 text-center mb-4">Create Account Page</h1>
+                    <h1 class="h4 text-center mb-4">Registration Page</h1>
                     {% include 'parts/flash.html' %}
 
                     <template v-if="page=='#step1'" class="row">
