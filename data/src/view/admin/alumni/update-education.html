@@ -49,7 +49,7 @@
                     </div>
 
                     <div class="col-xl-6 form-group mb-2" :data-error="errors.degree" @click="errors.degree=false">
-                        <label for="degree" class="form-label">Highest Degree Attained <span class="text-danger">*</span></label>
+                        <label for="degree" class="form-label">Level of Education <span class="text-danger">*</span></label>
                         <select v-model="degree" name="degree" id="degree" class="form-control" @change="checkDegree">
                             <option value=""></option>
                             <option v-for="d in degreesList" :value="d">${d}</option>
