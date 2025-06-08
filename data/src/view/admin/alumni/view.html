@@ -62,7 +62,14 @@
                                 </template>
                             </div>
                             <div class="col-xl-5 py-2 order-xl-2 order-3">
-                                <h1 class="h4"><u>{{viewAlm.firstName}}</u> <u>{{viewAlm.middleName[0]}}.</u> <u>{{viewAlm.lastName}}</u> <u>{{viewAlm.suffix}}</u></h1>
+                                <h1 class="h4">
+                                    <u>{{viewAlm.firstName}}</u> 
+                                    {% if viewAlm.middleName[0] %}
+                                    <u>{{viewAlm.middleName[0]}}.</u> 
+                                    {% endif %}
+                                    <u>{{viewAlm.lastName}}</u> 
+                                    <u>{{viewAlm.suffix}}</u>
+                                </h1>
                                 <h1 class="h6"><i>
                                     {% if viewAlm.presentAddress %}
                                         <span>{{viewAlm.presentAddress}}</span>
