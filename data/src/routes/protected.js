@@ -71,6 +71,17 @@ router.get('/address', middlewares.requireAuthUser, async (req, res, next) => {
             }
         }
         let addresses = await addressFinder.find(search, 2, 5, formatter)
+
+        // Check if addresses is empty
+        if (addresses.length === 0) {
+            return res.send([
+                { 
+                    name: decodeURIComponent(search), 
+                    id: decodeURIComponent(search) 
+                }
+            ]);
+        }
+
         return res.send(addresses)
 
     } catch (err) {
