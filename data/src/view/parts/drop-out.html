@@ -1,14 +1,22 @@
 <div class="d-flex justify-content-between align-items-center">
     <div class="dropdown dropleft">
-        <svg class="cursor-pointer" data-toggle="dropdown" aria-expanded="false" width="30px" height="30px" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
+        <svg class="cursor-pointer" data-toggle="modal" data-target="#exampleModal" width="30px" height="30px" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
             <path fill="currentColor" d="M156,128a28,28,0,1,1-28-28A28.02769,28.02769,0,0,1,156,128ZM48,100a28,28,0,1,0,28,28A28.02769,28.02769,0,0,0,48,100Zm160,0a28,28,0,1,0,28,28A28.02769,28.02769,0,0,0,208,100Z"/>
         </svg>
-        <div class="dropdown-menu">
-            <a href="/me/profile" class="dropdown-item">Profile</a> 
-            <a href="/me/account" class="dropdown-item">Account</a> 
-            <a href="/me/data-privacy" class="dropdown-item">Data Privacy</a> 
-            <div class="dropdown-divider"></div> 
-            <a onclick="return confirm('Are you sure you want to logout?')" title="Logout" href="/logout" class="dropdown-item text-danger">Logout</a>
+        
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                <div class="modal-body py-2 px-0">
+                    <a href="/me/profile" class="dropdown-item">Profile</a> 
+                    <a href="/me/account" class="dropdown-item">Account</a> 
+                    <a href="/me/data-privacy" class="dropdown-item">Data Privacy</a> 
+                    <div class="dropdown-divider"></div> 
+                    <a onclick="return confirm('Are you sure you want to logout?')" title="Logout" href="/logout" class="dropdown-item text-danger">Logout</a>
+                </div>
+              </div>
+            </div>
         </div>
+
     </div>
 </div>

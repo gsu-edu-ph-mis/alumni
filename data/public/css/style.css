@@ -210,6 +210,9 @@ div[data-pending="true"]:after {
     align-items: center;
     justify-content: center;
 }
+.offcanvas-custom-me {
+    top: 0 !important;
+}
 
 /* Home */
 .form-label {
