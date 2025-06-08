@@ -229,6 +229,14 @@ div[data-pending="true"]:after {
     margin-bottom: -3px;
 }
 
+/* Brief Background */
+.soc-med-featured-1 {
+    max-width: 500px;
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #CCCCCC;
+}
+
 /* Menu */
 .menu-right {
     position: relative;
