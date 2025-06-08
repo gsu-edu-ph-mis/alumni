@@ -68,7 +68,7 @@
 
             <div class="col-xl-12 mb-3">
                 <p class="mb-0 text-line-height">Batch: <strong>{{s1}}</strong></p>
-                <p class="mb-0 text-line-height">Degree: <strong>{{s7}}</strong></p>
+                <p class="mb-0 text-line-height">Level: <strong>{{s7}}</strong></p>
                 <p class="mb-0 text-line-height">Campus: <strong>{{s2}}</strong></p>
                 {% if s7 === 'College' or s7 === 'Graduate Studies' %}
                 <p class="mb-0 text-line-height">College: <strong>{{s3}}</strong></p>
@@ -88,7 +88,7 @@
             
             <div class="col-xl-2 form-group mb-2">
                 <select v-model="degree" name="degree" id="degree" class="form-control" @change="checkDegree">
-                    <option value="">Select a degree</option>
+                    <option value="">Select a level</option>
                     <option v-for="d in degreesList" :value="d">${d}</option>
                 </select>
             </div>
@@ -178,7 +178,7 @@
                         <th width="10px" class="text-center table-v-align-center">No.</th>
                         <th class="table-v-align-center">Name</th>
                         <th width="10px" class="text-center table-v-align-center">Gender</th>
-                        <th width="150px" class="table-v-align-center">Degree</th>
+                        <th width="150px" class="table-v-align-center">Level</th>
                         <th width="150px" class="table-v-align-center">Campus</th>
                         <th width="200px" class="table-v-align-center">College / Track</th>
                         <th width="300px" class="table-v-align-center">Course / Strand</th>
