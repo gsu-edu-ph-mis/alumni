@@ -1,0 +1,97 @@
+{% extends "document-public-landing.html" %}
+
+{% block body %}
+<style>
+    body {
+        background: hsla(211, 80%, 33%, 1) 100% !important;
+    }
+    .footer-public {
+        display: none !important;
+    }
+</style>
+<div class="col-md-12 px-0" 
+style="
+background: hsla(0, 0%, 96%, 1);
+background: linear-gradient(315deg, 
+hsla(95, 47%, 71%, 1) 0%, 
+hsla(168, 41%, 50%, 1) 28%, 
+hsla(184, 62%, 39%, 1) 44%, 
+rgb(37, 117, 182) 54%, 
+hsla(211, 80%, 33%, 1) 100%) fixed;">
+    <div class="container">
+        <div class="row mt-md-4 mt-3 mb-md-3 mb-2">
+            <div class="col-md-12">
+                <h1 style="font-size: 25px;" class="text-light text-no-wrap">Map</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12 bg-white px-0">
+    <div class="container">
+        <div class="row my-4">
+            <div class="col-xl-12">
+                <h1 style="font-size: 22px;" class="text-no-wrap mb-1">Interactive Map</h1>
+                <p>Map showing the location of the Alumni Affairs Office.</p>
+
+                <div class="map-container">
+                    <div id="map"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'parts/footer-public-sub.html' %}
+
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    $(document).ready(function(){
+        var title = '{{app.title}}';
+        document.title = `Interactive Map | ${title}`;
+
+        var map = L.map('map').setView([10.698943308931948, 122.65144094824791], 19);
+
+        // Add a tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: ''
+        }).addTo(map);
+
+        // Define custom icon
+        var customIcon = L.icon({
+            iconUrl: '{{app.url}}/images/marker-icon.png', // Replace with your icon URL
+            iconSize: [24, 38], // Size of the icon
+            iconAnchor: [19, 38], // Point of the icon which will correspond to marker's location
+            popupAnchor: [-7, -38] // Point from which the popup should open relative to the iconAnchor
+        });
+
+        // Add a marker
+        var marker = L.marker([10.698943308931948, 122.65144094824791], { icon: customIcon }).addTo(map);
+        marker.bindPopup("<b>Alumni Affairs Office</b><br>Salvador Campus</br>McLain, Buenavista, Guimaras</br>5044 Philippines").openPopup();
+
+        // Define coordinates for the lines
+        var lineCoordinates = [
+            [10.698042968046664, 122.65080660581592],
+            [10.699170998430041, 122.65208870172502],
+            [10.700341193739323, 122.65083342790605],
+            [10.701110779183821, 122.64979273080827],
+            [10.699982756016233, 122.64920800924303],
+            [10.699123557984416, 122.65000194311143],
+            [10.699007592419429, 122.64985710382464],
+            [10.698042968046664, 122.65080660581592] // Closing the loop
+        ];
+
+        // Add lines connecting the coordinates
+        var polyline = L.polyline(lineCoordinates, { 
+            color: '#47b09f', 
+            weight: 5 // Adjust the line width here
+        }).addTo(map);
+
+        // Fit the map to the bounds of the polyline
+        map.fitBounds(polyline.getBounds());
+    });
+</script>
+{% endblock %}

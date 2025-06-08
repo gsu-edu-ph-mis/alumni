@@ -1,0 +1,59 @@
+{% extends "document-public-landing.html" %}
+
+{% block body %}
+<style>
+    body {
+        background: hsla(211, 80%, 33%, 1) 100% !important;
+    }
+    .footer-public {
+        display: none !important;
+    }
+</style>
+<div class="col-md-12 px-0" 
+style="
+background: hsla(0, 0%, 96%, 1);
+background: linear-gradient(315deg, 
+hsla(95, 47%, 71%, 1) 0%, 
+hsla(168, 41%, 50%, 1) 28%, 
+hsla(184, 62%, 39%, 1) 44%, 
+rgb(37, 117, 182) 54%, 
+hsla(211, 80%, 33%, 1) 100%) fixed;">
+    <div class="container">
+        <div class="row mt-md-4 mt-3 mb-md-3 mb-2">
+            <div class="col-md-12">
+                <h1 style="font-size: 25px;" class="text-light text-no-wrap">Brief Background</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12 bg-white px-0">
+    <div class="container">
+        <div class="row my-4">
+            <div class="col-xl-12">
+                <p>
+                    The Alumni Portal was established in response to the growing need for a streamlined system to manage and connect with the university's graduates. As the number of alumni increased, the university recognized the importance of maintaining strong relationships with former students. 
+                </p>
+                <p>
+                    To address these challenges, the university’s Alumni Affairs Office partnered with the Information and Communications Technology Unit (ICTU) develop an online portal and information system. This initiative aimed to enhance communication and foster community engagement among alumni.
+                </p>
+                <p class="mb-0">
+                    This platform was designed to track essential information, including basic info., educational records, and work details of graduates. By transitioning to a digital format, the university enhanced its ability to connect with alumni and empowered them to stay engaged with their alma mater. 
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'parts/footer-public-sub.html' %}
+
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    $(document).ready(function(){
+        var title = '{{app.title}}';
+        document.title = `Brief Background | ${title}`;
+    });
+</script>
+{% endblock %}

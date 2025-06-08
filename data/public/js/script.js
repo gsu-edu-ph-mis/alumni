@@ -25,6 +25,10 @@ jQuery(document).ready(function ($) {
     })
 
     $('[data-toggle="tooltip"]').tooltip()
-    
+
+    $('.about').click(function() {
+        $(this).toggleClass('active');
+        $('.about-dropdown').toggle();
+    });
 });
 

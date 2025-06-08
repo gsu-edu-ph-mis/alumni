@@ -148,6 +148,11 @@ div[data-pending="true"]:after {
 
 /* ============= CUSTOM STYLES ============= */
 /* Request Pending */
+.round-label {
+    border: 1px solid #FFFFFF;
+    border-radius: 100px;
+    padding: 2px 25px;
+}
 .round-nums {
     background: #34d19b;
     border-radius: 100%;
@@ -224,7 +229,84 @@ div[data-pending="true"]:after {
     margin-bottom: -3px;
 }
 
+/* Menu */
+.menu-right {
+    position: relative;
+}
+.menu-right .menu-right-item {
+    height: 61px;
+    padding: 3px 10px 3px 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+.menu-right .menu-right-item .menu-right-item-caret {
+    height: 35px;
+    border-left: 1px solid #CCCCCC;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.menu-right .menu-right-item:hover, .menu-right .menu-right-item.active {
+    background-color: #115296;
+    color: #FFFFFF;
+}
+.menu-right .menu-right-item:hover > .menu-right-item-caret, .menu-right .menu-right-item.active > .menu-right-item-caret {
+    border-left: 1px solid #ffffff;
+}
+.menu-right .menu-right-item:hover > .menu-right-item-caret svg path, .menu-right .menu-right-item.active > .menu-right-item-caret svg path {
+    fill: #ffffff;
+}
+.about-dropdown {
+    display: none;
+    position: absolute;
+    top: 61px;
+    right: -10px;
+    width: 250px;
+    background-color: #FFFFFF;
+    border: 1px solid #115296;
+}
+.about-dropdown-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.about-dropdown-item {
+    width: 100%;
+    padding: 15px 15px;
+    text-align: left;
+    text-decoration: none !important;
+    border-bottom: 1px solid #EEEEEE;
+}
+.about-dropdown-item:hover {
+    background-color: #115296;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+/* Interactive Map */
+.map-container {
+    width: 100%;
+    height: 350px;
+    border: 1px solid #CCCCCC;
+    overflow: hidden;
+}
+#map {
+    width: 100%;
+    height: 350px;
+}
+
 /* Overide Defailt Element Style */
+.text-logo {
+    font-weight: 600; 
+    color: #008686;
+}
 .text-decor-none {
     text-decoration: none !important;
 }
@@ -856,6 +938,13 @@ button.btn-eye[data-state="text"] svg:nth-child(2) {
     .controls {
         width: 84px;
         height: 107px;
+    }
+    .text-logo {
+        display: none;
+    }
+    .header-public-top-nav {
+        padding-left: 0;
+        padding-right: 0;
     }
 }
 

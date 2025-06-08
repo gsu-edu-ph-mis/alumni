@@ -11,6 +11,8 @@
     <link rel="shortcut icon" href="{{app.url}}/favicon.png" />
     <link rel="stylesheet" href="{{app.url}}/css/bootstrap.min.css" />
     <link rel="stylesheet" href="{{app.url}}/css/style.css" />
+    <link rel="stylesheet" href="{{app.url}}/css/leaflet.css" />
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" /> -->
 </head>
 <body class="body-public">
 <div class="container-fluid">
@@ -29,6 +31,9 @@
 {% else %}
 <script src="{{app.url}}/js/vue.min.js"></script>
 {% endif %}
+<script src="{{app.url}}/js/script.js"></script>
+<script src="{{app.url}}/js/leaflet.js"></script>
+<!-- <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script> -->
 {% endblock %}
 </body>
 </html>

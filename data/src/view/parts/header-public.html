@@ -1,14 +1,24 @@
-<div class="col-md-12 bg-white py-2 shadow sticky-top">
-    <div class="container">
+<div class="col-md-12 bg-white shadow sticky-top">
+    <div class="container header-public-top-nav">
         <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex flex-row justify-content-center align-items-center">
+            <div class="d-flex flex-row justify-content-center align-items-center py-2">
                 <a href="/"><img src="/images/logo-md-label.png" width="45" alt=""></a>
-                <span class="ml-2" style="font-weight: 600; color: #00897a;">{{app.title}}</span>
+                <span class="ml-2 text-logo">{{app.title}}</span>
             </div>
-            <div class="d-flex justify-content-between align-items-center">
-                <a href="https://www.gsu.edu.ph">
-                    <img src="/images/logo-gsu-xs.png" width="45" alt="">
-                </a>
+            <div class="d-flex justify-content-between align-items-center menu-right">
+                <div class="menu-right-item about">
+                    <span>About</span>
+                    <div class="menu-right-item-caret">
+                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17 10l-5 6-5-6h10z" fill="#0D0D0D"/></svg>
+                    </div>
+                </div>
+                <a href="/" class="ml-2"><img src="/images/logo-gsu.png" width="45" alt=""></a>
+                <div class="about-dropdown shadow">
+                    <div class="about-dropdown-wrapper">
+                        <a href="/background" class="about-dropdown-item">Brief Background</a>
+                        <a href="/map" class="about-dropdown-item">Map</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
