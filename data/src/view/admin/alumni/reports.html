@@ -22,14 +22,14 @@
                                 <rect fill="currentColor" x="5" y="11" width="10" height="9"/>
                                 <path fill="currentColor" d="M19,4h-2V1c0-0.6-0.4-1-1-1H4C3.4,0,3,0.4,3,1v3H1C0.4,4,0,4.4,0,5v10c0,0.6,0.4,1,1,1h3v-2H2V6h16v8h-2v2h3c0.6,0,1-0.4,1-1V5C20,4.4,19.6,4,19,4z M5,2h10v2H5V2z"/>
                             </svg>
-                            <span>Print</span>
+                            <span class="svg-reg">Print</span>
                         </button>
                         <button type="button" @click="downloadExcel" class="btn btn-sm btn-primary content-nav-btn pl-2 pr-3">
                             <svg width="24px" height="24px" viewBox="-5 -5 24 24" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin" class="jam jam-download">
                                 <title>Download</title>
                                 <path fill="currentColor" d='M8 6.641l1.121-1.12a1 1 0 0 1 1.415 1.413L7.707 9.763a.997.997 0 0 1-1.414 0L3.464 6.934A1 1 0 1 1 4.88 5.52L6 6.641V1a1 1 0 1 1 2 0v5.641zM1 12h12a1 1 0 0 1 0 2H1a1 1 0 0 1 0-2z'/>
                             </svg>
-                            <span>Download CSV</span>
+                            <span class="svg-reg">Download CSV</span>
                         </button>
                     </div>
                 </div>
@@ -171,7 +171,7 @@
             <div class="alert alert-warning" role="alert">Type a value in the text fields above and tap the Filter button to show the search result(s).</div>
         {% endif %}
     {% else %}
-        <div v-cloak>
+        <div v-cloak class="table-responsive">
             <table id="table-report" class="table table-sm table-striped table-print-report">
                 <thead>
                     <tr>
