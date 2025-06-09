@@ -96,6 +96,26 @@ router.get('/organizational-structure', async (req, res, next) => {
     }
 });
 
+router.get('/office', async (req, res, next) => {
+    try {
+        let authUserId = lodash.get(req, 'session.authUserId')
+
+        if (authUserId) {
+            let user = await req.app.locals.db.models.User.findByPk(authUserId)
+            
+            if (user.roles == 'admin' || user.roles == 'manager') {
+                return res.redirect('/admin/alumni-records');
+            } else if (user.roles == 'alumni') {
+                return res.redirect('/me');
+            }
+        }
+
+        res.render('office.html')
+    } catch (err) {
+        next(err)
+    }
+});
+
 router.get('/login', async (req, res, next) => {
     try {
         let authUserId = lodash.get(req, 'session.authUserId')

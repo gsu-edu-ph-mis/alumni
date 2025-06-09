@@ -1,0 +1,64 @@
+{% extends "document-public-landing.html" %}
+
+{% block body %}
+<style>
+    body {
+        background: hsla(211, 80%, 33%, 1) 100% !important;
+    }
+    .footer-public {
+        display: none !important;
+    }
+</style>
+<div class="col-md-12 px-0" 
+style="
+background: hsla(0, 0%, 96%, 1);
+background: linear-gradient(315deg, 
+hsla(95, 47%, 71%, 1) 0%, 
+hsla(168, 41%, 50%, 1) 28%, 
+hsla(184, 62%, 39%, 1) 44%, 
+rgb(37, 117, 182) 54%, 
+hsla(211, 80%, 33%, 1) 100%) fixed;">
+    <div class="container">
+        <div class="row mt-md-4 mt-3 mb-md-3 mb-2">
+            <div class="col-md-12">
+                <h1 style="font-size: 25px;" class="text-light text-no-wrap">Alumni Affairs Office</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12 bg-white px-0">
+    <div class="container">
+        <div class="row my-4">
+            <div class="col-xl-12">
+                <div class="text-center mb-4">
+                    <img class="soc-med-office-2 mb-1" src="/images/officers/soc-med-director-aa-min.jpg" alt="In the frame are the new set of GSU Alumni Officers for the years 2026-2028.">
+                    <h3 class="mb-0 font-weight-bold">DR. ERWIN D. DUMAGPI</h3>
+                    <p style="line-height: 14px; font-size: 12px;">Director, Alumni Affairs & Placement Officer</p>
+                </div>
+                <div class="text-center mb-4">
+                    <img class="soc-med-office-3 mb-1" src="/images/officers/soc-med-staff-aa-min.png" alt="In the frame are the new set of GSU Alumni Officers for the years 2026-2028.">
+                    <h3 class="mb-0 font-weight-bold">CHELMAE FAITH M. CRUDO</h3>
+                    <p style="line-height: 14px; font-size: 12px;">Staff, Alumni Affairs</p>
+                </div>
+                <div class="text-center">
+                    <img class="soc-med-office-1 mb-1" src="/images/officers/soc-med-office-aa-min.jpg" alt="In the frame are the new set of GSU Alumni Officers for the years 2026-2028.">
+                    <p style="line-height: 14px; font-size: 12px;">In the frame is the inside view of the Alumni Affairs Office</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'parts/footer-public-sub.html' %}
+
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    $(document).ready(function(){
+        var title = '{{app.title}}';
+        document.title = `Brief Background | ${title}`;
+    });
+</script>
+{% endblock %}
