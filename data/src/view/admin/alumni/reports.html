@@ -2,7 +2,7 @@
 
 {% block body %}
 <div id="vApp" v-bind:data-pending="pending" class="col-md-12">
-    <div class="bg-white sticky-top">
+    <div class="bg-white">
         <div class="print-hidden">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <div class="d-flex align-items-start">
@@ -179,8 +179,6 @@
                         <th class="table-v-align-center">Name</th>
                         <th width="10px" class="text-center table-v-align-center">Sex</th>
                         <th width="150px" class="table-v-align-center">Level</th>
-                        <th width="150px" class="table-v-align-center">Campus</th>
-                        <th width="200px" class="table-v-align-center">College / Track</th>
                         <th width="300px" class="table-v-align-center">Course / Strand</th>
                         <th width="10px" class="text-center table-v-align-center">Batch</th>
                         <th width="10px" class="text-center table-v-align-center">Emp. Status</th>
@@ -188,8 +186,7 @@
                         <th width="10px" class="text-center table-v-align-center">Emp. Location</th>
                         <th width="10px" class="text-center table-v-align-center">Course Alignment</th>
                         <th width="150px" class="table-v-align-center">Position</th>
-                        <th width="150px" class="table-v-align-center">Co. Name</th>
-                        <th width="200px" class="table-v-align-center">Co. Address</th>
+                        <th width="150px" class="table-v-align-center">Company</th>
                         <th width="100px" class="text-center table-v-align-center">Length of Service</th>
                     </tr>
                 </thead>
@@ -225,45 +222,49 @@
                             {% endif %}
                         </td>
                         <td>
-                            {% if row.Education[0].campus %}
-                                <span>{{row.Education[0].campus}}</span>
-                            {% else %}
-                                <span>...</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if row.Education[0].degree === 'College' or row.Education[0].degree === 'Graduate Studies' %}
-                                {% if row.Education[0].college %}
-                                    <span>{{row.Education[0].college}}</span>
+                            <div>
+                                {% if row.Education[0].degree === 'College' or row.Education[0].degree === 'Graduate Studies' %}
+                                    {% if row.Education[0].course %}
+                                        <span>{{row.Education[0].course}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                {% elseif row.Education[0].degree === 'Senior High School' %}
+                                    {% if row.Education[0].strand %}
+                                        <span>{{row.Education[0].strand}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
                                 {% else %}
                                     <span>...</span>
                                 {% endif %}
-                            {% elseif row.Education[0].degree === 'Senior High School' %}
-                                {% if row.Education[0].track %}
-                                    <span>{{row.Education[0].track}}</span>
+                            </div>
+                            <hr class="my-1">
+                            <div>
+                                {% if row.Education[0].degree === 'College' or row.Education[0].degree === 'Graduate Studies' %}
+                                    {% if row.Education[0].college %}
+                                        <span>{{row.Education[0].college}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                {% elseif row.Education[0].degree === 'Senior High School' %}
+                                    {% if row.Education[0].track %}
+                                        <span>{{row.Education[0].track}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
                                 {% else %}
                                     <span>...</span>
                                 {% endif %}
-                            {% else %}
-                                <span>...</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if row.Education[0].degree === 'College' or row.Education[0].degree === 'Graduate Studies' %}
-                                {% if row.Education[0].course %}
-                                    <span>{{row.Education[0].course}}</span>
+                            </div>
+                            <hr class="my-1">
+                            <div>
+                                {% if row.Education[0].campus %}
+                                    <span>{{row.Education[0].campus}}</span>
                                 {% else %}
                                     <span>...</span>
                                 {% endif %}
-                            {% elseif row.Education[0].degree === 'Senior High School' %}
-                                {% if row.Education[0].strand %}
-                                    <span>{{row.Education[0].strand}}</span>
-                                {% else %}
-                                    <span>...</span>
-                                {% endif %}
-                            {% else %}
-                                <span>...</span>
-                            {% endif %}
+                            </div>
                         </td>
                         <td class="text-center">
                             {% if row.Education[0].yearGraduated %}
@@ -308,18 +309,21 @@
                             {% endif %}
                         </td>
                         <td>
-                            {% if row.Works[0].companyName %}
-                                <span>{{row.Works[0].companyName}}</span>
-                            {% else %}
-                                <span>...</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if row.Works[0].companyAddress %}
-                                <span>{{row.Works[0].companyAddress}}</span>
-                            {% else %}
-                                <span>...</span>
-                            {% endif %}
+                            <div>
+                                {% if row.Works[0].companyName %}
+                                    <span>{{row.Works[0].companyName}}</span>
+                                {% else %}
+                                    <span>...</span>
+                                {% endif %}
+                            </div>
+                            <hr class="my-1">
+                            <div>
+                                {% if row.Works[0].companyAddress %}
+                                    <span>{{row.Works[0].companyAddress}}</span>
+                                {% else %}
+                                    <span>...</span>
+                                {% endif %}
+                            </div>
                         </td>
                         <td class="text-center">
                             {% if row.Works[0].from %}
