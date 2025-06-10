@@ -789,7 +789,7 @@ router.get('/admin/alumni-records/reports', middlewares.guardRoute(['read_all_al
                     },
                     {
                         model: req.app.locals.db.models.Work,
-                        required: false
+                        required: true
                     }
                 ],
                 order: [['createdAt', 'DESC']]

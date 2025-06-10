@@ -41,21 +41,21 @@
                             <option v-for="s in employmentStatusesList" :value="s">${s}</option>
                         </select>
                     </div>
-                    <div v-if="empStat == 'Employed'" class="col-xl-6 form-group mb-2" :data-error="errors.employmentSector" @click="errors.employmentSector=false">
+                    <div v-if="empStat === 'Employed' || empStat === 'Self-Employed'" class="col-xl-6 form-group mb-2" :data-error="errors.employmentSector" @click="errors.employmentSector=false">
                         <label for="employmentSector" class="form-label">Employment Sector <span class="text-danger">*</span></label>
                         <select v-model="employmentSector" name="employmentSector" id="employmentSector" class="form-control">
                             <option value=""></option>
                             <option v-for="ss in employmentSectorsList" :value="ss">${ss}</option>
                         </select>
                     </div>
-                    <div v-if="empStat == 'Employed'" class="col-xl-6 form-group mb-2" :data-error="errors.employmentLocation" @click="errors.employmentLocation=false">
+                    <div v-if="empStat === 'Employed' || empStat === 'Self-Employed'" class="col-xl-6 form-group mb-2" :data-error="errors.employmentLocation" @click="errors.employmentLocation=false">
                         <label for="employmentLocation" class="form-label">Employment Location <span class="text-danger">*</span></label>
                         <select v-model="employmentLocation" name="employmentLocation" id="employmentLocation" class="form-control" @change="checkEmpLoc">
                             <option value=""></option>
                             <option v-for="sl in employmentLocationsList" :value="sl">${sl}</option>
                         </select>
                     </div>
-                    <div v-if="empStat == 'Employed'" class="col-xl-6 form-group mb-2" :data-error="errors.workProgramAlignment" @click="errors.workProgramAlignment=false">
+                    <div v-if="empStat === 'Employed' || empStat === 'Self-Employed'" class="col-xl-6 form-group mb-2" :data-error="errors.workProgramAlignment" @click="errors.workProgramAlignment=false">
                         <label for="workProgramAlignment" class="form-label">Work Alignment to the Course / Program <span class="text-danger">*</span></label>
                         <select v-model="workProgramAlignment" name="workProgramAlignment" id="workProgramAlignment" class="form-control">
                             <option value=""></option>
@@ -63,15 +63,15 @@
                             <option value="No">No</option>
                         </select>
                     </div>
-                    <div v-if="empStat == 'Employed'" class="col-xl-6 form-group mb-2" :data-error="errors.position" @click="errors.position=false">
+                    <div v-if="empStat === 'Employed' || empStat === 'Self-Employed'" class="col-xl-6 form-group mb-2" :data-error="errors.position" @click="errors.position=false">
                         <label for="position" class="form-label">Position <span class="text-danger">*</span></label>
                         <input v-model="position" name="position" type="text" class="form-control" id="position">
                     </div>
-                    <div v-if="empStat == 'Employed'" class="col-xl-6 form-group mb-2" :data-error="errors.companyName" @click="errors.companyName=false">
+                    <div v-if="empStat === 'Employed' || empStat === 'Self-Employed'" class="col-xl-6 form-group mb-2" :data-error="errors.companyName" @click="errors.companyName=false">
                         <label for="companyName" class="form-label">Company Name <span class="text-danger">*</span></label>
                         <input v-model="companyName" name="companyName" type="text" class="form-control" id="companyName">
                     </div>
-                    <div v-if="empStat == 'Employed'" class="col-xl-12 form-group mb-2">
+                    <div v-if="empStat === 'Employed' || empStat === 'Self-Employed'" class="col-xl-12 form-group mb-2">
                         <div class="row">
                             <div v-if="empLoc == 'Philippines'" class="col-xl-12 form-group mb-2" :data-error="errors.companyAddress" @click="errors.companyAddress=false">
                                 <label for="companyAddress" class="form-label">Company Address </label>
@@ -90,11 +90,11 @@
                             </div>
                         </div>
                     </div>
-                    <div v-if="empStat == 'Employed'" class="col-xl-6 form-group mb-2" :data-error="errors.from" @click="errors.from=false">
+                    <div v-if="empStat === 'Employed' || empStat === 'Self-Employed'" class="col-xl-6 form-group mb-2" :data-error="errors.from" @click="errors.from=false">
                         <label for="from" class="form-label">From <span class="text-danger">*</span></label>
                         <input v-model="from" name="from" type="date" class="form-control" id="from">
                     </div>
-                    <div v-if="empStat == 'Employed'" class="col-xl-6 form-group" :data-error="errors.to" @click="errors.to=false">
+                    <div v-if="empStat === 'Employed' || empStat === 'Self-Employed'" class="col-xl-6 form-group" :data-error="errors.to" @click="errors.to=false">
                         <div class="d-flex justify-content-between">
                             <label for="to" class="form-label">To <span class="text-danger">*</span></label>
                             <div class="custom-control custom-switch">

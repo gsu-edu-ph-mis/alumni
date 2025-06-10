@@ -59,8 +59,8 @@
 
         <form ref="form" v-cloak v-on:submit.prevent="onSubmit" action="/admin/report-visualization" method="get" class="mb-2 print-hidden">
             <div class="row">
-                <div class="col-xl-2 form-group mb-2">
-                    <select v-model="employmentStatus" name="employmentStatus" id="employmentStatus" class="form-control">
+                <div class="col-xl-2 form-group mb-2" :data-error="errors.employmentStatus" @click="errors.employmentStatus=false">
+                    <select v-model="employmentStatus" name="employmentStatus" id="employmentStatus" class="form-control" @change="checkEmploymentStatus">
                         <option value="">Select employment status</option>
                         <option v-for="emp_sat in employmentStatusesList" :value="emp_sat">${emp_sat}</option>
                     </select>
@@ -286,6 +286,7 @@
             chart3: null,
             chart4: null,
 
+            employmentStatusMatch: '{{s8}}',
             employmentStatus: '{{s8}}',
             employmentLocation: '{{s9}}',
             employmentSector: '{{s10}}',
@@ -300,23 +301,37 @@
             track: `{{s5}}`,
             strand: `{{s6}}`,
             graduateCounts: {},
+            errors: {
+                employmentStatus: false
+            }
         },
         mounted() {
             var me = this;
             
             if(alumniList.length > 0) {
                 me.$nextTick(function() {
-                    me.renderEmploymentStatusChart();
-                    me.renderEmploymentLocationChart();
-                    me.renderEmploymentSectorChart();
-                    me.renderWorkProgramAlignmentChart();
-                    me.graduateCounts = me.calculateTracedGraduatesCount();
+                    me.chartQuery()
                 });
             }
         },
         methods: {
-            searchQuery() {
-                this.$refs.form.submit()
+            chartQuery() {
+                var me = this;
+                me.renderEmploymentStatusChart();
+                me.renderEmploymentLocationChart();
+                me.renderEmploymentSectorChart();
+                me.renderWorkProgramAlignmentChart();
+                me.graduateCounts = me.calculateTracedGraduatesCount();
+            },
+            checkEmploymentStatus: function() {
+                var me = this;
+                me.employmentStatusMatch = me.employmentStatus
+
+                me.$nextTick(function() {
+                    me.pending = true;
+                    this.$refs.form.submit()
+                    me.chartQuery()
+                });
             },
             calculateTracedGraduatesCount() {
                 return this.alumniList.reduce((acc, alumni) => {
@@ -592,9 +607,14 @@
                     });
 
                     if (submitterId === 'btnSubmit') {
+                        if (me.employmentStatus == '') {
+                            me.errors.employmentStatus = true
+                            throw new Error('Employment Status is required.');
+                        }
+
                         me.$nextTick(function() {
                             me.pending = true;
-                            me.searchQuery()
+                            this.$refs.form.submit()
                         });
                     }
                 } catch (err) {

@@ -477,6 +477,12 @@ div[data-pending="true"]:after {
         width: 270px !important; /* Ensure canvas takes full width */
         height: 270px !important; /* Maintain aspect ratio */
     }
+    .table thead tr th, .table tbody tr td {
+        font-size: 10px;
+    }
+    .chart-table thead tr th, .chart-table tbody tr td {
+        font-size: 16px !important;
+    }
 }
 
 .home-video {
