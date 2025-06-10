@@ -186,7 +186,7 @@
                         <div class="col-xl-12 mb-4">
                             <div class="chart-container px-2 pt-3 pb-1 d-flex flex-column justify-content-center align-items-center">
                                 <h6 class="h6 font-weight-bold text-center mb-0">Total No. of Respondents</h6>
-                                <h1 style="font-size: 75px;" class="font-weight-bold text-center mb-0">{{alumni.length}}</h1>
+                                <h1 style="font-size: 60px;" class="font-weight-bold text-center mb-0">{{alumni.length}}</h1>
                             </div>
                         </div>
                         <div class="col-xl-12 mb-4">
@@ -318,15 +318,15 @@
             searchQuery() {
                 this.$refs.form.submit()
             },
-                calculateTracedGraduatesCount() {
-                    return this.alumniList.reduce((acc, alumni) => {
-                        if (alumni.Education && alumni.Education.length > 0) {
-                            const year = alumni.Education[0].yearGraduated;
-                            acc[year] = (acc[year] || 0) + 1;
-                        }
-                        return acc;
-                    }, {});
-                },
+            calculateTracedGraduatesCount() {
+                return this.alumniList.reduce((acc, alumni) => {
+                    if (alumni.Education && alumni.Education.length > 0) {
+                        const year = alumni.Education[0].yearGraduated;
+                        acc[year] = (acc[year] || 0) + 1;
+                    }
+                    return acc;
+                }, {});
+            },
             // Calculate Employment Status
                 calculateEmploymentStatusCounts() {
                     return this.alumniList.reduce((acc, alumni) => {
@@ -340,7 +340,7 @@
                 prepareEmploymentStatusChartData(statusCounts) {
                     const labels = Object.keys(statusCounts);
                     const data = Object.values(statusCounts);
-                    const colors = ["#ffcc55", "#fe6383", "#36a2eb", "#20ad3d"];
+                    const colors = ["#ffcc55", "#fe6383", "#36a2eb"];
                     const backgroundColor = colors.slice(0, labels.length);
 
                     return {
@@ -397,7 +397,7 @@
                 prepareEmploymentLocationChartData(locationCounts) {
                     const labels = Object.keys(locationCounts);
                     const data = Object.values(locationCounts);
-                    const colors = ["#36a2eb" , "#ffcc55", "#fe6383", "#20ad3d"];
+                    const colors = ["#36a2eb" , "#ffcc55", "#fe6383"];
                     const backgroundColor = colors.slice(0, labels.length);
 
                     return {
@@ -454,7 +454,7 @@
                 prepareEmploymentSectorChartData(sectorCounts) {
                     const labels = Object.keys(sectorCounts);
                     const data = Object.values(sectorCounts);
-                    const colors = ["#fe6383", "#36a2eb" , "#ffcc55", "#20ad3d"];
+                    const colors = ["#fe6383", "#36a2eb" , "#ffcc55"];
                     const backgroundColor = colors.slice(0, labels.length);
 
                     return {
@@ -511,7 +511,7 @@
                 prepareWorkProgramAlignmentChartData(workProgramAlignmentCounts) {
                     const labels = Object.keys(workProgramAlignmentCounts);
                     const data = Object.values(workProgramAlignmentCounts);
-                    const colors = ["#fe6383", "#36a2eb" , "#ffcc55", "#20ad3d"];
+                    const colors = ["#fe6383", "#36a2eb" , "#ffcc55"];
                     const backgroundColor = colors.slice(0, labels.length);
 
                     return {
