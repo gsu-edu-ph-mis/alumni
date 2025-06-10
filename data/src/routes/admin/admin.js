@@ -1369,4 +1369,104 @@ router.get('/admin/alumni-records/:almId/print', middlewares.guardRoute(['read_a
     }
 });
 
+//// Report Visualization Routes
+router.use('/admin/report-visualization', middlewares.requireAuthUser)
+
+// Filter Report Visualizations
+router.get('/admin/report-visualization', middlewares.guardRoute(['read_all_report_visualization']), async (req, res, next) => {
+    try {
+        let s1 = req.query?.yearGraduated
+        let s2 = req.query?.campus
+        let s3 = req.query?.college
+        let s4 = req.query?.course
+        let s5 = req.query?.track
+        let s6 = req.query?.strand
+        let s7 = req.query?.degree
+        let s8 = req.query?.employmentStatus
+        let s9 = req.query?.employmentLocation
+        let s10 = req.query?.employmentSector
+        let s11 = req.query?.workProgramAlignment
+        let whereConditions1 = [];
+        let whereConditions2 = [];
+        let alumni = [];
+        
+        if (s1) {
+            whereConditions1.push({ yearGraduated: { [Op.like]: `%${s1}%` } });
+        }
+        if (s2) {
+            whereConditions1.push({ campus: { [Op.like]: `%${s2}%` } });
+        }
+        if (s3) {
+            whereConditions1.push({ college: { [Op.like]: `%${s3}%` } });
+        }
+        if (s4) {
+            whereConditions1.push({ course: { [Op.like]: `%${s4}%` } });
+        }
+        if (s5) {
+            whereConditions1.push({ track: { [Op.like]: `%${s5}%` } });
+        }
+        if (s6) {
+            whereConditions1.push({ strand: { [Op.like]: `%${s6}%` } });
+        }
+        if (s7) {
+            whereConditions1.push({ degree: s7 });
+        }
+        if (s8) {
+            whereConditions2.push({ employmentStatus: s8 });
+        }
+        if (s9) {
+            whereConditions2.push({ employmentLocation: s9 });
+        }
+        if (s10) {
+            whereConditions2.push({ employmentSector: s10 });
+        }
+        if (s11) {
+            whereConditions2.push({ workProgramAlignment: s11 });
+        }
+
+        if (whereConditions1.length === 0 && whereConditions2.length === 0) {
+            // If no filters are applied, we can skip the where clause
+            whereConditions1 = [{}]; // Use an empty object to avoid Sequelize errors
+            whereConditions2 = [{}]; // Use an empty object to avoid Sequelize errors
+        } else {
+            // Fetch alumni records based on the constructed where conditions
+            alumni = await req.app.locals.db.models.Alumni.findAll({
+                include: [
+                    {
+                        model: req.app.locals.db.models.Education,
+                        required: true, // Change to true if you want only alumni with education records
+                        where: whereConditions1.length > 0 ? { [Op.and]: whereConditions1 } : {} // Use the constructed conditions or an empty object
+                    },
+                    {
+                        model: req.app.locals.db.models.Work,
+                        required: true, // Change to true if you want only alumni with work records
+                        where: whereConditions2.length > 0 ? { [Op.and]: whereConditions2 } : {} // Use the constructed conditions or an empty object
+                    }
+                ],
+                order: [['createdAt', 'DESC']]
+            });
+        }
+
+        let data = {
+            flash: flash.get(req, 'report-visualization'),
+            alumni,
+            degrees: CONFIG.degrees,
+            tracks: CONFIG.tracks,
+            strands: CONFIG.strands,
+            employmentStatuses: CONFIG.employmentStatuses,
+            employmentLocations: CONFIG.employmentLocations,
+            employmentSectors: CONFIG.employmentSectors,
+            s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11
+        }
+
+        console.log(alumni)
+
+        res.render('admin/report-visualization/all.html', data);
+    } catch (err) {
+        console.error(err)
+        flash.error(req, 'report-visualization', err.message);
+        return res.redirect('/admin/report-visualization')
+    }
+});
+
 module.exports = router;

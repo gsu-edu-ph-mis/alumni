@@ -331,6 +331,21 @@ div[data-pending="true"]:after {
     height: 350px;
 }
 
+/* Charts */
+.chart-container {
+    width: 100%;
+    border: 1px solid #000000;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.chart-table thead tr th, .chart-table tbody tr td {
+    border: 1px solid #000000;
+}
+
 /* Overide Defailt Element Style */
 .text-logo {
     font-weight: 600; 
@@ -449,6 +464,19 @@ div[data-pending="true"]:after {
     }
     .text-line-height {
         line-height: 18px;
+    }
+    .printSpan33 {
+        width: 33%;
+    }
+    .printSpan66 {
+        width: 66%;
+    }
+    .printSpan50 {
+        width: 50%;
+    }
+    .chartWidthFixed {
+        width: 270px !important; /* Ensure canvas takes full width */
+        height: 270px !important; /* Maintain aspect ratio */
     }
 }
 
@@ -959,6 +987,9 @@ button.btn-eye[data-state="text"] svg:nth-child(2) {
     }
     .table thead tr th, .table tbody tr td {
         font-size: 12px;
+    }
+    .chart-table tbody tr td {
+        font-size: 18px;
     }
 }
 

@@ -1,0 +1,607 @@
+{% extends "document-report.html" %}
+
+{% block body %}
+<div id="vApp" v-bind:data-pending="pending" class="col-md-12">
+    <div class="bg-white">
+        <div class="print-hidden">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <div class="d-flex align-items-start">
+                    <h1 class="h3 ml-2">Report Visualization - Graduate Tracer</h1>
+                </div>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group mr-2">
+                        <a href="/admin/report-visualization" class="btn btn-sm btn-outline-primary content-nav-btn px-3">
+                            <span>Refresh</span>
+                        </a>
+                        <button type="button" @click="btnPrint" class="btn btn-sm btn-success content-nav-btn px-3">
+                            <svg fill="#000000" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve">
+                                <title>Print</title>
+                                <rect fill="currentColor" x="5" y="11" width="10" height="9"/>
+                                <path fill="currentColor" d="M19,4h-2V1c0-0.6-0.4-1-1-1H4C3.4,0,3,0.4,3,1v3H1C0.4,4,0,4.4,0,5v10c0,0.6,0.4,1,1,1h3v-2H2V6h16v8h-2v2h3c0.6,0,1-0.4,1-1V5C20,4.4,19.6,4,19,4z M5,2h10v2H5V2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% include 'parts/flash.html' %}
+        </div>  
+
+        {% include 'parts/document-header.html' %}
+
+        <div class="row print-show">
+            <div class="col-xl-12 my-4">
+                <h3 class="h3 font-weight-bold text-center">REPORT VISUALIZATION - GRADUATE TRACER</h3>
+            </div>
+
+            <div class="col-xl-12 mb-3">
+                <div class="row">
+                    <div class="col-6">
+                        <p class="mb-0 text-line-height">Employment Status: <strong>{{s8}}</strong></p>
+                        <p class="mb-0 text-line-height">Employment Location: <strong>{{s9}}</strong></p>
+                        <p class="mb-0 text-line-height">Employment Sector: <strong>{{s10}}</strong></p>
+                        <p class="mb-0 text-line-height">Work Alignment to the Course/Program: <strong>{{s11}}</strong></p>
+
+                        <p class="mb-0 text-line-height">Batch: <strong>{{s1}}</strong></p>
+                        <p class="mb-0 text-line-height">Level: <strong>{{s7}}</strong></p>
+                        <p class="mb-0 text-line-height">Campus: <strong>{{s2}}</strong></p>
+                        {% if s7 === 'College' or s7 === 'Graduate Studies' %}
+                        <p class="mb-0 text-line-height">College: <strong>{{s3}}</strong></p>
+                        <p class="mb-0 text-line-height">Course: <strong>{{s4}}</strong></p>
+                        {% endif %}
+                        {% if s7 === 'Senior High School' %}
+                        <p class="mb-0 text-line-height">Track: <strong>{{s5}}</strong></p>
+                        <p class="mb-0 text-line-height">Strand: <strong>{{s6}}</strong></p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form ref="form" v-cloak v-on:submit.prevent="onSubmit" action="/admin/report-visualization" method="get" class="mb-2 print-hidden">
+            <div class="row">
+                <div class="col-xl-2 form-group mb-2">
+                    <select v-model="employmentStatus" name="employmentStatus" id="employmentStatus" class="form-control">
+                        <option value="">Select employment status</option>
+                        <option v-for="emp_sat in employmentStatusesList" :value="emp_sat">${emp_sat}</option>
+                    </select>
+                </div>
+
+                <div class="col-xl-2 form-group mb-2">
+                    <select v-model="employmentLocation" name="employmentLocation" id="employmentLocation" class="form-control">
+                        <option value="">Select employment location</option>
+                        <option v-for="emp_loc in employmentLocationsList" :value="emp_loc">${emp_loc}</option>
+                    </select>
+                </div>
+                
+                <div class="col-xl-2 form-group mb-2">
+                    <select v-model="employmentSector" name="employmentSector" id="employmentSector" class="form-control">
+                        <option value="">Select employment sector</option>
+                        <option v-for="emp_sec in employmentSectorsList" :value="emp_sec">${emp_sec}</option>
+                    </select>
+                </div>
+
+                <div class="col-xl-3 form-group mb-2">
+                    <select v-model="workProgramAlignment" name="workProgramAlignment" id="workProgramAlignment" class="form-control">
+                        <option value="">select work program alignment</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-2 form-group mb-2">
+                    <input v-model="yearGraduated" name="yearGraduated" type="search" class="form-control rounded-0" id="yearGraduated" placeholder="Type your batch...">
+                </div>
+
+                <div class="col-xl-2 form-group mb-2">
+                    <select v-model="degree" name="degree" id="degree" class="form-control" @change="checkDegree">
+                        <option value="">Select level</option>
+                        <option v-for="d in degreesList" :value="d">${d}</option>
+                    </select>
+                </div>
+
+                <div class="col-xl-2 form-group mb-2">
+                    <input v-model="campus" name="campus" id="campus" type="hidden" class="form-control">
+                    <autocomplete
+                        initial-value=""
+                        :initial-display="campus"
+                        placeholder="Type your campus..."
+                        :source="dataSource1"
+                        input-class="form-control"
+                        :request-headers="headers"
+                        v-on:selected="onSelect1"
+                        v-on:clear="campus=''"
+                        >
+                    </autocomplete>
+                </div>
+
+                <div v-if="degreeMatch == 'College' || degreeMatch == 'Graduate Studies'" class="col-xl-4">
+                    <div class="row">
+                        <div class="col-xl-6 form-group mb-2">
+                            <input v-model="college" name="college" id="college" type="hidden" class="form-control">
+                            <autocomplete
+                                initial-value=""
+                                :initial-display="college"
+                                placeholder="Type your college..."
+                                :source="dataSource2"
+                                input-class="form-control"
+                                :request-headers="headers"
+                                v-on:selected="onSelect2"
+                                v-on:clear="college=''"
+                                >
+                            </autocomplete>
+                        </div>
+                        <div class="col-xl-6 form-group mb-2">
+                            <input v-model="course" name="course" id="course" type="hidden" class="form-control">
+                            <autocomplete
+                                initial-value=""
+                                :initial-display="course"
+                                placeholder="Type your course..."
+                                :source="dataSource3"
+                                input-class="form-control"
+                                :request-headers="headers"
+                                v-on:selected="onSelect3"
+                                v-on:clear="course=''"
+                                >
+                            </autocomplete>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="degreeMatch == 'Senior High School'" class="col-xl-4">
+                    <div class="row">
+                        <div class="col-xl-6 form-group mb-2">
+                            <select v-model="track" name="track" id="track" class="form-control">
+                                <option value="">Select a track</option>
+                                <option v-for="t in tracksList" :value="t">${t}</option>
+                            </select>
+                        </div>
+                        <div class="col-xl-6 form-group mb-2">
+                            <select v-model="strand" name="strand" id="strand" class="form-control">
+                                <option value="">Select a strand</option>
+                                <option v-for="s in strandsList" :value="s">${s}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-1 form-group mb-2">
+                    <button id="btnSubmit" class="btn btn-success w-100">Filter</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {% if alumni.length <= 0 %}
+        {% if s1 or s2 or s3 or s4 or s5 or s6 or s7 or s8 or s9 or s10 or s11 %}
+            <div class="alert alert-danger" role="alert">None found.</div>
+        {% else %}
+            <div class="alert alert-warning" role="alert">Type or select a value in the text fields above and tap the Filter button to show the search result(s).</div>
+        {% endif %}
+    {% else %}
+        <div v-cloak>
+            <div class="row">
+                <div class="col-lg-4 printSpan33">
+                    <div class="row">
+                        <div class="col-xl-12 mb-4">
+                            <div class="chart-container px-2 pt-3 pb-1 d-flex flex-column justify-content-center align-items-center">
+                                <h6 class="h6 font-weight-bold text-center mb-0">Total No. of Respondents</h6>
+                                <h1 style="font-size: 75px;" class="font-weight-bold text-center mb-0">{{alumni.length}}</h1>
+                            </div>
+                        </div>
+                        <div class="col-xl-12 mb-4">
+                            <table class="table table-sm table-striped mb-0 chart-table">
+                                <thead>
+                                    <tr>
+                                        <th width="30%" class="text-center">Batch</th>
+                                        <th width="70%" class="text-center">Traced Graduates</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(count, year) in graduateCounts" :key="year">
+                                        <td class="text-center font-weight-bold">${year}</td>
+                                        <td class="text-center">${count}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 printSpan66">
+                    <div class="row">
+                        <div class="col-xl-4 col-sm-6 mb-4 printSpan50">
+                            <div class="chart-container px-2 py-3">
+                                <h6 class="h6 font-weight-bold text-center">Employment Status</h6>
+                                <canvas class="chartWidthFixed" id="chartEmploymentStatus"></canvas>
+                            </div>
+                        </div>
+        
+                        <div class="col-xl-4 col-sm-6 mb-4 printSpan50">
+                            <div class="chart-container px-2 py-3">
+                                <h6 class="h6 font-weight-bold text-center">Employment Sector</h6>
+                                <canvas class="chartWidthFixed" id="chartEmploymentSector"></canvas>
+                            </div>
+                        </div>
+        
+                        <div class="col-xl-4 col-sm-6 mb-4 printSpan50">
+                            <div class="chart-container px-2 py-3">
+                                <h6 class="h6 font-weight-bold text-center">Employment Location</h6>
+                                <canvas class="chartWidthFixed" id="chartEmploymentLocation"></canvas>
+                            </div>
+                        </div>
+        
+                        <div class="col-xl-4 col-sm-6 mb-4 printSpan50">
+                            <div class="chart-container px-2 py-3">
+                                <h6 class="h6 font-weight-bold text-center">Work Alignment to the Course / Program</h6>
+                                <canvas class="chartWidthFixed" id="chartWorkProgramAlignment"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{app.url}}/js/rest-helpers.js"></script>
+<script src="{{app.url}}/js/vuejs-auto-complete.js"></script>
+<script src="{{app.url}}/js/vue-ph-address.js"></script>
+<script src="{{app.url}}/js/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+
+<script>
+    const degreesList = {{degrees|default([], true)|stringify|safe}}
+    const tracksList = {{tracks|default([], true)|stringify|safe}}
+    const strandsList = {{strands|default([], true)|stringify|safe}}
+    const employmentStatusesList = {{employmentStatuses|default([], true)|stringify|safe}}
+    const employmentLocationsList = {{employmentLocations|default([], true)|stringify|safe}}
+    const employmentSectorsList = {{employmentSectors|default([], true)|stringify|safe}}
+    const alumniList = {{alumni|default([], true)|stringify|safe}};
+
+    const vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        mixins: [
+            VuePhAddress.mixin
+        ],
+        components: {
+            'autocomplete': window["vuejs-autocomplete"]
+        },
+        data: {
+            pending: false,
+            alumniList: alumniList,
+            degreesList: degreesList,
+            tracksList: tracksList,
+            strandsList: strandsList,
+            employmentStatusesList: employmentStatusesList,
+            employmentLocationsList: employmentLocationsList,
+            employmentSectorsList: employmentSectorsList,
+
+            chart1: null,
+            chart2: null,
+            chart3: null,
+            chart4: null,
+
+            employmentStatus: '{{s8}}',
+            employmentLocation: '{{s9}}',
+            employmentSector: '{{s10}}',
+            workProgramAlignment: '{{s11}}',
+
+            degreeMatch: `{{s7}}`,
+            degree: `{{s7}}`,
+            yearGraduated: '{{s1}}',
+            campus: '{{s2}}',
+            college: '{{s3}}',
+            course: '{{s4}}',
+            track: `{{s5}}`,
+            strand: `{{s6}}`,
+            graduateCounts: {},
+        },
+        mounted() {
+            var me = this;
+            
+            if(alumniList.length > 0) {
+                me.$nextTick(function() {
+                    me.renderEmploymentStatusChart();
+                    me.renderEmploymentLocationChart();
+                    me.renderEmploymentSectorChart();
+                    me.renderWorkProgramAlignmentChart();
+                    me.graduateCounts = me.calculateTracedGraduatesCount();
+                });
+            }
+        },
+        methods: {
+            searchQuery() {
+                this.$refs.form.submit()
+            },
+                calculateTracedGraduatesCount() {
+                    return this.alumniList.reduce((acc, alumni) => {
+                        if (alumni.Education && alumni.Education.length > 0) {
+                            const year = alumni.Education[0].yearGraduated;
+                            acc[year] = (acc[year] || 0) + 1;
+                        }
+                        return acc;
+                    }, {});
+                },
+            // Calculate Employment Status
+                calculateEmploymentStatusCounts() {
+                    return this.alumniList.reduce((acc, alumni) => {
+                        if (alumni.Works && alumni.Works.length > 0) {
+                            const status = alumni.Works[0].employmentStatus;
+                            acc[status] = (acc[status] || 0) + 1;
+                        }
+                        return acc;
+                    }, {});
+                },
+                prepareEmploymentStatusChartData(statusCounts) {
+                    const labels = Object.keys(statusCounts);
+                    const data = Object.values(statusCounts);
+                    const colors = ["#ffcc55", "#fe6383", "#36a2eb"];
+                    const backgroundColor = colors.slice(0, labels.length);
+
+                    return {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Total:',
+                            data: data,
+                            backgroundColor: backgroundColor,
+                        }],
+                    };
+                },
+                renderEmploymentStatusChart() {
+                    const statusCounts = this.calculateEmploymentStatusCounts();
+                    const chartData = this.prepareEmploymentStatusChartData(statusCounts);
+                    const ctx = document.getElementById('chartEmploymentStatus').getContext('2d');
+
+                    if (this.chart1) {
+                        this.chart.destroy(); // Destroy previous chart if exists
+                    }
+
+                    this.chart1 = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: chartData,
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                datalabels: {
+                                    formatter: (value, context) => {
+                                        const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(2);
+                                        return `${value} (${percentage}%)`; // Format label
+                                    },
+                                    color: '#fff', // Label color
+                                },
+                            },
+                        },
+                        plugins: [ChartDataLabels], // Include Data Labels plugin
+                    });
+                },
+            // 
+            // Calculate Employment Location
+                calculateEmploymentLocationCounts() {
+                    return this.alumniList.reduce((acc, alumni) => {
+                        if (alumni.Works && alumni.Works.length > 0) {
+                            const location = alumni.Works[0].employmentLocation;
+                            acc[location] = (acc[location] || 0) + 1;
+                        }
+                        return acc;
+                    }, {});
+                },
+                prepareEmploymentLocationChartData(locationCounts) {
+                    const labels = Object.keys(locationCounts);
+                    const data = Object.values(locationCounts);
+                    const colors = ["#36a2eb" , "#ffcc55", "#fe6383"];
+                    const backgroundColor = colors.slice(0, labels.length);
+
+                    return {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Total:',
+                            data: data,
+                            backgroundColor: backgroundColor,
+                        }],
+                    };
+                },
+                renderEmploymentLocationChart() {
+                    const locationCounts = this.calculateEmploymentLocationCounts();
+                    const chartData = this.prepareEmploymentLocationChartData(locationCounts);
+                    const ctx = document.getElementById('chartEmploymentLocation').getContext('2d');
+
+                    if (this.chart2) {
+                        this.chart.destroy(); // Destroy previous chart if exists
+                    }
+
+                    this.chart2 = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: chartData,
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                datalabels: {
+                                    formatter: (value, context) => {
+                                        const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(2);
+                                        return `${value} (${percentage}%)`; // Format label
+                                    },
+                                    color: '#fff', // Label color
+                                },
+                            },
+                        },
+                        plugins: [ChartDataLabels], // Include Data Labels plugin
+                    });
+                },
+            // 
+            // Calculate Employment Sector
+                calculateEmploymentSectorCounts() {
+                    return this.alumniList.reduce((acc, alumni) => {
+                        if (alumni.Works && alumni.Works.length > 0) {
+                            const sector = alumni.Works[0].employmentSector;
+                            acc[sector] = (acc[sector] || 0) + 1;
+                        }
+                        return acc;
+                    }, {});
+                },
+                prepareEmploymentSectorChartData(sectorCounts) {
+                    const labels = Object.keys(sectorCounts);
+                    const data = Object.values(sectorCounts);
+                    const colors = ["#fe6383", "#36a2eb" , "#ffcc55"];
+                    const backgroundColor = colors.slice(0, labels.length);
+
+                    return {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Total:',
+                            data: data,
+                            backgroundColor: backgroundColor,
+                        }],
+                    };
+                },
+                renderEmploymentSectorChart() {
+                    const sectorCounts = this.calculateEmploymentSectorCounts();
+                    const chartData = this.prepareEmploymentSectorChartData(sectorCounts);
+                    const ctx = document.getElementById('chartEmploymentSector').getContext('2d');
+
+                    if (this.chart3) {
+                        this.chart.destroy(); // Destroy previous chart if exists
+                    }
+
+                    this.chart3 = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: chartData,
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                datalabels: {
+                                    formatter: (value, context) => {
+                                        const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(2);
+                                        return `${value} (${percentage}%)`; // Format label
+                                    },
+                                    color: '#fff', // Label color
+                                },
+                            },
+                        },
+                        plugins: [ChartDataLabels], // Include Data Labels plugin
+                    });
+                },
+            // 
+            // Calculate Work Program Alignment
+                calculateWorkProgramAlignmentCounts() {
+                    return this.alumniList.reduce((acc, alumni) => {
+                        if (alumni.Works && alumni.Works.length > 0) {
+                            const workProgramAlignment = alumni.Works[0].workProgramAlignment;
+                            acc[workProgramAlignment] = (acc[workProgramAlignment] || 0) + 1;
+                        }
+                        return acc;
+                    }, {});
+                },
+                prepareWorkProgramAlignmentChartData(workProgramAlignmentCounts) {
+                    const labels = Object.keys(workProgramAlignmentCounts);
+                    const data = Object.values(workProgramAlignmentCounts);
+                    const colors = ["#fe6383", "#36a2eb" , "#ffcc55"];
+                    const backgroundColor = colors.slice(0, labels.length);
+
+                    return {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Total:',
+                            data: data,
+                            backgroundColor: backgroundColor,
+                        }],
+                    };
+                },
+                renderWorkProgramAlignmentChart() {
+                    const workProgramAlignmentCounts = this.calculateWorkProgramAlignmentCounts();
+                    const chartData = this.prepareWorkProgramAlignmentChartData(workProgramAlignmentCounts);
+                    const ctx = document.getElementById('chartWorkProgramAlignment').getContext('2d');
+
+                    if (this.chart4) {
+                        this.chart.destroy(); // Destroy previous chart if exists
+                    }
+
+                    this.chart4 = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: chartData,
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                datalabels: {
+                                    formatter: (value, context) => {
+                                        const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(2);
+                                        return `${value} (${percentage}%)`; // Format label
+                                    },
+                                    color: '#fff', // Label color
+                                },
+                            },
+                        },
+                        plugins: [ChartDataLabels], // Include Data Labels plugin
+                    });
+                },
+            // 
+
+            checkDegree: function() {
+                this.degreeMatch = this.degree
+            },
+            btnPrint: function(){
+                window.print();  
+            },
+            onSelect1: function(o){
+                this.campus = o.display
+            },
+            dataSource1: function(input) {
+                return '/campuses?s=' + input
+            },
+            onSelect2: function(o){
+                this.college = o.display
+            },
+            dataSource2: function(input) {
+                return '/colleges?s=' + input
+            },
+            onSelect3: function(o){
+                this.course = o.display
+            },
+            dataSource3: function(input) {
+                return '/courses?s=' + input
+            },
+            onSubmit: function onSubmit(e){
+                try {
+                    var me = this;
+                    const submitterId = e.submitter.id;
+                    
+                    Object.keys(this.$data).forEach(key => {
+                        if(typeof this[key] === 'string'){
+                            this[key] = this[key].trim()
+                        }
+                    });
+
+                    if (submitterId === 'btnSubmit') {
+                        me.$nextTick(function() {
+                            me.pending = true;
+                            me.searchQuery()
+                        });
+                    }
+                } catch (err) {
+                    alert(err.message)
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

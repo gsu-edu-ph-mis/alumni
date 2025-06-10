@@ -27,6 +27,8 @@ const ROLES = [
             'update_alumni',
             'delete_alumni',
 
+            'read_all_report_visualization',
+
             'read_all_registration',
             'read_registration',
             'approve_registration',
