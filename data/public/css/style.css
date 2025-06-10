@@ -988,9 +988,6 @@ button.btn-eye[data-state="text"] svg:nth-child(2) {
     .table thead tr th, .table tbody tr td {
         font-size: 12px;
     }
-    .chart-table tbody tr td {
-        font-size: 18px;
-    }
 }
 
 /* ≥576px	Small */

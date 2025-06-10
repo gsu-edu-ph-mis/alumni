@@ -193,14 +193,14 @@
                             <table class="table table-sm table-striped mb-0 chart-table">
                                 <thead>
                                     <tr>
-                                        <th width="30%" class="text-center">Batch</th>
-                                        <th width="70%" class="text-center">Traced Graduates</th>
+                                        <th width="50%" class="text-center table-v-align-center">Batch</th>
+                                        <th width="50%" class="text-center table-v-align-center">Traced Graduates</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(count, year) in graduateCounts" :key="year">
-                                        <td class="text-center font-weight-bold">${year}</td>
-                                        <td class="text-center">${count}</td>
+                                        <td class="text-center font-weight-bold table-v-align-center">${year}</td>
+                                        <td class="text-center table-v-align-center">${count}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -340,7 +340,7 @@
                 prepareEmploymentStatusChartData(statusCounts) {
                     const labels = Object.keys(statusCounts);
                     const data = Object.values(statusCounts);
-                    const colors = ["#ffcc55", "#fe6383", "#36a2eb"];
+                    const colors = ["#ffcc55", "#fe6383", "#36a2eb", "#20ad3d"];
                     const backgroundColor = colors.slice(0, labels.length);
 
                     return {
@@ -397,7 +397,7 @@
                 prepareEmploymentLocationChartData(locationCounts) {
                     const labels = Object.keys(locationCounts);
                     const data = Object.values(locationCounts);
-                    const colors = ["#36a2eb" , "#ffcc55", "#fe6383"];
+                    const colors = ["#36a2eb" , "#ffcc55", "#fe6383", "#20ad3d"];
                     const backgroundColor = colors.slice(0, labels.length);
 
                     return {
@@ -454,7 +454,7 @@
                 prepareEmploymentSectorChartData(sectorCounts) {
                     const labels = Object.keys(sectorCounts);
                     const data = Object.values(sectorCounts);
-                    const colors = ["#fe6383", "#36a2eb" , "#ffcc55"];
+                    const colors = ["#fe6383", "#36a2eb" , "#ffcc55", "#20ad3d"];
                     const backgroundColor = colors.slice(0, labels.length);
 
                     return {
@@ -511,7 +511,7 @@
                 prepareWorkProgramAlignmentChartData(workProgramAlignmentCounts) {
                     const labels = Object.keys(workProgramAlignmentCounts);
                     const data = Object.values(workProgramAlignmentCounts);
-                    const colors = ["#fe6383", "#36a2eb" , "#ffcc55"];
+                    const colors = ["#fe6383", "#36a2eb" , "#ffcc55", "#20ad3d"];
                     const backgroundColor = colors.slice(0, labels.length);
 
                     return {
