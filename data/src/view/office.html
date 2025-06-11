@@ -53,12 +53,3 @@ hsla(211, 80%, 33%, 1) 100%) fixed;">
 {% include 'parts/footer-public-sub.html' %}
 
 {% endblock %}
-{% block scripts %}
-{{ super() }}
-<script>
-    $(document).ready(function(){
-        var title = '{{app.title}}';
-        document.title = `Brief Background | ${title}`;
-    });
-</script>
-{% endblock %}

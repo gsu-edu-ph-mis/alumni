@@ -7,11 +7,11 @@ const lodash = require('lodash')
 const moment = require('moment')
 const flash = require('kisapmata')
 const { Op, where } = require("sequelize")
-// const nodemailer = require('nodemailer');
 
 // Modules
 const mailer = require('../mailer')
 const passwordMan = require('../password-man')
+const { title } = require('process')
 
 // Router
 let router = express.Router()
@@ -50,7 +50,7 @@ router.get('/background', async (req, res, next) => {
             }
         }
 
-        res.render('background.html')
+        res.render('background.html', { app: { title: `Brief Background | ${CONFIG.app.title}` } })
     } catch (err) {
         next(err)
     }
@@ -70,7 +70,7 @@ router.get('/map', async (req, res, next) => {
             }
         }
 
-        res.render('map.html')
+        res.render('map.html', { app: { title: `Interactive Map | ${CONFIG.app.title}` } })
     } catch (err) {
         next(err)
     }
@@ -90,7 +90,7 @@ router.get('/organizational-structure', async (req, res, next) => {
             }
         }
 
-        res.render('organizational-structure.html')
+        res.render('organizational-structure.html', { app: { title: `Organizational Structure | ${CONFIG.app.title}` } })
     } catch (err) {
         next(err)
     }
@@ -110,7 +110,7 @@ router.get('/office', async (req, res, next) => {
             }
         }
 
-        res.render('office.html')
+        res.render('office.html', { app: { title: `Office | ${CONFIG.app.title}` } })
     } catch (err) {
         next(err)
     }
@@ -133,6 +133,7 @@ router.get('/login', async (req, res, next) => {
         res.render('login.html', {
             flash: flash.get(req, 'login'),
             username: lodash.get(req, 'query.username', ''),
+            app: { title: `Login | ${CONFIG.app.title}` }
         });
     } catch (err) {
         console.error(err)
@@ -213,7 +214,8 @@ router.get('/register', async (req, res, next) => {
         }
         res.render('register.html', {
             flash: flash.get(req, 'register'),
-            suffixes: CONFIG.suffixes
+            suffixes: CONFIG.suffixes,
+            app: { title: `Register | ${CONFIG.app.title}` }
         });
     } catch (err) {
         next(err);
@@ -337,6 +339,7 @@ router.get('/register-pending', async (req, res, next) => {
             refNo,
             firstName,
             email,
+            app: { title: `Register Pending | ${CONFIG.app.title}` }
         });
     } catch (err) {
         console.error(err)
@@ -348,7 +351,7 @@ router.get('/register-pending', async (req, res, next) => {
 // View Data Privacy and Consent Form
 router.get('/data-privacy', async (req, res, next) => {
     try {        
-        res.render('data-privacy.html');
+        res.render('data-privacy.html', { app: { title: `Data Privacy and Consent Form | ${CONFIG.app.title}` } });
     } catch (err) {
         next(err);
     }
@@ -370,7 +373,8 @@ router.get('/reset', async (req, res, next) => {
         }
         
         res.render('reset.html', {
-            flash: flash.get(req, 'forgot')
+            flash: flash.get(req, 'forgot'),
+            app: { title: `Reset | ${CONFIG.app.title}` }
         });
     } catch (err) {
         next(err);
@@ -490,7 +494,8 @@ router.get('/sent', async (req, res, next) => {
         }
 
         res.render('sent.html', {
-            email: lodash.get(req, 'query.email', '')
+            email: lodash.get(req, 'query.email', ''),
+            app: { title: `Sent | ${CONFIG.app.title}` }
         })
     } catch (err) {
         next(err)
@@ -568,6 +573,7 @@ router.get('/forgotten/:secureKey', async (req, res, next) => {
         return res.render('forgotten.html', {
             username: user.username,
             password: password,
+            app: { title: `Forgotten | ${CONFIG.app.title}` }
         });
     } catch (err) {
         console.error(err)

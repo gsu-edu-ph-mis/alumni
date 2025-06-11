@@ -49,9 +49,6 @@ hsla(211, 80%, 33%, 1) 100%) fixed;">
 {{ super() }}
 <script>
     $(document).ready(function(){
-        var title = '{{app.title}}';
-        document.title = `Interactive Map | ${title}`;
-
         var map = L.map('map').setView([10.698943308931948, 122.65144094824791], 19);
 
         // Add a tile layer

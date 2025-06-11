@@ -32,7 +32,7 @@ hsla(211, 80%, 33%, 1) 100%) fixed;">
         <div class="row my-4">
             <div class="col-xl-12">
                 <div class="text-center mb-3">
-                    <img class="soc-med-featured-1 mb-1" src="/images/featured/soc-med-07-06-2025.jpeg" alt="In the frame are the new set of GSU Alumni Officers for the years 2026-2028.">
+                    <img class="soc-med-featured-1 mb-1" src="/images/featured/soc-med-07-06-2025.jpg" alt="In the frame are the new set of GSU Alumni Officers for the years 2026-2028.">
                     <p style="line-height: 14px; font-size: 12px;">In the frame are the new set of GSU Alumni Officers for the years 2026-2028</p>
                 </div>
                 <p>
@@ -59,13 +59,4 @@ hsla(211, 80%, 33%, 1) 100%) fixed;">
 
 {% include 'parts/footer-public-sub.html' %}
 
-{% endblock %}
-{% block scripts %}
-{{ super() }}
-<script>
-    $(document).ready(function(){
-        var title = '{{app.title}}';
-        document.title = `Brief Background | ${title}`;
-    });
-</script>
 {% endblock %}
