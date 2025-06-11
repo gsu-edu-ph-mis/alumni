@@ -1377,11 +1377,8 @@ router.get('/admin/alumni-records/:almId/print', middlewares.guardRoute(['read_a
     }
 });
 
-//// Report Visualization Routes
-router.use('/admin/report-visualization', middlewares.requireAuthUser)
-
 // Filter Report Visualizations
-router.get('/admin/report-visualization', middlewares.guardRoute(['read_all_report_visualization']), async (req, res, next) => {
+router.get('/admin/alumni-records/report-visualization', middlewares.guardRoute(['read_all_report_visualization']), async (req, res, next) => {
     try {
         let s1 = req.query?.yearGraduated
         let s2 = req.query?.campus
@@ -1469,11 +1466,11 @@ router.get('/admin/report-visualization', middlewares.guardRoute(['read_all_repo
 
         console.log(alumni)
 
-        res.render('admin/report-visualization/all.html', data);
+        res.render('admin/alumni/report-visualization.html', data);
     } catch (err) {
         console.error(err)
         flash.error(req, 'report-visualization', err.message);
-        return res.redirect('/admin/report-visualization')
+        return res.redirect('/admin/alumni-records/report-visualization')
     }
 });
 

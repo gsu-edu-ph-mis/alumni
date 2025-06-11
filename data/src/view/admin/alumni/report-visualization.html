@@ -10,7 +10,10 @@
                 </div>
                 <div class="btn-toolbar mb-2 mb-md-0">
                     <div class="btn-group mr-2">
-                        <a href="/admin/report-visualization" class="btn btn-sm btn-outline-primary content-nav-btn px-3">
+                        <a href="/admin/alumni-records" class="btn btn-sm btn-outline-danger content-nav-btn px-3">
+                            <span>Back</span>
+                        </a>
+                        <a href="/admin/alumni-records/report-visualization" class="btn btn-sm btn-outline-primary content-nav-btn px-3">
                             <span>Refresh</span>
                         </a>
                         <button type="button" @click="btnPrint" class="btn btn-sm btn-success content-nav-btn px-3">
@@ -57,7 +60,7 @@
             </div>
         </div>
 
-        <form ref="form" v-cloak v-on:submit.prevent="onSubmit" action="/admin/report-visualization" method="get" class="mb-2 print-hidden">
+        <form ref="form" v-cloak v-on:submit.prevent="onSubmit" action="/admin/alumni-records/report-visualization" method="get" class="mb-2 print-hidden">
             <div class="row">
                 <div class="col-xl-2 form-group mb-2" :data-error="errors.employmentStatus" @click="errors.employmentStatus=false">
                     <select v-model="employmentStatus" name="employmentStatus" id="employmentStatus" class="form-control" @change="checkEmploymentStatus">
