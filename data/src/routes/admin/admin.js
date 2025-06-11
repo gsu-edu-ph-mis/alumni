@@ -750,34 +750,40 @@ router.get('/admin/alumni-records/reports', middlewares.guardRoute(['read_all_al
         let s5 = req.query?.track
         let s6 = req.query?.strand
         let s7 = req.query?.degree
-        let whereConditions = [];
+        let s8 = req.query?.employmentStatus
+        let whereConditions1 = [];
+        let whereConditions2 = [];
         let alumni = [];
         
         if (s1) {
-            whereConditions.push({ yearGraduated: { [Op.like]: `%${s1}%` } });
+            whereConditions1.push({ yearGraduated: { [Op.like]: `%${s1}%` } });
         }
         if (s2) {
-            whereConditions.push({ campus: { [Op.like]: `%${s2}%` } });
+            whereConditions1.push({ campus: { [Op.like]: `%${s2}%` } });
         }
         if (s3) {
-            whereConditions.push({ college: { [Op.like]: `%${s3}%` } });
+            whereConditions1.push({ college: { [Op.like]: `%${s3}%` } });
         }
         if (s4) {
-            whereConditions.push({ course: { [Op.like]: `%${s4}%` } });
+            whereConditions1.push({ course: { [Op.like]: `%${s4}%` } });
         }
         if (s5) {
-            whereConditions.push({ track: { [Op.like]: `%${s5}%` } });
+            whereConditions1.push({ track: { [Op.like]: `%${s5}%` } });
         }
         if (s6) {
-            whereConditions.push({ strand: { [Op.like]: `%${s6}%` } });
+            whereConditions1.push({ strand: { [Op.like]: `%${s6}%` } });
         }
         if (s7) {
-            whereConditions.push({ degree: s7 });
+            whereConditions1.push({ degree: s7 });
+        }
+        if (s8) {
+            whereConditions2.push({ employmentStatus: s8 });
         }
 
-        if (whereConditions.length === 0) {
+        if (whereConditions1.length === 0 && whereConditions2.length === 0) {
             // If no filters are applied, we can skip the where clause
-            whereConditions = [{}]; // Use an empty object to avoid Sequelize errors
+            whereConditions1 = [{}]; // Use an empty object to avoid Sequelize errors
+            whereConditions2 = [{}]; // Use an empty object to avoid Sequelize errors
         } else {
             // Fetch alumni records based on the constructed where conditions
             alumni = await req.app.locals.db.models.Alumni.findAll({
@@ -785,11 +791,12 @@ router.get('/admin/alumni-records/reports', middlewares.guardRoute(['read_all_al
                     {
                         model: req.app.locals.db.models.Education,
                         required: true, // Change to true if you want only alumni with education records
-                        where: whereConditions.length > 0 ? { [Op.and]: whereConditions } : {} // Use the constructed conditions or an empty object
+                        where: whereConditions1.length > 0 ? { [Op.and]: whereConditions1 } : {} // Use the constructed conditions or an empty object
                     },
                     {
                         model: req.app.locals.db.models.Work,
-                        required: true
+                        required: true, // Change to true if you want only alumni with work records
+                        where: whereConditions2.length > 0 ? { [Op.and]: whereConditions2 } : {} // Use the constructed conditions or an empty object
                     }
                 ],
                 order: [['createdAt', 'DESC']]
@@ -799,11 +806,11 @@ router.get('/admin/alumni-records/reports', middlewares.guardRoute(['read_all_al
         let foundText = `Found ${alumni.length} result(s)`;
 
         if(alumni.length <= 0) {
-            if (s1 || s2 || s3 || s4 || s5 || s6 || s7) {
+            if (s1 || s2 || s3 || s4 || s5 || s6 || s7 || s8) {
                 flash.error(req, 'alumni', foundText);
             }
         } else {
-            if (s1 || s2 || s3 || s4 || s5 || s6 || s7) {
+            if (s1 || s2 || s3 || s4 || s5 || s6 || s7 || s8) {
                 flash.ok(req, 'alumni', foundText);
             }
         }
@@ -814,7 +821,8 @@ router.get('/admin/alumni-records/reports', middlewares.guardRoute(['read_all_al
             degrees: CONFIG.degrees,
             tracks: CONFIG.tracks,
             strands: CONFIG.strands,
-            s1, s2, s3, s4, s5, s6, s7
+            employmentStatuses: CONFIG.employmentStatuses,
+            s1, s2, s3, s4, s5, s6, s7, s8
         }
 
         console.log(alumni)

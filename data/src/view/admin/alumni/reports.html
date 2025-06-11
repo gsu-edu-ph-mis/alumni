@@ -43,6 +43,7 @@
             </div>
 
             <div class="col-xl-12 mb-3">
+                <p class="mb-0 text-line-height">Employment Status: <strong>{{s8}}</strong></p>
                 <p class="mb-0 text-line-height">Batch: <strong>{{s1}}</strong></p>
                 <p class="mb-0 text-line-height">Level: <strong>{{s7}}</strong></p>
                 <p class="mb-0 text-line-height">Campus: <strong>{{s2}}</strong></p>
@@ -57,85 +58,93 @@
             </div>
         </div>
 
-        <form ref="form" v-cloak v-on:submit.prevent="onSubmit" action="/admin/alumni-records/reports" method="get" class="row mb-2 print-hidden">
-            <div class="col-xl-2 form-group mb-2">
-                <input v-model="yearGraduated" name="yearGraduated" type="search" class="form-control rounded-0" id="yearGraduated" placeholder="Type your batch...">
-            </div>
-            
-            <div class="col-xl-2 form-group mb-2">
-                <select v-model="degree" name="degree" id="degree" class="form-control" @change="checkDegree">
-                    <option value="">Select level</option>
-                    <option v-for="d in degreesList" :value="d">${d}</option>
-                </select>
-            </div>
-
-            <div class="col-xl-2 form-group mb-2">
-                <input v-model="campus" name="campus" id="campus" type="hidden" class="form-control">
-                <autocomplete
-                    initial-value=""
-                    :initial-display="campus"
-                    placeholder="Type your campus..."
-                    :source="dataSource1"
-                    input-class="form-control"
-                    :request-headers="headers"
-                    v-on:selected="onSelect1"
-                    v-on:clear="campus=''"
-                    >
-                </autocomplete>
-            </div>
-
-            <div v-if="degreeMatch == 'College' || degreeMatch == 'Graduate Studies'" class="col-xl-4">
-                <div class="row">
-                    <div class="col-xl-6 form-group mb-2">
-                        <input v-model="college" name="college" id="college" type="hidden" class="form-control">
-                        <autocomplete
-                            initial-value=""
-                            :initial-display="college"
-                            placeholder="Type your college..."
-                            :source="dataSource2"
-                            input-class="form-control"
-                            :request-headers="headers"
-                            v-on:selected="onSelect2"
-                            v-on:clear="college=''"
-                            >
-                        </autocomplete>
-                    </div>
-                    <div class="col-xl-6 form-group mb-2">
-                        <input v-model="course" name="course" id="course" type="hidden" class="form-control">
-                        <autocomplete
-                            initial-value=""
-                            :initial-display="course"
-                            placeholder="Type your course..."
-                            :source="dataSource3"
-                            input-class="form-control"
-                            :request-headers="headers"
-                            v-on:selected="onSelect3"
-                            v-on:clear="course=''"
-                            >
-                        </autocomplete>
+        <form ref="form" v-cloak v-on:submit.prevent="onSubmit" action="/admin/alumni-records/reports" method="get" class="mb-2 print-hidden">
+            <div class="row">
+                <div class="col-xl-2 form-group mb-2" :data-error="errors.employmentStatus" @click="errors.employmentStatus=false">
+                    <select v-model="employmentStatus" name="employmentStatus" id="employmentStatus" class="form-control" @change="checkEmploymentStatus">
+                        <option value="">Select employment status</option>
+                        <option v-for="emp_sat in employmentStatusesList" :value="emp_sat">${emp_sat}</option>
+                    </select>
+                </div>
+                <div class="col-xl-2 form-group mb-2">
+                    <input v-model="yearGraduated" name="yearGraduated" type="search" class="form-control rounded-0" id="yearGraduated" placeholder="Type your batch...">
+                </div>
+                
+                <div class="col-xl-2 form-group mb-2">
+                    <select v-model="degree" name="degree" id="degree" class="form-control" @change="checkDegree">
+                        <option value="">Select level</option>
+                        <option v-for="d in degreesList" :value="d">${d}</option>
+                    </select>
+                </div>
+    
+                <div class="col-xl-2 form-group mb-2">
+                    <input v-model="campus" name="campus" id="campus" type="hidden" class="form-control">
+                    <autocomplete
+                        initial-value=""
+                        :initial-display="campus"
+                        placeholder="Type your campus..."
+                        :source="dataSource1"
+                        input-class="form-control"
+                        :request-headers="headers"
+                        v-on:selected="onSelect1"
+                        v-on:clear="campus=''"
+                        >
+                    </autocomplete>
+                </div>
+    
+                <div v-if="degreeMatch == 'College' || degreeMatch == 'Graduate Studies'" class="col-xl-4">
+                    <div class="row">
+                        <div class="col-xl-6 form-group mb-2">
+                            <input v-model="college" name="college" id="college" type="hidden" class="form-control">
+                            <autocomplete
+                                initial-value=""
+                                :initial-display="college"
+                                placeholder="Type your college..."
+                                :source="dataSource2"
+                                input-class="form-control"
+                                :request-headers="headers"
+                                v-on:selected="onSelect2"
+                                v-on:clear="college=''"
+                                >
+                            </autocomplete>
+                        </div>
+                        <div class="col-xl-6 form-group mb-2">
+                            <input v-model="course" name="course" id="course" type="hidden" class="form-control">
+                            <autocomplete
+                                initial-value=""
+                                :initial-display="course"
+                                placeholder="Type your course..."
+                                :source="dataSource3"
+                                input-class="form-control"
+                                :request-headers="headers"
+                                v-on:selected="onSelect3"
+                                v-on:clear="course=''"
+                                >
+                            </autocomplete>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div v-if="degreeMatch == 'Senior High School'" class="col-xl-4">
-                <div class="row">
-                    <div class="col-xl-6 form-group mb-2">
-                        <select v-model="track" name="track" id="track" class="form-control">
-                            <option value="">Select a track</option>
-                            <option v-for="t in tracksList" :value="t">${t}</option>
-                        </select>
-                    </div>
-                    <div class="col-xl-6 form-group mb-2">
-                        <select v-model="strand" name="strand" id="strand" class="form-control">
-                            <option value="">Select a strand</option>
-                            <option v-for="s in strandsList" :value="s">${s}</option>
-                        </select>
+    
+                <div v-if="degreeMatch == 'Senior High School'" class="col-xl-4">
+                    <div class="row">
+                        <div class="col-xl-6 form-group mb-2">
+                            <select v-model="track" name="track" id="track" class="form-control">
+                                <option value="">Select a track</option>
+                                <option v-for="t in tracksList" :value="t">${t}</option>
+                            </select>
+                        </div>
+                        <div class="col-xl-6 form-group mb-2">
+                            <select v-model="strand" name="strand" id="strand" class="form-control">
+                                <option value="">Select a strand</option>
+                                <option v-for="s in strandsList" :value="s">${s}</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="col-xl-1 form-group mb-2">
-                <button id="btnSubmit" class="btn btn-success w-100">Filter</button>
+    
+                <div class="col-xl-1 form-group mb-2">
+                    <button id="btnSubmit" class="btn btn-success w-100">Filter</button>
+                </div>
             </div>
         </form>
     </div>
@@ -157,9 +166,7 @@
                         <th width="150px" class="table-v-align-center">Level</th>
                         <th width="300px" class="table-v-align-center">Course / Strand</th>
                         <th width="10px" class="text-center table-v-align-center">Batch</th>
-                        <th width="10px" class="text-center table-v-align-center">Emp. Status</th>
-                        <th width="10px" class="text-center table-v-align-center">Emp. Sector</th>
-                        <th width="10px" class="text-center table-v-align-center">Emp. Location</th>
+                        <th width="10px" class="text-center table-v-align-center">Employment</th>
                         <th width="10px" class="text-center table-v-align-center">Course Alignment</th>
                         <th width="150px" class="table-v-align-center">Position</th>
                         <th width="150px" class="table-v-align-center">Company</th>
@@ -170,7 +177,7 @@
                 {% for row in alumni %}
                     <tr>
                         <td class="text-center">{{loop.index}}</td>
-                        <td class="text-no-wrap">
+                        <td>
                             {{row.lastName}}
                             {% if row.suffix %}
                             {{row.suffix}}
@@ -250,25 +257,29 @@
                             {% endif %}
                         </td>
                         <td>
-                            {% if row.Works[0].employmentStatus %}
+                            <div>
+                                {% if row.Works[0].employmentStatus %}
                                 <span>{{row.Works[0].employmentStatus}}</span>
-                            {% else %}
-                                <span>...</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if row.Works[0].employmentSector %}
-                                <span>{{row.Works[0].employmentSector}}</span>
-                            {% else %}
-                                <span>...</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if row.Works[0].employmentLocation %}
-                                <span>{{row.Works[0].employmentLocation}}</span>
-                            {% else %}
-                                <span>...</span>
-                            {% endif %}
+                                {% else %}
+                                    <span>...</span>
+                                {% endif %}
+                            </div>
+                            <hr class="my-1">
+                            <div>
+                                {% if row.Works[0].employmentSector %}
+                                    <span>{{row.Works[0].employmentSector}}</span>
+                                {% else %}
+                                    <span>...</span>
+                                {% endif %}
+                            </div>
+                            <hr class="my-1">
+                            <div>
+                                {% if row.Works[0].employmentLocation %}
+                                    <span>{{row.Works[0].employmentLocation}}</span>
+                                {% else %}
+                                    <span>...</span>
+                                {% endif %}
+                            </div>
                         </td>
                         <td>
                             {% if row.Works[0].workProgramAlignment %}
@@ -334,6 +345,7 @@
     const degreesList = {{degrees|default([], true)|stringify|safe}}
     const tracksList = {{tracks|default([], true)|stringify|safe}}
     const strandsList = {{strands|default([], true)|stringify|safe}}
+    const employmentStatusesList = {{employmentStatuses|default([], true)|stringify|safe}}
     const vApp = new Vue({
         el: '#vApp',
         delimiters: ["${", "}"],
@@ -356,8 +368,23 @@
             course: '{{s4}}',
             track: `{{s5}}`,
             strand: `{{s6}}`,
+            employmentStatusesList: employmentStatusesList,
+            employmentStatusMatch: '{{s8}}',
+            employmentStatus: '{{s8}}',
+            errors: {
+                employmentStatus: false
+            }
         },
         methods: {
+            checkEmploymentStatus: function() {
+                var me = this;
+                me.employmentStatusMatch = me.employmentStatus
+
+                me.$nextTick(function() {
+                    me.pending = true;
+                    this.$refs.form.submit()
+                });
+            },
             downloadExcel() {
                 const xlsx = window.XLSX; // Access the library from the global window object
                 const ws = xlsx.utils.table_to_sheet(document.getElementById('table-report'));
@@ -411,9 +438,14 @@
                     });
 
                     if (submitterId === 'btnSubmit') {
+                        if (me.employmentStatus == '') {
+                            me.errors.employmentStatus = true
+                            throw new Error('Employment Status is required.');
+                        }
+
                         me.$nextTick(function() {
                             me.pending = true;
-                            me.$refs.form.submit()
+                            this.$refs.form.submit()
                         });
                     }
                 } catch (err) {
