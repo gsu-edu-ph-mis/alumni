@@ -82,7 +82,6 @@
 {{ super() }}
 <script>
     var ENV = '{{ENV}}';
-    var title = '{{app.title}}';
     const suffixesList = {{suffixes|default([], true)|stringify|safe}}
     var vApp = new Vue({
         el: '#vApp',
