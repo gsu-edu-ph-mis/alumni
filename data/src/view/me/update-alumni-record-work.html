@@ -13,7 +13,7 @@
                             <a href="/me" class="text-dark text-decor-none mr-2">
                                 <svg width="35px" height="35px" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="m9.474 5.209s-4.501 4.505-6.254 6.259c-.147.146-.22.338-.22.53s.073.384.22.53c1.752 1.754 6.252 6.257 6.252 6.257.145.145.336.217.527.217.191-.001.383-.074.53-.221.293-.293.294-.766.004-1.057l-4.976-4.976h14.692c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-14.692l4.978-4.979c.289-.289.287-.761-.006-1.054-.147-.147-.339-.221-.53-.221-.191-.001-.38.071-.525.215z" fill-rule="nonzero"/></svg>
                             </a>
-                            <span style="font-weight: 500; font-size: 24px;">Work</span>
+                            <span style="font-weight: 500; font-size: 24px;">Work Details</span>
                         </div>
                         {% include 'parts/drop-out.html' %}
                     </div>
@@ -23,15 +23,6 @@
                             {% include 'parts/flash.html' %}
                         </div>
 
-                        <div>
-                            <ul class="nav nav-tabs">
-                                <li class="nav-item">
-                                    <a class="nav-link active content-nav-btn" href="#">
-                                        <span>Work Details</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
                         <div class="tab-content p-3" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
                             <form ref="form" v-on:submit.prevent="onSubmit" action="/me/update-alumni-record/{{alumni.refNumber}}/work?_method=patch" method="POST" class="form-default">
                                 <input type="hidden" name="acsrf" value="{{acsrf}}">
@@ -97,7 +88,7 @@
                                         <label for="from" class="form-label">From <span class="text-danger">*</span></label>
                                         <input v-model="from" name="from" type="date" class="form-control" id="from">
                                     </div>
-                                    <div v-if="empStat === 'Employed' || empStat === 'Self-Employed'" class="col-xl-6 form-group" :data-error="errors.to" @click="errors.to=false">
+                                    <div v-if="empStat === 'Employed' || empStat === 'Self-Employed'" class="col-xl-6 form-group mb-2" :data-error="errors.to" @click="errors.to=false">
                                         <div class="d-flex justify-content-between">
                                             <label for="to" class="form-label">To <span class="text-danger">*</span></label>
                                             <div class="custom-control custom-switch">
@@ -109,7 +100,7 @@
                                     </div>
                 
                                     <div class="col-xl-12">
-                                        <div class="form-group mb-0 d-flex">
+                                        <div class="form-group mt-2 mb-0 d-flex">
                                             <input :value="payload" type="hidden" name="payload" />
                                             <button id="btnSubmit" class="btn btn-success flex-grow-1">${updateText}</button>
                                         </div>

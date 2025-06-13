@@ -887,7 +887,7 @@ router.get('/admin/alumni-records/:almId/edit/basic-info', middlewares.guardRout
             suffixes: CONFIG.suffixes,
             editAlm
         }
-
+        
         res.render('admin/alumni/update-basic-info.html', data);
     } catch (err) {
         console.error(err)
@@ -897,8 +897,9 @@ router.get('/admin/alumni-records/:almId/edit/basic-info', middlewares.guardRout
 });
 // C.2 Submit Update Alumni Records - Basic Info.
 router.patch('/admin/alumni-records/:almId/edit/basic-info', middlewares.antiCsrfCheck, middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
+    let editAlm = res.alm
+
     try {
-        let editAlm = res.alm
         let payload = JSON.parse(req?.body?.payload)
         console.log(payload)
 
@@ -1019,7 +1020,7 @@ router.patch('/admin/alumni-records/:almId/edit/basic-info', middlewares.antiCsr
     } catch (err) {
         console.error(err)
         flash.error(req, 'alumni', err.message);
-        return res.redirect('/admin/alumni-records')
+        return res.redirect(`/admin/alumni-records/${editAlm.refNumber}/edit/basic-info`)
     }
 });
 // C.3 Display Update Alumni Records - Education
@@ -1051,8 +1052,9 @@ router.get('/admin/alumni-records/:almId/edit/education', middlewares.guardRoute
 });
 // C.4 Submit Update Alumni Records - Education
 router.patch('/admin/alumni-records/:almId/edit/education', middlewares.antiCsrfCheck, middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
+    let editAlm = res.alm
+
     try {
-        let editAlm = res.alm
         let payload = JSON.parse(req?.body?.payload)
         console.log(payload)
 
@@ -1134,7 +1136,7 @@ router.patch('/admin/alumni-records/:almId/edit/education', middlewares.antiCsrf
     } catch (err) {
         console.error(err)
         flash.error(req, 'alumni', err.message);
-        return res.redirect('/admin/alumni-records')
+        return res.redirect(`/admin/alumni-records/${editAlm.refNumber}/edit/education`)
     }
 });
 // C.5 Display Update Alumni Records - Work
@@ -1166,8 +1168,9 @@ router.get('/admin/alumni-records/:almId/edit/work', middlewares.guardRoute(['up
 });
 // C.6 Submit Update Alumni Records - Work
 router.patch('/admin/alumni-records/:almId/edit/work', middlewares.antiCsrfCheck, middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
+    let editAlm = res.alm
+
     try {
-        let editAlm = res.alm
         let payload = JSON.parse(req?.body?.payload)
         console.log(payload)
 
@@ -1274,9 +1277,28 @@ router.patch('/admin/alumni-records/:almId/edit/work', middlewares.antiCsrfCheck
     } catch (err) {
         console.error(err)
         flash.error(req, 'alumni', err.message);
+        return res.redirect(`/admin/alumni-records/${editAlm.refNumber}/edit/work`)
+    }
+});
+// C.7 Display Create Alumni Records - Eligibility
+router.get('/admin/alumni-records/:almId/create/eligibility', middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
+    try {
+        let createAlm = res.alm
+
+        let data = {
+            flash: flash.get(req, 'alumni'),
+            eligibilityTypes: CONFIG.eligibilityTypes,
+            createAlm
+        }
+
+        res.render('admin/alumni/create-eligibility.html', data);
+    } catch (err) {
+        console.error(err)
+        flash.error(req, 'alumni', err.message);
         return res.redirect('/admin/alumni-records')
     }
 });
+
 // C.7 Upload Alumni Profile Picture
 router.post('/admin/upload/:almId', middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
     try {

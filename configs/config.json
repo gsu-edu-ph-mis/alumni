@@ -101,13 +101,11 @@
     "Senior High School",
     "College",
     "Graduate Studies",
-    "Vocational",
-    "Others"
+    "Vocational"
   ],
   "tracks": [
     "Academic Track",
-    "Technical-Vocational-Livelihood (TVL) Track",
-    "Others"
+    "Technical-Vocational-Livelihood (TVL) Track"
   ],
   "strands": [
     "Science, Technology, Engineering, and Mathematics (STEM)",
@@ -117,7 +115,17 @@
     "Home Economics (HE)",
     "Information and Communications Technology (ICT)",
     "Agri-Fishery Arts (AFA)",
-    "Industrial Arts (IA)",
-    "Others"
+    "Industrial Arts (IA)"
+  ],
+  "eligibilityTypes": [
+    "Career Service Sub-Professional",
+    "Career Service Professional",
+    "Career Service Executive",
+    "Stenographer",
+    "PD 997 – Scientific and Technological Specialist",
+    "EO132/790 – Veteran Preference Rating",
+    "PD 907 – Honor Graduate",
+    "RA 7883 – Barangay Health Worker",
+    "Barangay Official"
   ]
 }

@@ -1,0 +1,102 @@
+{% extends "document.html" %}
+
+{% block body %}
+<div v-bind:data-pending="pending" class="col-md-12">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-start">
+            <h1 class="h3">Add Eligibility</h1>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <a href="/admin/alumni-records/{{createAlm.refNumber}}/view#content4" class="btn btn-sm btn-outline-primary content-nav-btn">
+                    <svg width="18px" height="18px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+                        <title>Back</title>
+                        <path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"/><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"/>
+                    </svg>
+                    <span>Back</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% include 'parts/flash.html' %}
+    <div id="vApp" v-cloak>
+        <div class="tab-content p-3">
+            <form ref="form" v-on:submit.prevent="onSubmit" action="/admin/alumni-records/{{editAlm.refNumber}}/edit/work?_method=patch" method="POST" class="form-default">
+                <input type="hidden" name="acsrf" value="{{acsrf}}">
+
+                <div class="row">                    
+                    <div class="col-xl-6 form-group mb-2" :data-error="errors.eligibilityType" @click="errors.eligibilityType=false">
+                        <label for="eligibilityType" class="form-label">Employment Status <span class="text-danger">*</span></label>
+                        <select v-model="eligibilityType" name="eligibilityType" id="eligibilityType" class="form-control">
+                            <option value=""></option>
+                            <option v-for="s in eligibilityTypesList" :value="s">${s}</option>
+                            <option value="Others">Others, please specify:</option>
+                        </select>
+                    </div>
+
+                    <div class="col-xl-12">
+                        <div class="form-group mt-2 mb-0 d-flex">
+                            <input :value="payload" type="hidden" name="payload" />
+                            <button id="btnSubmit" class="btn btn-success flex-grow-1">${saveText}</button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{app.url}}/js/rest-helpers.js"></script>
+<script>
+    const ENV = '{{ENV}}';
+    const eligibilityTypesList = {{eligibilityTypes|default([], true)|stringify|safe}}
+    const vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        data: {
+            pending: false,
+            eligibilityTypesList: eligibilityTypesList,
+            eligibilityType: '',
+            errors: {
+                eligibilityType: false
+            }
+        },
+        computed: {
+            saveText: function saveText() {
+                return this.pending ? 'Saving...' : 'Save';
+            },
+            payload: function payload() {
+                var me = this;
+                return JSON.stringify({
+                    eligibilityType: me.eligibilityType
+                });
+            }
+        },
+        methods: {
+            onSubmit: function(e){
+                try {
+                    const me = this;
+
+                    Object.keys(this.$data).forEach(key => {
+                        if(typeof this[key] === 'string'){
+                            this[key] = this[key].trim()
+                        }
+                    });
+
+                    me.$nextTick(function() {
+                        me.pending = true;
+                        me.$refs.form.submit();
+                    });
+
+                } catch (err) {
+                    alert(err.message)
+                }
+            }
+        }
+        
+    });
+</script>
+{% endblock %}

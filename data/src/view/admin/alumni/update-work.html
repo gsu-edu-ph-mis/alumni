@@ -4,7 +4,7 @@
 <div v-bind:data-pending="pending" class="col-md-12">
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <div class="d-flex align-items-start">
-            <h1 class="h3">Update Alumni Record</h1>
+            <h1 class="h3">Update Work Details</h1>
         </div>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group mr-2">
@@ -20,15 +20,6 @@
     </div>
     {% include 'parts/flash.html' %}
     <div id="vApp" v-cloak>
-        <div>
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active content-nav-btn" href="#">
-                        <span>Work Details</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
         <div class="tab-content p-3">
             <form ref="form" v-on:submit.prevent="onSubmit" action="/admin/alumni-records/{{editAlm.refNumber}}/edit/work?_method=patch" method="POST" class="form-default">
                 <input type="hidden" name="acsrf" value="{{acsrf}}">
@@ -94,7 +85,7 @@
                         <label for="from" class="form-label">From <span class="text-danger">*</span></label>
                         <input v-model="from" name="from" type="date" class="form-control" id="from">
                     </div>
-                    <div v-if="empStat === 'Employed' || empStat === 'Self-Employed'" class="col-xl-6 form-group" :data-error="errors.to" @click="errors.to=false">
+                    <div v-if="empStat === 'Employed' || empStat === 'Self-Employed'" class="col-xl-6 form-group mb-2" :data-error="errors.to" @click="errors.to=false">
                         <div class="d-flex justify-content-between">
                             <label for="to" class="form-label">To <span class="text-danger">*</span></label>
                             <div class="custom-control custom-switch">
@@ -106,7 +97,7 @@
                     </div>
 
                     <div class="col-xl-12">
-                        <div class="form-group mb-0 d-flex">
+                        <div class="form-group mt-2 mb-0 d-flex">
                             <input :value="payload" type="hidden" name="payload" />
                             <button id="btnSubmit" class="btn btn-success flex-grow-1">${updateText}</button>
                         </div>
@@ -231,12 +222,5 @@
         }
         
     });
-
-    window.addEventListener("hashchange", function (event) {
-        var currentPath = window.location.hash;
-        if (vApp.page !== currentPath) {
-            vApp.page = currentPath;
-        }
-    }, false);
 </script>
 {% endblock %}
