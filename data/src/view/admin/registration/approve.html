@@ -132,7 +132,7 @@
         },
         methods: {
             regen: async function(){
-                const me = this
+                var me = this
                 let responseJson = await postAsync(`/admin/users/regen`, {
                     acsrf: `{{acsrf}}`,
                 })
@@ -140,19 +140,19 @@
             },
             onSubmit: function(e){
                 try {
-                    const me = this;
-                    const submitterId = e.submitter.id;
+                    var me = this;
+                    var submitterId = e.submitter.id;
 
                     if (submitterId === 'btnPreview') {
-                        const url = window.location.href.replace(/\/approve$/, `/preview?username=${me.username}&password=${me.password}&isSubmitted=false`);
+                        var url = window.location.href.replace(/\/approve$/, `/preview?username=${me.username}&password=${me.password}&isSubmitted=false`);
 
                         window.open(url, '_blank');
                     }
 
                     if (submitterId === 'btnSubmit') {
-                        Object.keys(this.$data).forEach(key => {
-                            if(typeof this[key] === 'string'){
-                                this[key] = this[key].trim()
+                        Object.keys(me.$data).forEach(key => {
+                            if(typeof me[key] === 'string'){
+                                me[key] = me[key].trim()
                             }
                         });
 
@@ -183,7 +183,7 @@
                             me.email = me.email.trim();
                             
                             // Regular expression to validate email format
-                            const emailRegex = /^[\w-.\+]+@([\w-]+\.)+[\w-]{2,4}$/g;
+                            var emailRegex = /^[\w-.\+]+@([\w-]+\.)+[\w-]{2,4}$/g;
                             
                             // Check if the email format is valid
                             if (!emailRegex.test(me.email)) {

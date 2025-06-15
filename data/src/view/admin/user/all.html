@@ -65,14 +65,14 @@
                                     <span class="list-badge-round-micro bg-danger"></span>
                                 {% endif %}
                             </td>
-                            <td><a href="/admin/users/{{row.id}}">{{row.username}}</a></td>
+                            <td><a href="/admin/users/{{row.id}}/edit">{{row.username}}</a></td>
                             <td>{{row.roles|capitalize}}</td>
                             <td class="small">{{row.createdAt|format_date('MMM DD, YYYY hh:mm A')}}</td>
                             <td class="text-center">
-                                <div class="dropdown">
+                                <div class="dropdown dropleft">
                                     <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-sm btn-outline-secondary rounded">...</button> 
                                     <div class="dropdown-menu">
-                                        <a href="/admin/users/{{row.id}}" class="dropdown-item">Edit</a> 
+                                        <a href="/admin/users/{{row.id}}/edit" class="dropdown-item">Edit</a> 
                                         <a href="/admin/users/{{row.id}}/isActive" class="dropdown-item">
                                         {% if row.active %}
                                             Deactivate
@@ -137,7 +137,7 @@
         methods: {
             onSubmit: function(){
                 try {
-                    const me = this;
+                    var me = this;
                     me.searchKey = me.searchKey.trim()
 
                     if(!me.searchKey){

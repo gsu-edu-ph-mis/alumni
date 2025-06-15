@@ -1,0 +1,177 @@
+{% extends "document-me.html" %}
+
+{% block body %}
+<div v-bind:data-pending="pending" class="col-md-12 px-0">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-6 col-md-8 ml-auto mr-auto">
+                <div class="row bg-white shadow" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+
+                    <div class="col-lg-12 d-flex flex-row justify-content-between align-items-center py-0" style="background-color: #eeeeee;">
+                        <div class="d-flex flex-row justify-content-center align-items-center">
+                            <a href="/me/eligibility" class="text-dark text-decor-none mr-2">
+                                <svg width="35px" height="35px" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="m9.474 5.209s-4.501 4.505-6.254 6.259c-.147.146-.22.338-.22.53s.073.384.22.53c1.752 1.754 6.252 6.257 6.252 6.257.145.145.336.217.527.217.191-.001.383-.074.53-.221.293-.293.294-.766.004-1.057l-4.976-4.976h14.692c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-14.692l4.978-4.979c.289-.289.287-.761-.006-1.054-.147-.147-.339-.221-.53-.221-.191-.001-.38.071-.525.215z" fill-rule="nonzero"/></svg>
+                            </a>
+                            <span style="font-weight: 500; font-size: 24px;">Edit Eligibility</span>
+                        </div>
+                        {% include 'parts/drop-out.html' %}
+                    </div>
+
+                    <div id="vApp" v-cloak class="col-lg-12 px-0">
+                        <div class="col-lg-12 pt-3">
+                            {% include 'parts/flash.html' %}
+                        </div>
+
+                        <div class="tab-content tab-content-border-top-none p-3" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+                            
+                            <form ref="form" v-on:submit.prevent="onSubmit" action="/me/{{editAlm.refNumber}}/eligibility/{{editAlmEligibility.refNumber}}/edit?_method=patch" method="POST" class="form-default">
+                                <input type="hidden" name="acsrf" value="{{acsrf}}">
+                
+                                <div class="row">                    
+                                    <div class="col-xl-12 form-group mb-2" :data-error="errors.eligibilityType" @click="errors.eligibilityType=false">
+                                        <label for="eligibilityType" class="form-label">Type of Eligibility <span class="text-danger">*</span></label>
+                                        <select v-model="eligibilityType" name="eligibilityType" id="eligibilityType" class="form-control" @change="checkEligibilityType">
+                                            <option value=""></option>
+                                            <option v-for="s in eligibilityTypesList" :value="s">${s}</option>
+                                            <option value="Others">Others</option>
+                                        </select>
+                                    </div>
+                                    <div v-if="eligibilityTypeMatch == 'Others'" class="col-xl-12 form-group mb-2" :data-error="errors.specifyEligibilityType" @click="errors.specifyEligibilityType=false">
+                                        <label for="specifyEligibilityType" class="form-label">Please specify</label>
+                                        <input v-model="specifyEligibilityType" name="specifyEligibilityType" type="text" class="form-control" id="specifyEligibilityType">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xl-12 form-group mb-2" :data-error="errors.examDate" @click="errors.examDate=false">
+                                        <label for="examDate" class="form-label">Exam Date / Conferment <span class="text-danger">*</span></label>
+                                        <input v-model="examDate" name="examDate" type="date" class="form-control" id="examDate">
+                                    </div>
+                                    <div class="col-xl-12 form-group mb-2" :data-error="errors.examPlace" @click="errors.examPlace=false">
+                                        <label for="examPlace" class="form-label">Place of Exam / Conferment <span class="text-danger">*</span></label>
+                                        <input v-model="examPlace" name="examPlace" type="text" class="form-control" id="examPlace">
+                                    </div>
+                                    <div class="col-xl-6 form-group mb-2" :data-error="errors.rating" @click="errors.rating=false">
+                                        <label for="rating" class="form-label">Rating (If Applicable)</label>
+                                        <input v-model="rating" name="rating" type="text" class="form-control" id="rating">
+                                    </div>
+                                    <div class="col-xl-6 form-group mb-2" :data-error="errors.licenseNumber" @click="errors.licenseNumber=false">
+                                        <label for="licenseNumber" class="form-label">License Number (If applicable)</label>
+                                        <input v-model="licenseNumber" name="licenseNumber" type="text" class="form-control" id="licenseNumber">
+                                    </div>
+                                    <div class="col-xl-12 form-group mb-2" :data-error="errors.validityDate" @click="errors.validityDate=false">
+                                        <label for="validityDate" class="form-label">Date of Validity (If applicable)</label>
+                                        <input v-model="validityDate" name="validityDate" type="date" class="form-control" id="validityDate">
+                                    </div>
+                
+                                    <div class="col-xl-12">
+                                        <div class="form-group mt-2 mb-0 d-flex">
+                                            <input :value="payload" type="hidden" name="payload" />
+                                            <button id="btnSubmit" class="btn btn-success flex-grow-1">${saveText}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                
+                            </form>
+
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{app.url}}/js/rest-helpers.js"></script>
+<script>
+    const ENV = '{{ENV}}';
+    const eligibilityTypesList = {{eligibilityTypes|default([], true)|stringify|safe}}
+    const vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        data: {
+            pending: false,
+            isOthers: `{{editAlmEligibility.isOthers}}`,
+            eligibilityTypeMatch: '',
+            eligibilityTypesList: eligibilityTypesList,
+            specifyEligibilityType: `{{editAlmEligibility.eligibilityType}}`,
+            eligibilityType: '',
+            examDate: `{{editAlmEligibility.examDate|format_date('YYYY-MM-DD')}}`,
+            examPlace: `{{editAlmEligibility.examPlace}}`,
+            rating: `{{editAlmEligibility.rating}}`,
+            licenseNumber: `{{editAlmEligibility.licenseNumber}}`,
+            validityDate: `{{editAlmEligibility.validityDate|format_date('YYYY-MM-DD')}}`,
+            errors: {
+                eligibilityType: false,
+                examDate: false,
+                examPlace: false,
+                rating: false,
+                licenseNumber: false,
+                validityDate: false
+            }
+        },
+        computed: {
+            saveText: function saveText() {
+                return this.pending ? 'Saving...' : 'Save';
+            },
+            payload: function payload() {
+                var me = this;
+                return JSON.stringify({
+                    eligibilityType: me.eligibilityType,
+                    specifyEligibilityType: me.specifyEligibilityType,
+                    examDate: me.examDate,
+                    examPlace: me.examPlace,
+                    rating: me.rating,
+                    licenseNumber: me.licenseNumber,
+                    validityDate: me.validityDate
+                });
+            }
+        },
+        mounted: function mounted() {
+            this.setEligibilityDetails();
+        },
+        methods: {
+            setEligibilityDetails: function() {
+                var me = this;
+                if (me.isOthers == 'true') {
+                    me.eligibilityType = "Others";
+                    me.eligibilityTypeMatch = "Others";
+                } else {
+                    me.eligibilityType = me.specifyEligibilityType;
+                    me.eligibilityTypeMatch = "";
+                }
+            },
+            checkEligibilityType: function() {
+                var me = this;
+                me.eligibilityTypeMatch = me.eligibilityType
+                me.specifyEligibilityType = ""
+            },
+            onSubmit: function(e){
+                try {
+                    var me = this;
+
+                    Object.keys(me.$data).forEach(key => {
+                        if(typeof me[key] === 'string'){
+                            me[key] = me[key].trim()
+                        }
+                    });
+
+                    me.$nextTick(function() {
+                        me.pending = true;
+                        me.$refs.form.submit();
+                    });
+
+                } catch (err) {
+                    alert(err.message)
+                }
+            }
+        }
+        
+    });
+</script>
+{% endblock %}

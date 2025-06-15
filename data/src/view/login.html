@@ -67,7 +67,8 @@
                 return this.pending ? 'Logging in...' : 'Login';
             },
             disabled: function(){
-                return (!this.username || !this.password || this.pending);
+                var me = this
+                return (!me.username || !me.password || me.pending);
             }
         },
         mounted: function mounted() {
@@ -80,10 +81,11 @@
         },
         methods: {
             togglePassword: function () {
-                if (this.passwordType === "password") {
-                    return this.passwordType = "text";
+                var me = this
+                if (me.passwordType === "password") {
+                    return me.passwordType = "text";
                 }
-                this.passwordType = "password"
+                me.passwordType = "password"
             },
             onSubmit: function(){
                 var me = this;

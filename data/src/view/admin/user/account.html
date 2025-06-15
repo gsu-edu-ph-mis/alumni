@@ -100,7 +100,8 @@
         },
         computed: {
             disabled: function(){
-                return (!this.currPassword || !this.newPassword || this.pending);
+                var me = this;
+                return (!me.currPassword || !me.newPassword || me.pending);
             },
             changePassText: function changePassText() {
                 return this.pending ? 'Validating...' : 'Changed Password';
@@ -108,13 +109,14 @@
         },
         methods: {
             togglePassword: function () {
-                if (this.passwordType === "password") {
-                    return this.passwordType = "text";
+                var me = this;
+                if (me.passwordType === "password") {
+                    return me.passwordType = "text";
                 }
-                this.passwordType = "password"
+                me.passwordType = "password"
             },
             regen: async function(){
-                const me = this
+                var me = this
                 let responseJson = await postAsync(`/admin/users/regen`, {
                     acsrf: `{{acsrf}}`,
                 })
@@ -122,11 +124,11 @@
             },
             onSubmit: function(){
                 try {
-                    const me = this;
+                    var me = this;
 
-                    Object.keys(this.$data).forEach(key => {
-                        if(typeof this[key] === 'string'){
-                            this[key] = this[key].trim()
+                    Object.keys(me.$data).forEach(key => {
+                        if(typeof me[key] === 'string'){
+                            me[key] = me[key].trim()
                         }
                     });
 

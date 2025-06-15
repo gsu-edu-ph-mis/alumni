@@ -31,10 +31,6 @@
         <p>None found. 
         {% if searchKey %}
             <a href="/admin/alumni-records">Go back</a></p>
-        {% endif %}
-
-        {% if searchKey %}
-            <a href="/admin/alumni-records">Go back</a></p>
         {% else %}
             <div class="col-xl-12 alert alert-warning" role="alert">
                 <i>Reload the page to view updated list of alumni records.</i>
@@ -131,7 +127,7 @@
                                 {% endif %}
                             </td>
                             <td class="text-center">
-                                <div class="dropdown">
+                                <div class="dropdown dropleft">
                                     <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-sm btn-outline-secondary rounded">...</button> 
                                     <div class="dropdown-menu">
                                         <a href="/admin/alumni-records/{{row.refNumber}}/view" class="dropdown-item">View</a> 
@@ -190,7 +186,7 @@
         methods: {
             onSubmit: function(){
                 try {
-                    const me = this;
+                    var me = this;
                     me.searchKey = me.searchKey.trim()
 
                     if(!me.searchKey){

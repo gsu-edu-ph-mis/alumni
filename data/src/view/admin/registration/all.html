@@ -66,7 +66,7 @@
                             </a></td>
                             <td class="small">{{row.createdAt|format_date('MMM DD, YYYY hh:mm A')}}</td>
                             <td class="text-center">
-                                <div class="dropdown">
+                                <div class="dropdown dropleft">
                                     <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-sm btn-outline-secondary rounded">...</button> 
                                     <div class="dropdown-menu">
                                         <a href="/admin/registrations/{{row.refNumber}}/approve" class="dropdown-item">Approve</a> 
@@ -126,7 +126,7 @@
         methods: {
             onSubmit: function(){
                 try {
-                    const me = this;
+                    var me = this;
                     me.searchKey = me.searchKey.trim()
 
                     if(!me.searchKey){

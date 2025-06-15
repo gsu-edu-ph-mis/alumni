@@ -65,7 +65,7 @@
         mixins: [],
         methods: {
             copyText: function() {
-                const refNoText = this.$el.querySelector('#refNo');
+                var refNoText = this.$el.querySelector('#refNo');
                 navigator.clipboard.writeText(refNoText.textContent).then(() => {
                     throw new Error('Reference Number copied to clipboard.');
                 }).catch(err => {

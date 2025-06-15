@@ -36,7 +36,7 @@
         delimiters: ["${", "}"],
         methods: {
             copyText: function() {
-                const emailText = this.$el.querySelector('#email');
+                var emailText = this.$el.querySelector('#email');
                 navigator.clipboard.writeText(emailText.value).then(() => {
                     throw new Error('Email copied to clipboard.');
                 }).catch(err => {

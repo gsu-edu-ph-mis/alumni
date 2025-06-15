@@ -4,11 +4,11 @@
 <div v-bind:data-pending="pending" class="col-md-12">
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <div class="d-flex align-items-start">
-            <h1 class="h3">Add Eligibility</h1>
+            <h1 class="h3">Edit Eligibility</h1>
         </div>
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group mr-2">
-                <a href="/admin/alumni-records/{{createAlm.refNumber}}/view#content4" class="btn btn-sm btn-outline-primary content-nav-btn">
+                <a href="/admin/alumni-records/{{editAlm.refNumber}}/view#content4" class="btn btn-sm btn-outline-primary content-nav-btn">
                     <svg width="18px" height="18px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
                         <title>Back</title>
                         <path fill="currentColor" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"/><path fill="currentColor" d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"/>
@@ -21,7 +21,7 @@
     {% include 'parts/flash.html' %}
     <div id="vApp" v-cloak>
         <div class="tab-content p-3">
-            <form ref="form" v-on:submit.prevent="onSubmit" action="/admin/alumni-records/{{createAlm.refNumber}}/eligibility/create" method="POST" class="form-default">
+            <form ref="form" v-on:submit.prevent="onSubmit" action="/admin/alumni-records/{{editAlm.refNumber}}/eligibility/{{editAlmEligibility.refNumber}}/edit?_method=patch" method="POST" class="form-default">
                 <input type="hidden" name="acsrf" value="{{acsrf}}">
 
                 <div class="row">                    
@@ -84,15 +84,16 @@
         delimiters: ["${", "}"],
         data: {
             pending: false,
+            isOthers: `{{editAlmEligibility.isOthers}}`,
             eligibilityTypeMatch: '',
             eligibilityTypesList: eligibilityTypesList,
-            specifyEligibilityType: '',
+            specifyEligibilityType: `{{editAlmEligibility.eligibilityType}}`,
             eligibilityType: '',
-            examDate: '',
-            examPlace: '',
-            rating: '',
-            licenseNumber: '',
-            validityDate: '',
+            examDate: `{{editAlmEligibility.examDate|format_date('YYYY-MM-DD')}}`,
+            examPlace: `{{editAlmEligibility.examPlace}}`,
+            rating: `{{editAlmEligibility.rating}}`,
+            licenseNumber: `{{editAlmEligibility.licenseNumber}}`,
+            validityDate: `{{editAlmEligibility.validityDate|format_date('YYYY-MM-DD')}}`,
             errors: {
                 eligibilityType: false,
                 examDate: false,
@@ -119,7 +120,20 @@
                 });
             }
         },
+        mounted: function mounted() {
+            this.setEligibilityDetails();
+        },
         methods: {
+            setEligibilityDetails: function() {
+                var me = this;
+                if (me.isOthers == 'true') {
+                    me.eligibilityType = "Others";
+                    me.eligibilityTypeMatch = "Others";
+                } else {
+                    me.eligibilityType = me.specifyEligibilityType;
+                    me.eligibilityTypeMatch = "";
+                }
+            },
             checkEligibilityType: function() {
                 var me = this;
                 me.eligibilityTypeMatch = me.eligibilityType

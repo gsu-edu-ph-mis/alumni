@@ -31,7 +31,8 @@ module.exports = {
                 UserVerification: require('./models/user-verification')('UserVerification', sequelize),
                 Education: require('./models/education')('Education', sequelize),
                 Work: require('./models/work')('Work', sequelize),
-                PasswordReset: require('./models/password-reset')('PasswordReset', sequelize)
+                PasswordReset: require('./models/password-reset')('PasswordReset', sequelize),
+                Eligibility: require('./models/eligibility')('Eligibility', sequelize)
             };
 
             // Define associations of models Alumni and Education
@@ -41,6 +42,10 @@ module.exports = {
             // Define association between Alumni and Work
             models.Alumni.hasMany(models.Work, { foreignKey: 'almId', sourceKey: 'refNumber' });
             models.Work.belongsTo(models.Alumni, { foreignKey: 'almId', targetKey: 'refNumber' });
+
+            // Define association between Alumni and Eligibility
+            models.Alumni.hasMany(models.Eligibility, { foreignKey: 'almId', sourceKey: 'refNumber' });
+            models.Eligibility.belongsTo(models.Alumni, { foreignKey: 'almId', targetKey: 'refNumber' });
 
             return models;
         } catch (error) {

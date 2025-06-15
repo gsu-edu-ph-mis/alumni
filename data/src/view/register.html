@@ -137,21 +137,21 @@
         },
         mounted: function mounted() {
             var me = this;
-            
             me.role = 'alumni'
             me.page = window.location.hash || '#step1';
         },
         methods: {
             togglePassword: function togglePassword() {
-                if (this.passwordType === "password") {
-                    return this.passwordType = "text";
+                var me = this
+                if (me.passwordType === "password") {
+                    return me.passwordType = "text";
                 }
-                this.passwordType = "password";
+                me.passwordType = "password";
             },
             onSubmit: function onSubmit(e) {
                 try {
                     var me = this;
-                    const submitterId = e.submitter.id;
+                    var submitterId = e.submitter.id;
 
                     if (submitterId === 'btnNext') {
                         if (!me.firstName) {
@@ -172,7 +172,7 @@
                             me.email = me.email.trim();
                             
                             // Regular expression to validate email format
-                            const emailRegex = /^[\w-.\+]+@([\w-]+\.)+[\w-]{2,4}$/g;
+                            var emailRegex = /^[\w-.\+]+@([\w-]+\.)+[\w-]{2,4}$/g;
                             
                             // Check if the email format is valid
                             if (!emailRegex.test(me.email)) {

@@ -8,10 +8,10 @@
             <div class="col-lg-6 col-md-8 ml-auto mr-auto">
                 <div class="row bg-white shadow" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; overflow: hidden;">
 
-                    <div class="col-lg-12 d-flex flex-row justify-content-between align-items-center py-3" style="background-color: #eeeeee;">
+                    <div class="col-lg-12 d-flex flex-row justify-content-between align-items-center py-0" style="background-color: #eeeeee;">
                         <div class="d-flex flex-row justify-content-center align-items-center">
                             <a href="/"><img src="/images/logo-sm-label.png" width="35" alt=""></a>
-                            <span class="ml-2 text-logo">{{app.title}}</span>
+                            <span class="ml-2 text-logo">{{CONFIG.app.title}}</span>
                         </div>
                         {% include 'parts/drop-out.html' %}
                     </div>
@@ -88,7 +88,8 @@
         },
         computed: {
             disabled: function(){
-                return (!this.currPassword || !this.newPassword || this.pending);
+                var me = this
+                return (!me.currPassword || !me.newPassword || me.pending);
             },
             changePassText: function changePassText() {
                 return this.pending ? 'Validating...' : 'Changed Password';
@@ -96,13 +97,14 @@
         },
         methods: {
             togglePassword: function () {
-                if (this.passwordType === "password") {
-                    return this.passwordType = "text";
+                var me = this
+                if (me.passwordType === "password") {
+                    return me.passwordType = "text";
                 }
-                this.passwordType = "password"
+                me.passwordType = "password"
             },
             regen: async function(){
-                const me = this
+                var me = this
                 let responseJson = await postAsync(`/me/regen`, {
                     acsrf: `{{acsrf}}`,
                 })
@@ -110,11 +112,11 @@
             },
             onSubmit: function(){
                 try {
-                    const me = this;
+                    var me = this;
 
-                    Object.keys(this.$data).forEach(key => {
-                        if(typeof this[key] === 'string'){
-                            this[key] = this[key].trim()
+                    Object.keys(me.$data).forEach(key => {
+                        if(typeof me[key] === 'string'){
+                            me[key] = me[key].trim()
                         }
                     });
 

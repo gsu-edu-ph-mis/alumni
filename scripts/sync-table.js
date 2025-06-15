@@ -9,6 +9,7 @@
  * node scripts/sync-table.js Education install
  * node scripts/sync-table.js Work install
  * node scripts/sync-table.js PasswordReset install
+ * node scripts/sync-table.js Eligibility install
  */
 // Core modules
 const path = require('path')

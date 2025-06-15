@@ -382,28 +382,29 @@
 
                 me.$nextTick(function() {
                     me.pending = true;
-                    this.$refs.form.submit()
+                    me.$refs.form.submit()
                 });
             },
             downloadExcel() {
-                const xlsx = window.XLSX; // Access the library from the global window object
-                const ws = xlsx.utils.table_to_sheet(document.getElementById('table-report'));
-                const wb = xlsx.utils.book_new();
+                var xlsx = window.XLSX; // Access the library from the global window object
+                var ws = xlsx.utils.table_to_sheet(document.getElementById('table-report'));
+                var wb = xlsx.utils.book_new();
                 xlsx.utils.book_append_sheet(wb, ws, 'Alumni Data');
 
                 // Get the current date and time
-                const now = new Date();
-                const formattedDate = now.toISOString().slice(0, 10); // e.g., "2023-06-03"
-                const formattedTime = now.toTimeString().slice(0, 8).replace(/:/g, '-'); // e.g., "14-30-00"
+                var now = new Date();
+                var formattedDate = now.toISOString().slice(0, 10); // e.g., "2023-06-03"
+                var formattedTime = now.toTimeString().slice(0, 8).replace(/:/g, '-'); // e.g., "14-30-00"
 
                 // Construct the filename with date and time
-                const filename = `alumni_data_${formattedDate}_${formattedTime}.xlsx`;
+                var filename = `alumni_data_${formattedDate}_${formattedTime}.xlsx`;
 
                 // Export the workbook
                 xlsx.writeFile(wb, filename);
             },
             checkDegree: function() {
-                this.degreeMatch = this.degree
+                var me = this;
+                me.degreeMatch = me.degree
             },
             btnPrint: function(){
                 window.print();  
@@ -429,11 +430,11 @@
             onSubmit: function onSubmit(e){
                 try {
                     var me = this;
-                    const submitterId = e.submitter.id;
+                    var submitterId = e.submitter.id;
                     
-                    Object.keys(this.$data).forEach(key => {
-                        if(typeof this[key] === 'string'){
-                            this[key] = this[key].trim()
+                    Object.keys(me.$data).forEach(key => {
+                        if(typeof me[key] === 'string'){
+                            me[key] = me[key].trim()
                         }
                     });
 
@@ -445,7 +446,7 @@
 
                         me.$nextTick(function() {
                             me.pending = true;
-                            this.$refs.form.submit()
+                            me.$refs.form.submit()
                         });
                     }
                 } catch (err) {

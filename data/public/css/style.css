@@ -297,6 +297,10 @@ div[data-pending="true"]:after {
     width: 250px;
     background-color: #FFFFFF;
     border: 1px solid #115296;
+    z-index: 100;
+}
+.about-button-anchor-right {
+    margin-right: -15px !important;
 }
 .about-dropdown-wrapper {
     width: 100%;
@@ -315,6 +319,11 @@ div[data-pending="true"]:after {
 .about-dropdown-item:hover {
     background-color: #115296;
     color: #FFFFFF;
+    cursor: pointer;
+}
+.about-dropdown-item-danger {
+    background-color: #dc3545 !important;
+    color: #FFFFFF !important;
     cursor: pointer;
 }
 
@@ -760,6 +769,10 @@ div.focusable:focus-within {
     border: 1px solid #dee2e6;
     margin-top: -1px;
 }
+.tab-content-border-top-none {
+    border-top: none !important;
+    padding-top: 0 !important;
+}
 
 
 .brand h1 {
@@ -992,6 +1005,9 @@ button.btn-eye[data-state="text"] svg:nth-child(2) {
     }
     .table thead tr th, .table tbody tr td {
         font-size: 12px;
+    }
+    .table-cell-hidden {
+        display: none;
     }
 }
 

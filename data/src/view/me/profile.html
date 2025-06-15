@@ -8,10 +8,10 @@
             <div class="col-lg-6 col-md-8 ml-auto mr-auto">
                 <div class="row bg-white shadow" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; overflow: hidden;">
 
-                    <div class="col-lg-12 d-flex flex-row justify-content-between align-items-center py-3" style="background-color: #eeeeee;">
+                    <div class="col-lg-12 d-flex flex-row justify-content-between align-items-center py-0" style="background-color: #eeeeee;">
                         <div class="d-flex flex-row justify-content-center align-items-center">
                             <a href="/"><img src="/images/logo-sm-label.png" width="35" alt=""></a>
-                            <span class="ml-2 text-logo">{{app.title}}</span>
+                            <span class="ml-2 text-logo">{{CONFIG.app.title}}</span>
                         </div>
                         {% include 'parts/drop-out.html' %}
                     </div>
@@ -82,7 +82,7 @@
         },
         methods: {
             copyText: function() {
-                const usernameText = this.$el.querySelector('#username');
+                var usernameText = this.$el.querySelector('#username');
                 navigator.clipboard.writeText(usernameText.value).then(() => {
                     throw new Error('Username copied to clipboard.');
                 }).catch(err => {
@@ -90,10 +90,11 @@
                 });
             },
             getBackgroundStyle() {
-                if (this.dbResponseFile && this.responseFile == null) {
-                    return `url(${this.dbResponseFile}) no-repeat center #ffffff`;
-                } else if (this.dbResponseFile && this.responseFile) {
-                    return `url(${this.responseFile}) no-repeat center #ffffff`;
+                var me = this
+                if (me.dbResponseFile && me.responseFile == null) {
+                    return `url(${me.dbResponseFile}) no-repeat center #ffffff`;
+                } else if (me.dbResponseFile && me.responseFile) {
+                    return `url(${me.responseFile}) no-repeat center #ffffff`;
                 } else {
                     return '#ffffff'; // fallback color
                 }
@@ -102,29 +103,29 @@
                 this.$refs.fileInput.click();
             },
             onFileChange(e) {
-                const selectedFile = e.target.files[0]; // accessing file
+                var selectedFile = e.target.files[0]; // accessing file
                 this.selectedFile = selectedFile;
             },
             onUploadFile() {
                 try {
                     let me = this;
                     // Acceptable MIME types
-                    const acceptedFormats = ['image/png', 'image/jpeg']; 
+                    var acceptedFormats = ['image/png', 'image/jpeg']; 
 
                     // Check if a file is selected
-                    if (!this.selectedFile) {
+                    if (!me.selectedFile) {
                         throw new Error('Please select a file to upload.');
                     }
 
                     // Validate the file type
-                    if (!acceptedFormats.includes(this.selectedFile.type)) {
-                        this.selectedFile = ''; // reset selected file
-                        this.$refs.fileInput.value = ''; // reset file input
+                    if (!acceptedFormats.includes(me.selectedFile.type)) {
+                        me.selectedFile = ''; // reset selected file
+                        me.$refs.fileInput.value = ''; // reset file input
                         throw new Error('Invalid file format. Please upload a .png, .jpg, or .jpeg file.');
                     }
 
-                    const formData = new FormData();
-                    formData.append("file", this.selectedFile);  // appending file
+                    var formData = new FormData();
+                    formData.append("file", me.selectedFile);  // appending file
 
                     me.pending = true; // set pending state
 
@@ -136,8 +137,8 @@
                             },
                         })
                         .then(response => {
-                            this.selectedFile = ''; // reset selected file
-                            this.$refs.fileInput.value = ''; // reset file input
+                            me.selectedFile = ''; // reset selected file
+                            me.$refs.fileInput.value = ''; // reset file input
                             window.location.reload();
                         })
                         .catch(error => {
@@ -149,8 +150,7 @@
             },
             onSubmit: function(e){
                 try {
-                    const me = this;
-                    const submitterId = e.submitter.id;
+                    var submitterId = e.submitter.id;
                 } catch (err) {
                     alert(err.message)
                 }

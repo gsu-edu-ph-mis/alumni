@@ -30,7 +30,7 @@
             </ul>
         </div>
         <div class="tab-content p-3">
-            <form ref="form" v-on:submit.prevent="onSubmit" action="/admin/alumni-records/{{editAlm.refNumber}}/edit/basic-info?_method=patch" method="POST" class="form-default">
+            <form ref="form" v-on:submit.prevent="onSubmit" action="/admin/alumni-records/{{editAlm.refNumber}}/basic-info/edit?_method=patch" method="POST" class="form-default">
                 <input type="hidden" name="acsrf" value="{{acsrf}}">
                 
                 <template v-if="page=='#step1'">
@@ -337,22 +337,25 @@
         },
         methods: {
             updateEmergencyPersonName() {
-                if(this.isTheSame) {
-                    this.emergencyPersonName = this.guardianName;
+                var me = this;
+                if(me.isTheSame) {
+                    me.emergencyPersonName = me.guardianName;
                 }
             },
             updateEmergencyPersonMobileNumber() {
-                if(this.isTheSame) {
-                    this.emergencyPersonMobileNumber = this.guardianMobileNumber;
+                var me = this;
+                if(me.isTheSame) {
+                    me.emergencyPersonMobileNumber = me.guardianMobileNumber;
                 }
             },
             toggleParentGuardian() {
-                if (this.isTheSame) {
-                    this.emergencyPersonName = this.guardianName;
-                    this.emergencyPersonMobileNumber = this.guardianMobileNumber;
+                var me = this;
+                if (me.isTheSame) {
+                    me.emergencyPersonName = me.guardianName;
+                    me.emergencyPersonMobileNumber = me.guardianMobileNumber;
                 } else {
-                    this.emergencyPersonName = '';
-                    this.emergencyPersonMobileNumber = '';
+                    me.emergencyPersonName = '';
+                    me.emergencyPersonMobileNumber = '';
                 }
             },
             onSelect1: function(o){
@@ -369,12 +372,12 @@
             },
             onSubmit: function(e){
                 try {
-                    const me = this;
-                    const submitterId = e.submitter.id;
+                    var me = this;
+                    var submitterId = e.submitter.id;
 
-                    Object.keys(this.$data).forEach(key => {
-                        if(typeof this[key] === 'string'){
-                            this[key] = this[key].trim()
+                    Object.keys(me.$data).forEach(key => {
+                        if(typeof me[key] === 'string'){
+                            me[key] = me[key].trim()
                         }
                     });
 
@@ -418,7 +421,7 @@
                             me.email = me.email.trim();
                             
                             // Regular expression to validate email format
-                            const emailRegex = /^[\w-.\+]+@([\w-]+\.)+[\w-]{2,4}$/g;
+                            var emailRegex = /^[\w-.\+]+@([\w-]+\.)+[\w-]{2,4}$/g;
                             
                             // Check if the email format is valid
                             if (!emailRegex.test(me.email)) {

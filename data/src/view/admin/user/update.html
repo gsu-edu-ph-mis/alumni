@@ -29,7 +29,7 @@
         </ul>
     </div>
     <div class="tab-content p-3">
-        <form ref="form" id="vApp" v-cloak v-on:submit.prevent="onSubmit" action="/admin/users/{{editUser.id}}?_method=patch" method="POST" class="form-default">
+        <form ref="form" id="vApp" v-cloak v-on:submit.prevent="onSubmit" action="/admin/users/{{editUser.id}}/edit?_method=patch" method="POST" class="form-default">
             <input type="hidden" name="acsrf" value="{{acsrf}}">
             
             <div class="form-group mb-2" :data-error="errors.username" @click="errors.username=false">
@@ -90,7 +90,7 @@
         },
         methods: {
             regen: async function(){
-                const me = this
+                var me = this
                 let responseJson = await postAsync(`/admin/users/regen`, {
                     acsrf: `{{acsrf}}`,
                 })
@@ -98,11 +98,11 @@
             },
             onSubmit: function(){
                 try {
-                    const me = this;
+                    var me = this;
 
-                    Object.keys(this.$data).forEach(key => {
-                        if(typeof this[key] === 'string'){
-                            this[key] = this[key].trim()
+                    Object.keys(me.$data).forEach(key => {
+                        if(typeof me[key] === 'string'){
+                            me[key] = me[key].trim()
                         }
                     });
 

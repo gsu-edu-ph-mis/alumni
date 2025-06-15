@@ -20,7 +20,7 @@
     </div>
     {% include 'parts/flash.html' %}
     <div class="tab-content p-3">
-        <form ref="form" id="vApp" v-cloak v-on:submit.prevent="onSubmit" action="/admin/registrations/{{deleteReg.refNumber}}?_method=delete" method="POST" class="form-default">
+        <form ref="form" id="vApp" v-cloak v-on:submit.prevent="onSubmit" action="/admin/registrations/{{deleteReg.refNumber}}/delete?_method=delete" method="POST" class="form-default">
             <input type="hidden" name="acsrf" value="{{acsrf}}">
             
             <div class="alert alert-danger">Delete registration with Ref. No. "{{deleteReg.refNumber}}"?</div>
@@ -42,7 +42,7 @@
         delimiters: ["${", "}"],
         methods: {
             onSubmit: function(){
-                const me = this;
+                var me = this;
                 me.$nextTick(function() {
                     me.$refs.form.submit()
                 });

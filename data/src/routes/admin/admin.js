@@ -28,7 +28,9 @@ router.get('/admin', middlewares.guardRoute(['read_admin_dashboard']), async (re
     try {
         res.redirect('/admin/alumni-records')
     } catch (err) {
-        next(err);
+        console.error(err)
+        flash.error(req, 'alumni', err.message)
+        return res.redirect('/admin/alumni-records')
     }
 });
 ////
@@ -104,7 +106,7 @@ router.get('/admin/users', middlewares.guardRoute(['read_all_user']), async (req
         res.render('admin/user/all.html', data);
     } catch (err) {
         console.error(err)
-        flash.error(req, 'user', err.message);
+        flash.error(req, 'user', err.message)
         return res.redirect('/admin/users')
     }
 });
@@ -120,7 +122,9 @@ router.get('/admin/users/create', middlewares.guardRoute(['create_user']), async
         }
         res.render('admin/user/create.html', data);
     } catch (err) {
-        next(err);
+        console.error(err)
+        flash.error(req, 'user', err.message)
+        return res.redirect('/admin/users')
     }
 });
 // B.2 Generate Password
@@ -130,11 +134,13 @@ router.post('/admin/users/regen', middlewares.antiCsrfCheck, middlewares.guardRo
             data: passwordMan.genPassword(8)
         })
     } catch (err) {
-        next(err);
+        console.error(err)
+        flash.error(req, 'user', err.message)
+        return res.redirect('/admin/users')
     }
 })
 // B.3 Submit Create User
-router.post('/admin/users', middlewares.antiCsrfCheck, middlewares.guardRoute(['create_user']), async (req, res, next) => {
+router.post('/admin/users/create', middlewares.antiCsrfCheck, middlewares.guardRoute(['create_user']), async (req, res, next) => {
     try {
         let body = req.body
 
@@ -165,13 +171,15 @@ router.post('/admin/users', middlewares.antiCsrfCheck, middlewares.guardRoute(['
         flash.ok(req, 'user', 'Created user.')
         res.redirect(`/admin/users/${createdUser.id}`)
     } catch (err) {
-        next(err);
+        console.error(err)
+        flash.error(req, 'user', err.message)
+        return res.redirect('/admin/users')
     }
 });
 
 // Update User
 // C.1 Display Update User
-router.get('/admin/users/:userId', middlewares.guardRoute(['read_user']), middlewares.getUser(), async (req, res, next) => {
+router.get('/admin/users/:userId/edit', middlewares.guardRoute(['read_user']), middlewares.getUser(), async (req, res, next) => {
     try {
         let editUser = res.user
         let sessionUser = res.locals.user;
@@ -194,11 +202,13 @@ router.get('/admin/users/:userId', middlewares.guardRoute(['read_user']), middle
 
         res.render('admin/user/update.html', data);
     } catch (err) {
-        next(err);
+        console.error(err)
+        flash.error(req, 'user', err.message)
+        return res.redirect('/admin/users')
     }
 });
 // C.2 Submit Update User
-router.patch('/admin/users/:userId', middlewares.antiCsrfCheck, middlewares.guardRoute(['update_user']), middlewares.getUser(), async (req, res, next) => {
+router.patch('/admin/users/:userId/edit', middlewares.antiCsrfCheck, middlewares.guardRoute(['update_user']), middlewares.getUser(), async (req, res, next) => {
     try {
         let editUser = res.user
         let body = req.body
@@ -242,10 +252,10 @@ router.patch('/admin/users/:userId', middlewares.antiCsrfCheck, middlewares.guar
         await editUser.save()
 
         flash.ok(req, 'user', 'Updated user.')
-        res.redirect(`/admin/users/${editUser.id}`)
+        res.redirect(`/admin/users/${editUser.id}/edit`)
     } catch (err) {
         console.error(err)
-        flash.error(req, 'user', err.message);
+        flash.error(req, 'user', err.message)
         return res.redirect('/admin/users')
     }
 });
@@ -281,7 +291,7 @@ router.get('/admin/users/:userId/isActive', middlewares.guardRoute(['activate_de
         res.redirect(`/admin/alumni-records/${alumni.refNumber}/view`)
     } catch (err) {
         console.error(err)
-        flash.error(req, 'alumni', err.message);
+        flash.error(req, 'alumni', err.message)
         return res.redirect('/admin/alumni-records')
     }
 });
@@ -298,14 +308,16 @@ router.get('/admin/users/:userId/delete', middlewares.guardRoute(['delete_user']
         }
         res.render('admin/user/delete.html', data);
     } catch (err) {
-        next(err);
+        console.error(err)
+        flash.error(req, 'user', err.message)
+        return res.redirect('/admin/users')
     }
 });
 // D.2 Submit Delete User
-router.delete('/admin/users/:userId', middlewares.antiCsrfCheck, middlewares.guardRoute(['delete_user']), middlewares.getUser(), async (req, res, next) => {
+router.delete('/admin/users/:userId/delete', middlewares.antiCsrfCheck, middlewares.guardRoute(['delete_user']), middlewares.getUser(), async (req, res, next) => {
+    let deleteUser = res.user
+    
     try {
-        let deleteUser = res.user
-
         let alm = await req.app.locals.db.models.Alumni.findOne({
             where: {
                 userId: deleteUser.id
@@ -335,7 +347,9 @@ router.delete('/admin/users/:userId', middlewares.antiCsrfCheck, middlewares.gua
         flash.ok(req, 'user', 'Deleted user.')
         res.redirect('/admin/users')
     } catch (err) {
-        next(err);
+        console.error(err)
+        flash.error(req, 'user', err.message)
+        return res.redirect('/admin/users')
     }
 });
 ////
@@ -359,7 +373,7 @@ router.get('/admin/account', middlewares.guardRoute(['read_user']), async (req, 
         res.render('admin/user/account.html', data);
     } catch (err) {
         console.error(err)
-        flash.error(req, 'account', err.message);
+        flash.error(req, 'account', err.message)
         return res.redirect('/admin/users')
     }
 });
@@ -477,7 +491,7 @@ router.get('/admin/registrations', middlewares.guardRoute(['read_all_registratio
         res.render('admin/registration/all.html', data);
     } catch (err) {
         console.error(err)
-        flash.error(req, 'registration', err.message);
+        flash.error(req, 'registration', err.message)
         return res.redirect('/admin/registrations')
     }
 });
@@ -508,7 +522,7 @@ router.get('/admin/registrations/:regId/approve', middlewares.guardRoute(['read_
         res.render('admin/registration/approve.html', data);
     } catch (err) {
         console.error(err)
-        flash.error(req, 'registration', err.message);
+        flash.error(req, 'registration', err.message)
         return res.redirect('/admin/registrations')
     }
 });
@@ -615,7 +629,7 @@ router.post('/admin/registrations/:regId/approve', middlewares.antiCsrfCheck, mi
         res.redirect(`/admin/registrations/${createdAlumni.refNumber}/preview?username=${body.username}&password=${body.password}&isSubmitted=true`)
     } catch (err) {
         console.error(err)
-        flash.error(req, 'registration', err.message);
+        flash.error(req, 'registration', err.message)
         return res.redirect('/admin/registrations')
     }
 });
@@ -640,7 +654,7 @@ router.get('/admin/registrations/:almId/preview', middlewares.guardRoute(['appro
         res.render('admin/registration/preview.html', data);
     } catch (err) {
         console.error(err)
-        flash.error(req, 'registration', err.message);
+        flash.error(req, 'registration', err.message)
         return res.redirect('/admin/registrations')
     }
 });
@@ -657,11 +671,13 @@ router.get('/admin/registrations/:regId/delete', middlewares.guardRoute(['delete
         }
         res.render('admin/registration/delete.html', data);
     } catch (err) {
-        next(err);
+        console.error(err)
+        flash.error(req, 'registration', err.message)
+        return res.redirect('/admin/registrations')
     }
 });
 // D.2 Submit Delete Registration
-router.delete('/admin/registrations/:regId', middlewares.antiCsrfCheck, middlewares.guardRoute(['delete_registration']), middlewares.getReg(), async (req, res, next) => {
+router.delete('/admin/registrations/:regId/delete', middlewares.antiCsrfCheck, middlewares.guardRoute(['delete_registration']), middlewares.getReg(), async (req, res, next) => {
     try {
         let deleteReg = res.reg
 
@@ -670,7 +686,9 @@ router.delete('/admin/registrations/:regId', middlewares.antiCsrfCheck, middlewa
         flash.ok(req, 'registration', 'Deleted registration.')
         res.redirect('/admin/registrations')
     } catch (err) {
-        next(err);
+        console.error(err)
+        flash.error(req, 'registration', err.message)
+        return res.redirect('/admin/registrations')
     }
 });
 ////
@@ -734,9 +752,9 @@ router.get('/admin/alumni-records', middlewares.guardRoute(['read_all_alumni']),
         
         res.render('admin/alumni/all.html', data);
     } catch (err) {
-        console.error(err);
-        flash.error(req, 'alumni', err.message);
-        return res.redirect('/admin/alumni-records');
+        console.error(err)
+        flash.error(req, 'alumni', err.message)
+        return res.redirect('/admin/alumni-records')
     }
 });
 
@@ -830,7 +848,7 @@ router.get('/admin/alumni-records/reports', middlewares.guardRoute(['read_all_al
         res.render('admin/alumni/reports.html', data);
     } catch (err) {
         console.error(err)
-        flash.error(req, 'alumni', err.message);
+        flash.error(req, 'alumni', err.message)
         return res.redirect('/admin/alumni-records/reports')
     }
 });
@@ -859,30 +877,38 @@ router.get('/admin/alumni-records/:almId/view', middlewares.guardRoute(['read_al
             }
         })
 
+        let eligibility = await req.app.locals.db.models.Eligibility.findAll({
+            where: {
+                almId: viewAlm.refNumber
+            },
+            order: [['createdAt', 'DESC']]
+        })
+
         let data = {
             flash: flash.get(req, 'alumni'),
             viewAlm,
             users,
             educ,
-            work
+            work,
+            eligibility
         }
 
         res.render('admin/alumni/view.html', data);
     } catch (err) {
         console.error(err)
-        flash.error(req, 'alumni', err.message);
+        flash.error(req, 'alumni', err.message)
         return res.redirect('/admin/alumni-records')
     }
 });
 
 // Update Alumni Records
 // C.1 Display Update Alumni Records - Basic Info.
-router.get('/admin/alumni-records/:almId/edit/basic-info', middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
+router.get('/admin/alumni-records/:almId/basic-info/edit', middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
     try {
         let editAlm = res.alm
 
         let data = {
-            flash: flash.get(req, 'alumni'),
+            flash: flash.get(req, 'alumni-basic-info'),
             civilStatuses: CONFIG.civilStatuses,
             suffixes: CONFIG.suffixes,
             editAlm
@@ -891,12 +917,12 @@ router.get('/admin/alumni-records/:almId/edit/basic-info', middlewares.guardRout
         res.render('admin/alumni/update-basic-info.html', data);
     } catch (err) {
         console.error(err)
-        flash.error(req, 'alumni', err.message);
+        flash.error(req, 'alumni', err.message)
         return res.redirect('/admin/alumni-records')
     }
 });
 // C.2 Submit Update Alumni Records - Basic Info.
-router.patch('/admin/alumni-records/:almId/edit/basic-info', middlewares.antiCsrfCheck, middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
+router.patch('/admin/alumni-records/:almId/basic-info/edit', middlewares.antiCsrfCheck, middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
     let editAlm = res.alm
 
     try {
@@ -1019,12 +1045,12 @@ router.patch('/admin/alumni-records/:almId/edit/basic-info', middlewares.antiCsr
         res.redirect(`/admin/alumni-records/${editAlm.refNumber}/view#content1`)
     } catch (err) {
         console.error(err)
-        flash.error(req, 'alumni', err.message);
-        return res.redirect(`/admin/alumni-records/${editAlm.refNumber}/edit/basic-info`)
+        flash.error(req, 'alumni-basic-info', err.message)
+        return res.redirect(`/admin/alumni-records/${editAlm.refNumber}/basic-info/edit`)
     }
 });
 // C.3 Display Update Alumni Records - Education
-router.get('/admin/alumni-records/:almId/edit/education', middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
+router.get('/admin/alumni-records/:almId/education/edit', middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
     try {
         let editAlm = res.alm
 
@@ -1035,7 +1061,7 @@ router.get('/admin/alumni-records/:almId/edit/education', middlewares.guardRoute
         })
 
         let data = {
-            flash: flash.get(req, 'alumni'),
+            flash: flash.get(req, 'alumni-educ'),
             degrees: CONFIG.degrees,
             tracks: CONFIG.tracks,
             strands: CONFIG.strands,
@@ -1046,12 +1072,12 @@ router.get('/admin/alumni-records/:almId/edit/education', middlewares.guardRoute
         res.render('admin/alumni/update-education.html', data);
     } catch (err) {
         console.error(err)
-        flash.error(req, 'alumni', err.message);
+        flash.error(req, 'alumni', err.message)
         return res.redirect('/admin/alumni-records')
     }
 });
 // C.4 Submit Update Alumni Records - Education
-router.patch('/admin/alumni-records/:almId/edit/education', middlewares.antiCsrfCheck, middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
+router.patch('/admin/alumni-records/:almId/education/edit', middlewares.antiCsrfCheck, middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
     let editAlm = res.alm
 
     try {
@@ -1135,12 +1161,12 @@ router.patch('/admin/alumni-records/:almId/edit/education', middlewares.antiCsrf
         res.redirect(`/admin/alumni-records/${editAlm.refNumber}/view#content2`)
     } catch (err) {
         console.error(err)
-        flash.error(req, 'alumni', err.message);
-        return res.redirect(`/admin/alumni-records/${editAlm.refNumber}/edit/education`)
+        flash.error(req, 'alumni-educ', err.message)
+        return res.redirect(`/admin/alumni-records/${editAlm.refNumber}/education/edit`)
     }
 });
 // C.5 Display Update Alumni Records - Work
-router.get('/admin/alumni-records/:almId/edit/work', middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
+router.get('/admin/alumni-records/:almId/work/edit', middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
     try {
         let editAlm = res.alm
 
@@ -1151,7 +1177,7 @@ router.get('/admin/alumni-records/:almId/edit/work', middlewares.guardRoute(['up
         })
 
         let data = {
-            flash: flash.get(req, 'alumni'),
+            flash: flash.get(req, 'alumni-work'),
             employmentStatuses: CONFIG.employmentStatuses,
             employmentSectors: CONFIG.employmentSectors,
             employmentLocations: CONFIG.employmentLocations,
@@ -1162,12 +1188,12 @@ router.get('/admin/alumni-records/:almId/edit/work', middlewares.guardRoute(['up
         res.render('admin/alumni/update-work.html', data);
     } catch (err) {
         console.error(err)
-        flash.error(req, 'alumni', err.message);
+        flash.error(req, 'alumni', err.message)
         return res.redirect('/admin/alumni-records')
     }
 });
 // C.6 Submit Update Alumni Records - Work
-router.patch('/admin/alumni-records/:almId/edit/work', middlewares.antiCsrfCheck, middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
+router.patch('/admin/alumni-records/:almId/work/edit', middlewares.antiCsrfCheck, middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
     let editAlm = res.alm
 
     try {
@@ -1276,17 +1302,17 @@ router.patch('/admin/alumni-records/:almId/edit/work', middlewares.antiCsrfCheck
         res.redirect(`/admin/alumni-records/${editAlm.refNumber}/view#content3`)
     } catch (err) {
         console.error(err)
-        flash.error(req, 'alumni', err.message);
-        return res.redirect(`/admin/alumni-records/${editAlm.refNumber}/edit/work`)
+        flash.error(req, 'alumni-work', err.message)
+        return res.redirect(`/admin/alumni-records/${editAlm.refNumber}/work/edit`)
     }
 });
 // C.7 Display Create Alumni Records - Eligibility
-router.get('/admin/alumni-records/:almId/create/eligibility', middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
+router.get('/admin/alumni-records/:almId/eligibility/create', middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
     try {
         let createAlm = res.alm
 
         let data = {
-            flash: flash.get(req, 'alumni'),
+            flash: flash.get(req, 'alumni-create-eligibility'),
             eligibilityTypes: CONFIG.eligibilityTypes,
             createAlm
         }
@@ -1294,12 +1320,216 @@ router.get('/admin/alumni-records/:almId/create/eligibility', middlewares.guardR
         res.render('admin/alumni/create-eligibility.html', data);
     } catch (err) {
         console.error(err)
-        flash.error(req, 'alumni', err.message);
+        flash.error(req, 'alumni', err.message)
         return res.redirect('/admin/alumni-records')
     }
 });
+// C.8 Submit Create Alumni Records - Eligibility
+router.post('/admin/alumni-records/:almId/eligibility/create', middlewares.antiCsrfCheck, middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
+    let createAlm = res.alm
 
-// C.7 Upload Alumni Profile Picture
+    try {
+        let payload = JSON.parse(req?.body?.payload)
+        console.log(payload)
+
+        let eligibilityType = lodash.trim(lodash.get(payload, 'eligibilityType', ''))
+        let specifyEligibilityType = lodash.trim(lodash.get(payload, 'specifyEligibilityType', ''))
+        let examDate = lodash.trim(lodash.get(payload, 'examDate', ''))
+        let examPlace = lodash.trim(lodash.get(payload, 'examPlace', ''))
+        let rating = lodash.trim(lodash.get(payload, 'rating', ''))
+        let licenseNumber = lodash.trim(lodash.get(payload, 'licenseNumber', ''))
+        let validityDate = lodash.trim(lodash.get(payload, 'validityDate', ''))
+        let isOthers = false;
+
+        if (!eligibilityType) {
+            throw new Error('Type of Eligibility is required.')
+        }
+        if (!examDate) {
+            throw new Error('Exam Date is required.')
+        }
+        if (!examPlace) {
+            throw new Error('Place of Exam is required.')
+        }
+
+        if (eligibilityType == 'Others') {
+            if(!specifyEligibilityType) {
+                throw new Error('Other eligiblity is required.')
+            }
+            eligibilityType = specifyEligibilityType
+            isOthers = true
+        }
+
+        let refNo = passwordMan.randomString(16)
+        await req.app.locals.db.models.Eligibility.create({
+            refNumber: refNo,
+            eligibilityType: eligibilityType,
+            examDate: examDate,
+            examPlace: examPlace,
+            rating: rating,
+            licenseNumber: licenseNumber,
+            validityDate: validityDate,
+            isOthers: isOthers,
+            almId: createAlm.refNumber
+        })
+
+        flash.ok(req, 'alumni', 'Added an eligibility.')
+        res.redirect(`/admin/alumni-records/${createAlm.refNumber}/view#content4`)
+    } catch (err) {
+        console.error(err)
+        flash.error(req, 'alumni-create-eligibility', err.message)
+        return res.redirect(`/admin/alumni-records/${createAlm.refNumber}/eligibility/create`)
+    }
+});
+// C.9 Display Update Alumni Records - Eligibility
+router.get('/admin/alumni-records/:almId/eligibility/:refNumber/edit', middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
+    let editAlm = res.alm
+
+    try {
+        let eligibilityRefNumber = req.params.refNumber || ''
+
+        let editAlmEligibility = await req.app.locals.db.models.Eligibility.findOne({
+            where: {
+                [Op.and]: [
+                    { almId: editAlm.refNumber },
+                    { refNumber: eligibilityRefNumber }
+                ]
+            }
+        })
+
+        let data = {
+            flash: flash.get(req, 'alumni-edit-eligibility'),
+            eligibilityTypes: CONFIG.eligibilityTypes,
+            editAlm,
+            editAlmEligibility
+        }
+
+        res.render('admin/alumni/update-eligibility.html', data);
+    } catch (err) {
+        console.error(err)
+        flash.error(req, 'alumni', err.message);
+        return res.redirect(`/admin/alumni-records/${editAlm.refNumber}/view#content4`)
+    }
+});
+// C.10 Submit Update Alumni Records - Eligibility
+router.patch('/admin/alumni-records/:almId/eligibility/:refNumber/edit', middlewares.antiCsrfCheck, middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
+    let editAlm = res.alm
+    let eligibilityRefNumber = req.params.refNumber || ''
+
+    try {
+        let payload = JSON.parse(req?.body?.payload)
+        console.log(payload)
+
+        let eligibilityType = lodash.trim(lodash.get(payload, 'eligibilityType', ''))
+        let specifyEligibilityType = lodash.trim(lodash.get(payload, 'specifyEligibilityType', ''))
+        let examDate = lodash.trim(lodash.get(payload, 'examDate', ''))
+        let examPlace = lodash.trim(lodash.get(payload, 'examPlace', ''))
+        let rating = lodash.trim(lodash.get(payload, 'rating', ''))
+        let licenseNumber = lodash.trim(lodash.get(payload, 'licenseNumber', ''))
+        let validityDate = lodash.trim(lodash.get(payload, 'validityDate', ''))
+        let isOthers = false;
+
+        let editAlmEligibility = await req.app.locals.db.models.Eligibility.findOne({
+            where: {
+                [Op.and]: [
+                    { almId: editAlm.refNumber },
+                    { refNumber: eligibilityRefNumber }
+                ]
+            }
+        })
+
+        if (!eligibilityType) {
+            throw new Error('Type of Eligibility is required.')
+        }
+        if (!examDate) {
+            throw new Error('Exam Date is required.')
+        }
+        if (!examPlace) {
+            throw new Error('Place of Exam is required.')
+        }
+
+        if (eligibilityType == 'Others') {
+            if(!specifyEligibilityType) {
+                throw new Error('Other eligiblity is required.')
+            }
+            eligibilityType = specifyEligibilityType
+            isOthers = true
+        }
+
+        editAlmEligibility.set({
+            eligibilityType: eligibilityType,
+            examDate: examDate,
+            examPlace: examPlace,
+            rating: rating,
+            licenseNumber: licenseNumber,
+            validityDate: validityDate,
+            isOthers: isOthers
+        });
+        await editAlmEligibility.save()
+
+        flash.ok(req, 'alumni', 'Updated the eligibility.')
+        res.redirect(`/admin/alumni-records/${editAlm.refNumber}/view#content4`)
+    } catch (err) {
+        console.error(err)
+        flash.error(req, 'alumni-edit-eligibility', err.message)
+        return res.redirect(`/admin/alumni-records/${editAlm.refNumber}/eligibility/${eligibilityRefNumber}/edit`)
+    }
+});
+// C.11 Display Delete Alumni Records - Eligibility
+router.get('/admin/alumni-records/:almId/eligibility/:refNumber/delete', middlewares.guardRoute(['delete_alumni']), middlewares.getAlm(), async (req, res, next) => {
+    let deleteAlm = res.alm
+
+    try {
+        let eligibilityRefNumber = req.params.refNumber || ''
+
+        let deleteAlmEligibility = await req.app.locals.db.models.Eligibility.findOne({
+            where: {
+                [Op.and]: [
+                    { almId: deleteAlm.refNumber },
+                    { refNumber: eligibilityRefNumber }
+                ]
+            }
+        })
+
+        let data = {
+            flash: flash.get(req, 'alumni-delete-eligibility'),
+            deleteAlm,
+            deleteAlmEligibility
+        }
+
+        res.render('admin/alumni/delete-eligibility.html', data);
+    } catch (err) {
+        console.error(err)
+        flash.error(req, 'alumni', err.message)
+        return res.redirect(`/admin/alumni-records/${deleteAlm.refNumber}/view#content4`)
+    }
+});
+// C.12 Submit Delete Alumni Records - Eligibility
+router.delete('/admin/alumni-records/:almId/eligibility/:refNumber/delete', middlewares.antiCsrfCheck, middlewares.guardRoute(['delete_alumni']), middlewares.getAlm(), async (req, res, next) => {
+    let deleteAlm = res.alm
+    let eligibilityRefNumber = req.params.refNumber || ''
+
+    try {
+        let deleteAlmEligibility = await req.app.locals.db.models.Eligibility.findOne({
+            where: {
+                [Op.and]: [
+                    { almId: deleteAlm.refNumber },
+                    { refNumber: eligibilityRefNumber }
+                ]
+            }
+        })
+
+        await deleteAlmEligibility.destroy({ force: true })
+
+        flash.ok(req, 'alumni', 'Deleted the eligibility.')
+        res.redirect(`/admin/alumni-records/${deleteAlm.refNumber}/view#content4`)
+    } catch (err) {
+        console.error(err)
+        flash.error(req, 'alumni-delete-eligibility', err.message)
+        return res.redirect(`/admin/alumni-records/${deleteAlm.refNumber}/eligibility/${eligibilityRefNumber}/delete`)
+    }
+});
+
+// D.1 Upload Alumni Profile Picture
 router.post('/admin/upload/:almId', middlewares.guardRoute(['update_alumni']), middlewares.getAlm(), async (req, res, next) => {
     try {
         let editAlm = res.alm
@@ -1355,7 +1585,7 @@ router.post('/admin/upload/:almId', middlewares.guardRoute(['update_alumni']), m
         flash.ok(req, 'alumni', 'Profile picture of this alumni has been updated successfully.');
     } catch (err) {
         console.error(err)
-        flash.error(req, 'alumni', err.message);
+        flash.error(req, 'alumni', err.message)
         return res.redirect('/admin/alumni-records')
     }
 });
@@ -1394,7 +1624,7 @@ router.get('/admin/alumni-records/:almId/print', middlewares.guardRoute(['read_a
         res.render('admin/alumni/print.html', data);
     } catch (err) {
         console.error(err)
-        flash.error(req, 'print-alumni', err.message);
+        flash.error(req, 'print-alumni', err.message)
         return res.redirect('/admin/alumni-records')
     }
 });
@@ -1491,7 +1721,7 @@ router.get('/admin/alumni-records/report-visualization', middlewares.guardRoute(
         res.render('admin/alumni/report-visualization.html', data);
     } catch (err) {
         console.error(err)
-        flash.error(req, 'report-visualization', err.message);
+        flash.error(req, 'report-visualization', err.message)
         return res.redirect('/admin/alumni-records/report-visualization')
     }
 });

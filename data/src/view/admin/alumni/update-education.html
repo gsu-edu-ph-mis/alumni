@@ -21,7 +21,7 @@
     {% include 'parts/flash.html' %}
     <div id="vApp" v-cloak>
         <div class="tab-content p-3">
-            <form ref="form" v-on:submit.prevent="onSubmit" action="/admin/alumni-records/{{editAlm.refNumber}}/edit/education?_method=patch" method="POST" class="form-default">
+            <form ref="form" v-on:submit.prevent="onSubmit" action="/admin/alumni-records/{{editAlm.refNumber}}/education/edit?_method=patch" method="POST" class="form-default">
                 <input type="hidden" name="acsrf" value="{{acsrf}}">
 
                 <div class="row">
@@ -198,7 +198,8 @@
         },
         methods: {
             checkDegree: function() {
-                this.degreeMatch = this.degree
+                var me = this;
+                me.degreeMatch = me.degree
             },
             onSelect1: function(o){
                 this.campus = o.display
@@ -220,11 +221,11 @@
             },
             onSubmit: function(e){
                 try {
-                    const me = this;
+                    var me = this;
 
-                    Object.keys(this.$data).forEach(key => {
-                        if(typeof this[key] === 'string'){
-                            this[key] = this[key].trim()
+                    Object.keys(me.$data).forEach(key => {
+                        if(typeof me[key] === 'string'){
+                            me[key] = me[key].trim()
                         }
                     });
 

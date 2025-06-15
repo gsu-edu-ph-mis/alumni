@@ -1,0 +1,68 @@
+{% extends "document-me.html" %}
+
+{% block body %}
+<div v-bind:data-pending="pending" class="col-md-12 px-0">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-6 col-md-8 ml-auto mr-auto">
+                <div class="row bg-white shadow" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+
+                    <div class="col-lg-12 d-flex flex-row justify-content-between align-items-center py-0" style="background-color: #eeeeee;">
+                        <div class="d-flex flex-row justify-content-center align-items-center">
+                            <a href="/me/eligibility" class="text-dark text-decor-none mr-2">
+                                <svg width="35px" height="35px" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="m9.474 5.209s-4.501 4.505-6.254 6.259c-.147.146-.22.338-.22.53s.073.384.22.53c1.752 1.754 6.252 6.257 6.252 6.257.145.145.336.217.527.217.191-.001.383-.074.53-.221.293-.293.294-.766.004-1.057l-4.976-4.976h14.692c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-14.692l4.978-4.979c.289-.289.287-.761-.006-1.054-.147-.147-.339-.221-.53-.221-.191-.001-.38.071-.525.215z" fill-rule="nonzero"/></svg>
+                            </a>
+                            <span style="font-weight: 500; font-size: 24px;">Delete Eligibility</span>
+                        </div>
+                        {% include 'parts/drop-out.html' %}
+                    </div>
+
+                    <div id="vApp" v-cloak class="col-lg-12 px-0">
+                        <div class="col-lg-12 pt-3">
+                            {% include 'parts/flash.html' %}
+                        </div>
+
+                        <div class="tab-content tab-content-border-top-none p-3" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+                            
+                            <form ref="form" id="vApp" v-cloak v-on:submit.prevent="onSubmit" action="/me/{{deleteAlm.refNumber}}/eligibility/{{deleteAlmEligibility.refNumber}}/delete?_method=delete" method="POST" class="form-default">
+                                <input type="hidden" name="acsrf" value="{{acsrf}}">
+                                
+                                <div class="alert alert-danger">Delete eligibility "{{deleteAlmEligibility.eligibilityType}}"?</div>
+                                <div class="text-center">
+                                    <button class="btn btn-danger mx-auto content-nav-btn">
+                                        <svg style="width:22px;height:22px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Delete</title><path fill="currentColor" d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z" /></svg>
+                                        <span>Delete</span>    
+                                    </button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+    const vApp = new Vue({
+        el: '#vApp',
+        delimiters: ["${", "}"],
+        methods: {
+            onSubmit: function(){
+                const me = this;
+                me.$nextTick(function() {
+                    me.$refs.form.submit()
+                });
+            }
+        }
+    });
+</script>
+{% endblock %}
+

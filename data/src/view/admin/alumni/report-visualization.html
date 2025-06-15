@@ -332,14 +332,15 @@
 
                 me.$nextTick(function() {
                     me.pending = true;
-                    this.$refs.form.submit()
+                    me.$refs.form.submit()
                     me.chartQuery()
                 });
             },
             calculateTracedGraduatesCount() {
-                return this.alumniList.reduce((acc, alumni) => {
+                var me = this;
+                return me.alumniList.reduce((acc, alumni) => {
                     if (alumni.Education && alumni.Education.length > 0) {
-                        const year = alumni.Education[0].yearGraduated;
+                        var year = alumni.Education[0].yearGraduated;
                         acc[year] = (acc[year] || 0) + 1;
                     }
                     return acc;
@@ -347,19 +348,20 @@
             },
             // Calculate Employment Status
                 calculateEmploymentStatusCounts() {
-                    return this.alumniList.reduce((acc, alumni) => {
+                    var me = this;
+                    return me.alumniList.reduce((acc, alumni) => {
                         if (alumni.Works && alumni.Works.length > 0) {
-                            const status = alumni.Works[0].employmentStatus;
+                            var status = alumni.Works[0].employmentStatus;
                             acc[status] = (acc[status] || 0) + 1;
                         }
                         return acc;
                     }, {});
                 },
                 prepareEmploymentStatusChartData(statusCounts) {
-                    const labels = Object.keys(statusCounts);
-                    const data = Object.values(statusCounts);
-                    const colors = ["#ffcc55", "#fe6383", "#36a2eb"];
-                    const backgroundColor = colors.slice(0, labels.length);
+                    var labels = Object.keys(statusCounts);
+                    var data = Object.values(statusCounts);
+                    var colors = ["#ffcc55", "#fe6383", "#36a2eb"];
+                    var backgroundColor = colors.slice(0, labels.length);
 
                     return {
                         labels: labels,
@@ -371,15 +373,16 @@
                     };
                 },
                 renderEmploymentStatusChart() {
-                    const statusCounts = this.calculateEmploymentStatusCounts();
-                    const chartData = this.prepareEmploymentStatusChartData(statusCounts);
-                    const ctx = document.getElementById('chartEmploymentStatus').getContext('2d');
+                    var me = this;
+                    var statusCounts = me.calculateEmploymentStatusCounts();
+                    var chartData = me.prepareEmploymentStatusChartData(statusCounts);
+                    var ctx = document.getElementById('chartEmploymentStatus').getContext('2d');
 
-                    if (this.chart1) {
-                        this.chart.destroy(); // Destroy previous chart if exists
+                    if (me.chart1) {
+                        me.chart.destroy(); // Destroy previous chart if exists
                     }
 
-                    this.chart1 = new Chart(ctx, {
+                    me.chart1 = new Chart(ctx, {
                         type: 'doughnut',
                         data: chartData,
                         options: {
@@ -390,8 +393,8 @@
                                 },
                                 datalabels: {
                                     formatter: (value, context) => {
-                                        const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                                        const percentage = ((value / total) * 100).toFixed(2);
+                                        var total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        var percentage = ((value / total) * 100).toFixed(2);
                                         return `${value} (${percentage}%)`; // Format label
                                     },
                                     color: '#fff', // Label color
@@ -404,19 +407,20 @@
             // 
             // Calculate Employment Location
                 calculateEmploymentLocationCounts() {
-                    return this.alumniList.reduce((acc, alumni) => {
+                    var me = this;
+                    return me.alumniList.reduce((acc, alumni) => {
                         if (alumni.Works && alumni.Works.length > 0) {
-                            const location = alumni.Works[0].employmentLocation;
+                            var location = alumni.Works[0].employmentLocation;
                             acc[location] = (acc[location] || 0) + 1;
                         }
                         return acc;
                     }, {});
                 },
                 prepareEmploymentLocationChartData(locationCounts) {
-                    const labels = Object.keys(locationCounts);
-                    const data = Object.values(locationCounts);
-                    const colors = ["#36a2eb" , "#ffcc55", "#fe6383"];
-                    const backgroundColor = colors.slice(0, labels.length);
+                    var labels = Object.keys(locationCounts);
+                    var data = Object.values(locationCounts);
+                    var colors = ["#36a2eb" , "#ffcc55", "#fe6383"];
+                    var backgroundColor = colors.slice(0, labels.length);
 
                     return {
                         labels: labels,
@@ -428,15 +432,16 @@
                     };
                 },
                 renderEmploymentLocationChart() {
-                    const locationCounts = this.calculateEmploymentLocationCounts();
-                    const chartData = this.prepareEmploymentLocationChartData(locationCounts);
-                    const ctx = document.getElementById('chartEmploymentLocation').getContext('2d');
+                    var me = this;
+                    var locationCounts = me.calculateEmploymentLocationCounts();
+                    var chartData = me.prepareEmploymentLocationChartData(locationCounts);
+                    var ctx = document.getElementById('chartEmploymentLocation').getContext('2d');
 
-                    if (this.chart2) {
-                        this.chart.destroy(); // Destroy previous chart if exists
+                    if (me.chart2) {
+                        me.chart.destroy(); // Destroy previous chart if exists
                     }
 
-                    this.chart2 = new Chart(ctx, {
+                    me.chart2 = new Chart(ctx, {
                         type: 'doughnut',
                         data: chartData,
                         options: {
@@ -447,8 +452,8 @@
                                 },
                                 datalabels: {
                                     formatter: (value, context) => {
-                                        const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                                        const percentage = ((value / total) * 100).toFixed(2);
+                                        var total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        var percentage = ((value / total) * 100).toFixed(2);
                                         return `${value} (${percentage}%)`; // Format label
                                     },
                                     color: '#fff', // Label color
@@ -461,19 +466,20 @@
             // 
             // Calculate Employment Sector
                 calculateEmploymentSectorCounts() {
-                    return this.alumniList.reduce((acc, alumni) => {
+                    var me = this;
+                    return me.alumniList.reduce((acc, alumni) => {
                         if (alumni.Works && alumni.Works.length > 0) {
-                            const sector = alumni.Works[0].employmentSector;
+                            var sector = alumni.Works[0].employmentSector;
                             acc[sector] = (acc[sector] || 0) + 1;
                         }
                         return acc;
                     }, {});
                 },
                 prepareEmploymentSectorChartData(sectorCounts) {
-                    const labels = Object.keys(sectorCounts);
-                    const data = Object.values(sectorCounts);
-                    const colors = ["#fe6383", "#36a2eb" , "#ffcc55"];
-                    const backgroundColor = colors.slice(0, labels.length);
+                    var labels = Object.keys(sectorCounts);
+                    var data = Object.values(sectorCounts);
+                    var colors = ["#fe6383", "#36a2eb" , "#ffcc55"];
+                    var backgroundColor = colors.slice(0, labels.length);
 
                     return {
                         labels: labels,
@@ -485,15 +491,16 @@
                     };
                 },
                 renderEmploymentSectorChart() {
-                    const sectorCounts = this.calculateEmploymentSectorCounts();
-                    const chartData = this.prepareEmploymentSectorChartData(sectorCounts);
-                    const ctx = document.getElementById('chartEmploymentSector').getContext('2d');
+                    var me = this;
+                    var sectorCounts = me.calculateEmploymentSectorCounts();
+                    var chartData = me.prepareEmploymentSectorChartData(sectorCounts);
+                    var ctx = document.getElementById('chartEmploymentSector').getContext('2d');
 
-                    if (this.chart3) {
-                        this.chart.destroy(); // Destroy previous chart if exists
+                    if (me.chart3) {
+                        me.chart.destroy(); // Destroy previous chart if exists
                     }
 
-                    this.chart3 = new Chart(ctx, {
+                    me.chart3 = new Chart(ctx, {
                         type: 'doughnut',
                         data: chartData,
                         options: {
@@ -504,8 +511,8 @@
                                 },
                                 datalabels: {
                                     formatter: (value, context) => {
-                                        const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                                        const percentage = ((value / total) * 100).toFixed(2);
+                                        var total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        var percentage = ((value / total) * 100).toFixed(2);
                                         return `${value} (${percentage}%)`; // Format label
                                     },
                                     color: '#fff', // Label color
@@ -518,19 +525,20 @@
             // 
             // Calculate Work Program Alignment
                 calculateWorkProgramAlignmentCounts() {
-                    return this.alumniList.reduce((acc, alumni) => {
+                    var me = this;
+                    return me.alumniList.reduce((acc, alumni) => {
                         if (alumni.Works && alumni.Works.length > 0) {
-                            const workProgramAlignment = alumni.Works[0].workProgramAlignment;
+                            var workProgramAlignment = alumni.Works[0].workProgramAlignment;
                             acc[workProgramAlignment] = (acc[workProgramAlignment] || 0) + 1;
                         }
                         return acc;
                     }, {});
                 },
                 prepareWorkProgramAlignmentChartData(workProgramAlignmentCounts) {
-                    const labels = Object.keys(workProgramAlignmentCounts);
-                    const data = Object.values(workProgramAlignmentCounts);
-                    const colors = ["#fe6383", "#36a2eb" , "#ffcc55"];
-                    const backgroundColor = colors.slice(0, labels.length);
+                    var labels = Object.keys(workProgramAlignmentCounts);
+                    var data = Object.values(workProgramAlignmentCounts);
+                    var colors = ["#fe6383", "#36a2eb" , "#ffcc55"];
+                    var backgroundColor = colors.slice(0, labels.length);
 
                     return {
                         labels: labels,
@@ -542,15 +550,16 @@
                     };
                 },
                 renderWorkProgramAlignmentChart() {
-                    const workProgramAlignmentCounts = this.calculateWorkProgramAlignmentCounts();
-                    const chartData = this.prepareWorkProgramAlignmentChartData(workProgramAlignmentCounts);
-                    const ctx = document.getElementById('chartWorkProgramAlignment').getContext('2d');
+                    var me = this;
+                    var workProgramAlignmentCounts = me.calculateWorkProgramAlignmentCounts();
+                    var chartData = me.prepareWorkProgramAlignmentChartData(workProgramAlignmentCounts);
+                    var ctx = document.getElementById('chartWorkProgramAlignment').getContext('2d');
 
-                    if (this.chart4) {
-                        this.chart.destroy(); // Destroy previous chart if exists
+                    if (me.chart4) {
+                        me.chart.destroy(); // Destroy previous chart if exists
                     }
 
-                    this.chart4 = new Chart(ctx, {
+                    me.chart4 = new Chart(ctx, {
                         type: 'doughnut',
                         data: chartData,
                         options: {
@@ -561,8 +570,8 @@
                                 },
                                 datalabels: {
                                     formatter: (value, context) => {
-                                        const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                                        const percentage = ((value / total) * 100).toFixed(2);
+                                        var total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        var percentage = ((value / total) * 100).toFixed(2);
                                         return `${value} (${percentage}%)`; // Format label
                                     },
                                     color: '#fff', // Label color
@@ -575,7 +584,8 @@
             // 
 
             checkDegree: function() {
-                this.degreeMatch = this.degree
+                var me = this;
+                me.degreeMatch = me.degree
             },
             btnPrint: function(){
                 window.print();  
@@ -601,11 +611,11 @@
             onSubmit: function onSubmit(e){
                 try {
                     var me = this;
-                    const submitterId = e.submitter.id;
+                    var submitterId = e.submitter.id;
                     
-                    Object.keys(this.$data).forEach(key => {
-                        if(typeof this[key] === 'string'){
-                            this[key] = this[key].trim()
+                    Object.keys(me.$data).forEach(key => {
+                        if(typeof me[key] === 'string'){
+                            me[key] = me[key].trim()
                         }
                     });
 
@@ -617,7 +627,7 @@
 
                         me.$nextTick(function() {
                             me.pending = true;
-                            this.$refs.form.submit()
+                            me.$refs.form.submit()
                         });
                     }
                 } catch (err) {
