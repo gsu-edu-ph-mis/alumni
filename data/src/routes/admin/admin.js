@@ -1706,10 +1706,6 @@ router.get('/admin/alumni-records/report-visualization', middlewares.guardRoute(
                         model: req.app.locals.db.models.Work,
                         required: true, // Change to true if you want only alumni with work records
                         where: whereConditions2.length > 0 ? { [Op.and]: whereConditions2 } : {} // Use the constructed conditions or an empty object
-                    },
-                    {
-                        model: req.app.locals.db.models.Eligibility,
-                        required: false, // Change to true if you want only alumni with eligibility records
                     }
                 ],
                 order: [['createdAt', 'DESC']]

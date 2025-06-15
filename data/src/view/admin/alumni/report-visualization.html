@@ -240,13 +240,6 @@
                                 <canvas class="chartWidthFixed" id="chartWorkProgramAlignment"></canvas>
                             </div>
                         </div>
-
-                        <div class="col-xl-4 col-sm-6 mb-4 printSpan50">
-                            <div class="chart-container px-2 py-3">
-                                <h6 class="h6 font-weight-bold text-center">Type of Eligibility</h6>
-                                <canvas class="chartWidthFixed" id="chartEligibilityType"></canvas>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -296,7 +289,6 @@
             chart2: null,
             chart3: null,
             chart4: null,
-            chart5: null,
 
             employmentStatusMatch: '{{s8}}',
             employmentStatus: '{{s8}}',
@@ -333,7 +325,6 @@
                 me.renderEmploymentLocationChart();
                 me.renderEmploymentSectorChart();
                 me.renderWorkProgramAlignmentChart();
-                me.renderEligibilityTypeChart();
                 me.graduateCounts = me.calculateTracedGraduatesCount();
             },
             checkEmploymentStatus: function() {
@@ -570,65 +561,6 @@
                     }
 
                     me.chart4 = new Chart(ctx, {
-                        type: 'doughnut',
-                        data: chartData,
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    position: 'top',
-                                },
-                                datalabels: {
-                                    formatter: (value, context) => {
-                                        var total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                                        var percentage = ((value / total) * 100).toFixed(2);
-                                        return `${value} (${percentage}%)`; // Format label
-                                    },
-                                    color: '#fff', // Label color
-                                },
-                            },
-                        },
-                        plugins: [ChartDataLabels], // Include Data Labels plugin
-                    });
-                },
-            // 
-            // Calculate Eligiblity Type
-                calculateEligibilityTypeCounts() {
-                    var me = this;
-                    return me.alumniList.reduce((acc, alumni) => {
-                        if (alumni.Eligibilities && alumni.Eligibilities.length > 0) {
-                            var eligibilityType = alumni.Eligibilities[0].eligibilityType;
-                            acc[eligibilityType] = (acc[eligibilityType] || 0) + 1;
-                        }
-                        return acc;
-                    }, {});
-                },
-                prepareEligibilityTypeChartData(eligibilityTypeCounts) {
-                    var labels = Object.keys(eligibilityTypeCounts);
-                    var data = Object.values(eligibilityTypeCounts);
-                    var colors = ["#fe6383", "#36a2eb" , "#ffcc55"];
-                    var backgroundColor = colors.slice(0, labels.length);
-
-                    return {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Total:',
-                            data: data,
-                            backgroundColor: backgroundColor,
-                        }],
-                    };
-                },
-                renderEligibilityTypeChart() {
-                    var me = this;
-                    var eligibilityTypeCounts = me.calculateEligibilityTypeCounts();
-                    var chartData = me.prepareEligibilityTypeChartData(eligibilityTypeCounts);
-                    var ctx = document.getElementById('chartEligibilityType').getContext('2d');
-
-                    if (me.chart5) {
-                        me.chart.destroy(); // Destroy previous chart if exists
-                    }
-
-                    me.chart5 = new Chart(ctx, {
                         type: 'doughnut',
                         data: chartData,
                         options: {
