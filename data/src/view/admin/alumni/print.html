@@ -188,7 +188,7 @@
         </div>
 
         <div class="row">
-            <h1 class="h5">B. Education</h1>
+            <h1 class="h5">B. Education Records</h1>
             <table class="table table-sm table-bordered table-print-report">
                 <tbody>
                     <tr>
@@ -270,7 +270,7 @@
         </div>
 
         <div class="row">
-            <h1 class="h5">C. Work</h1>
+            <h1 class="h5">C. Work Details</h1>
             <table class="table table-sm table-bordered table-print-report">
                 <tbody>
                     <tr>
@@ -355,6 +355,61 @@
                             {% endif %}
                         </td>
                     </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row">
+            <h1 class="h5">D. Eligibility</h1>
+            <table class="table table-sm table-bordered table-print-report">
+                <tbody>
+                    <tr>
+                        <td rowspan="2" class="table-v-align-center text-bold text-center">No.</td>
+                        <td rowspan="2" class="table-v-align-center text-bold">Name</td>
+                        <td rowspan="2" class="table-v-align-center text-bold">Rating</td>
+                        <td colspan="2" class="text-center text-bold">Exam</td>
+                        <td rowspan="2" class="table-v-align-center text-bold">License Number</td>
+                        <td rowspan="2" class="table-v-align-center text-bold">Date of Validity</td>
+                    </tr>
+                    <tr>
+                        <td class="text-bold">Date</td>
+                        <td class="text-bold">Place</td>
+                    </tr>
+                    {% if eligibility.length <= 0 %}
+                        <tr>
+                            <td colspan="7" class="text-center">No data available</td>
+                        </tr>
+                    {% else %}
+                        {% for row in eligibility %}
+                            <tr>
+                                <td class="text-center">{{loop.index}}</td>
+                                <td>{{row.eligibilityType}}</td>
+                                <td class="table-cell-hidden">
+                                    {% if row.rating %}
+                                        <span>{{row.rating}}</span>
+                                    {% else %}
+                                        <span>N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{row.examDate|format_date('MMM DD, YYYY')}}</td>
+                                <td>{{row.examPlace}}</td>
+                                <td class="table-cell-hidden">
+                                    {% if row.licenseNumber %}
+                                        <span>{{row.licenseNumber}}</span>
+                                    {% else %}
+                                        <span>N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td class="table-cell-hidden">
+                                    {% if row.validityDate %}
+                                        <span>{{row.validityDate|format_date('MMM DD, YYYY')}}</span>
+                                    {% else %}
+                                        <span>N/A</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
                 </tbody>
             </table>
         </div>

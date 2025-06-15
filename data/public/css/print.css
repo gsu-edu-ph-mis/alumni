@@ -150,6 +150,9 @@ img {
         width: 60%;
     }
 }  
+.table-v-align-center {
+    vertical-align: middle !important;
+}
 
 /* Custom Style */
 /* Text */

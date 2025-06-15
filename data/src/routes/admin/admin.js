@@ -1613,12 +1613,20 @@ router.get('/admin/alumni-records/:almId/print', middlewares.guardRoute(['read_a
             }
         })
 
+        let eligibility = await req.app.locals.db.models.Eligibility.findAll({
+            where: {
+                almId: viewAlm.refNumber
+            },
+            order: [['createdAt', 'DESC']]
+        })
+
         let data = {
             flash: flash.get(req, 'print-alumni'),
             viewAlm,
             user,
             educ,
-            work
+            work,
+            eligibility
         }
 
         res.render('admin/alumni/print.html', data);
@@ -1698,6 +1706,10 @@ router.get('/admin/alumni-records/report-visualization', middlewares.guardRoute(
                         model: req.app.locals.db.models.Work,
                         required: true, // Change to true if you want only alumni with work records
                         where: whereConditions2.length > 0 ? { [Op.and]: whereConditions2 } : {} // Use the constructed conditions or an empty object
+                    },
+                    {
+                        model: req.app.locals.db.models.Eligibility,
+                        required: false, // Change to true if you want only alumni with eligibility records
                     }
                 ],
                 order: [['createdAt', 'DESC']]
