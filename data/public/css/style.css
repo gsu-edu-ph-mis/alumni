@@ -257,6 +257,14 @@ div[data-pending="true"]:after {
     border: 3px solid #CCCCCC;
 }
 
+/* SDG */
+.sdg-item {
+    text-decoration: none !important;
+}
+.sdg-item img {
+    border: 1px solid #FFFFFF;
+}
+
 /* Menu */
 .menu-right {
     position: relative;
