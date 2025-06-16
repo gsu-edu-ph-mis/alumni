@@ -23,6 +23,11 @@
         <div>
             <ul class="nav nav-tabs">
                 <li class="nav-item">
+                    <button type="button" id="tab0" @click="page='#content0'" :class="['nav-link content-nav-btn', { active: page === '#content0' }]">
+                        <span>Profile</span>
+                    </button>
+                </li>
+                <li class="nav-item">
                     <button type="button" id="tab1" @click="page='#content1'" :class="['nav-link content-nav-btn', { active: page === '#content1' }]">
                         <span>Basic Information</span>
                     </button>
@@ -47,113 +52,116 @@
         <div class="tab-content p-3">
                 <div class="row">
                     
-                    <div class="col-xl-12">
-                        <template>
-                            <div class="row">
-                                <div class="col-xl-4 py-2 d-flex flex-column justify-content-center align-items-center order-xl-1 order-2">
-                                    <div class="d-flex flex-sm-row flex-column justify-content-center align-items-center">
-                                        <div class="profile-picture mb-2 mr-2" 
-                                        :style="{ 
-                                            background: getBackgroundStyle(),
-                                            backgroundSize: 'cover' 
-                                        }">
-                                        </div>
-        
-                                        <div class="d-flex flex-sm-column flex-row justify-content-center align-items-center">
-                                            <button class="btn btn-sm btn-outline-primary rounded mb-2 mr-2" @click="triggerFileInput" :disabled="pending">Browse</button>
-                                            <input style="display: none;" type="file" ref="fileInput" @change="onFileChange" />
-                                            <button v-if="selectedFile" @click="onUploadFile" :disabled="pending" class="btn btn-sm btn-success rounded mb-2 mr-2">${uploadText}</button>
-                                        </div>
-                                    </div>
+                    <template v-if="page=='#content0'" class="row">
+                        <div class="col-xl-4 py-2 d-flex flex-column justify-content-center align-items-center order-xl-1 order-2">
+                            <div class="d-flex flex-sm-row flex-column justify-content-center align-items-center">
+                                <div class="profile-picture mb-2 mr-2" 
+                                :style="{ 
+                                    background: getBackgroundStyle(),
+                                    backgroundSize: 'cover' 
+                                }">
                                 </div>
-                                <div class="col-xl-5 py-2 order-xl-2 order-3">
-                                    <h1 class="h4">
-                                        <u>{{viewAlm.firstName}}</u> 
-                                        {% if viewAlm.middleName[0] %}
-                                        <u>{{viewAlm.middleName[0]}}.</u> 
-                                        {% endif %}
-                                        <u>{{viewAlm.lastName}}</u> 
-                                        <u>{{viewAlm.suffix}}</u>
-                                    </h1>
-                                    <h1 class="h6"><i>
-                                        {% if viewAlm.presentAddress %}
-                                            <span>{{viewAlm.presentAddress}}</span>
-                                        {% else %}
-                                            <span>...</span>
-                                        {% endif %}
-                                    </i></h1>
-                                    <div class="form-group mt-3">
-                                        <p class="mb-1">Reach me at:</p>
-                                        <div class="mb-4">
-                                            <div class="d-flex mb-2">
-                                                <div class="mr-2 round-nums list-badge-round-xs">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14px" height="14px" viewBox="0 0 24 24">
-                                                        <title>Facebook</title>
-                                                        <path fill="currentColor" d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
-                                                    </svg>
-                                                </div>
-                                                <div class="v-align-center">
-                                                    {% if viewAlm.fbName %}
-                                                        <span>{{viewAlm.fbName}}</span>
-                                                    {% else %}
-                                                        <span>...</span>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                            <div class="d-flex mb-2">
-                                                <div class="mr-2 round-nums list-badge-round-xs">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14px" height="14px" viewBox="0 0 24 24">
-                                                        <title>Email</title>
-                                                        <path fill="currentColor" d="M12 12.713l-11.985-9.713h23.971l-11.986 9.713zm-5.425-1.822l-6.575-5.329v12.501l6.575-7.172zm10.85 0l6.575 7.172v-12.501l-6.575 5.329zm-1.557 1.261l-3.868 3.135-3.868-3.135-8.11 8.848h23.956l-8.11-8.848z"/>
-                                                    </svg>
-                                                </div>
-                                                <div class="v-align-center">
-                                                    {% if viewAlm.email %}
-                                                        <span>{{viewAlm.email}}</span>
-                                                    {% else %}
-                                                        <span>...</span>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                            <div class="d-flex mb-2">
-                                                <div class="mr-2 round-nums list-badge-round-xs">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14px" height="14px" viewBox="0 0 24 24">
-                                                        <title>Phone</title>
-                                                        <path fill="currentColor" d="M20 22.621l-3.521-6.795c-.008.004-1.974.97-2.064 1.011-2.24 1.086-6.799-7.82-4.609-8.994l2.083-1.026-3.493-6.817-2.106 1.039c-7.202 3.755 4.233 25.982 11.6 22.615.121-.055 2.102-1.029 2.11-1.033z"/>
-                                                    </svg>
-                                                </div>
-                                                <div class="v-align-center">
-                                                    {% if viewAlm.mobileNumber %}
-                                                        <span>{{viewAlm.mobileNumber}}</span>
-                                                    {% else %}
-                                                        <span>...</span>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+
+                                <div class="d-flex flex-sm-column flex-row justify-content-center align-items-center">
+                                    <button class="btn btn-sm btn-outline-primary rounded mb-2 mr-2" @click="triggerFileInput" :disabled="pending">Browse</button>
+                                    <input style="display: none;" type="file" ref="fileInput" @change="onFileChange" />
+                                    <button v-if="selectedFile" @click="onUploadFile" :disabled="pending" class="btn btn-sm btn-success rounded mb-2 mr-2">${uploadText}</button>
                                 </div>
-                                <div class="col-xl-3 py-2 d-flex flex-row justify-content-end align-items-center order-xl-2 order-1">
-                                    <div class="d-flex flex-column justify-content-center align-items-start">
-                                        <span class="text-no-wrap mb-1">Online Access: 
-                                            {% if users.active %}
-                                                <span><b>Active</b></span>
+                            </div>
+                        </div>
+                        <div class="col-xl-5 py-2 order-xl-2 order-3">
+                            <h1 class="h4">
+                                <u>{{viewAlm.firstName}}</u> 
+                                {% if viewAlm.middleName[0] %}
+                                <u>{{viewAlm.middleName[0]}}.</u> 
+                                {% endif %}
+                                <u>{{viewAlm.lastName}}</u> 
+                                <u>{{viewAlm.suffix}}</u>
+                            </h1>
+                            <h1 class="h6"><i>
+                                {% if viewAlm.presentAddress %}
+                                    <span>{{viewAlm.presentAddress}}</span>
+                                {% else %}
+                                    <span>...</span>
+                                {% endif %}
+                            </i></h1>
+                            <div class="form-group mt-3">
+                                <p class="mb-1">Reach me at:</p>
+                                <div class="mb-4">
+                                    <div class="d-flex mb-2">
+                                        <div class="mr-2 round-nums list-badge-round-xs">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14px" height="14px" viewBox="0 0 24 24">
+                                                <title>Facebook</title>
+                                                <path fill="currentColor" d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="v-align-center">
+                                            {% if viewAlm.fbName %}
+                                                <span>{{viewAlm.fbName}}</span>
                                             {% else %}
-                                                <span><b>Inactive</b></span>
+                                                <span>...</span>
                                             {% endif %}
-                                        </span>
-                                        {% if users.active %}
-                                            <a class="btn btn-danger text-no-wrap" href="/admin/users/{{users.id}}/isActive">Deactivate?</a>
-                                        {% else %}
-                                            <a class="btn btn-success text-no-wrap" href="/admin/users/{{users.id}}/isActive">Activate?</a>
-                                        {% endif %}
-    
-                                        <div class="border-top pt-2 mt-3">Change Password? <a class="text-no-wrap" href="/admin/users/{{users.id}}/edit">Click Here</a></div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex mb-2">
+                                        <div class="mr-2 round-nums list-badge-round-xs">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14px" height="14px" viewBox="0 0 24 24">
+                                                <title>Email</title>
+                                                <path fill="currentColor" d="M12 12.713l-11.985-9.713h23.971l-11.986 9.713zm-5.425-1.822l-6.575-5.329v12.501l6.575-7.172zm10.85 0l6.575 7.172v-12.501l-6.575 5.329zm-1.557 1.261l-3.868 3.135-3.868-3.135-8.11 8.848h23.956l-8.11-8.848z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="v-align-center">
+                                            {% if viewAlm.email %}
+                                                <span>{{viewAlm.email}}</span>
+                                            {% else %}
+                                                <span>...</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="d-flex mb-2">
+                                        <div class="mr-2 round-nums list-badge-round-xs">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14px" height="14px" viewBox="0 0 24 24">
+                                                <title>Phone</title>
+                                                <path fill="currentColor" d="M20 22.621l-3.521-6.795c-.008.004-1.974.97-2.064 1.011-2.24 1.086-6.799-7.82-4.609-8.994l2.083-1.026-3.493-6.817-2.106 1.039c-7.202 3.755 4.233 25.982 11.6 22.615.121-.055 2.102-1.029 2.11-1.033z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="v-align-center">
+                                            {% if viewAlm.mobileNumber %}
+                                                <span>{{viewAlm.mobileNumber}}</span>
+                                            {% else %}
+                                                <span>...</span>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </template>
-                    </div>
+                        </div>
+                        <div class="col-xl-3 py-2 d-flex flex-row justify-content-end align-items-center order-xl-2 order-1">
+                            <div class="d-flex flex-column justify-content-center align-items-start">
+                                <span class="text-no-wrap mb-1">Online Access: 
+                                    {% if users.active %}
+                                        <span><b>Active</b></span>
+                                    {% else %}
+                                        <span><b>Inactive</b></span>
+                                    {% endif %}
+                                </span>
+                                {% if users.active %}
+                                    <a class="btn btn-danger text-no-wrap" href="/admin/users/{{users.id}}/isActive">Deactivate?</a>
+                                {% else %}
+                                    <a class="btn btn-success text-no-wrap" href="/admin/users/{{users.id}}/isActive">Activate?</a>
+                                {% endif %}
+
+                                <div class="border-top pt-2 mt-3">Change Password? <a class="text-no-wrap" href="/admin/users/{{users.id}}/edit">Click Here</a></div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-12 pt-2 text-center order-4">
+                            <button @click="page='#content1'" class="btn btn-md btn-light rounded">
+                                <span>More Info</span>
+                                <svg width="24px" height="24px" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Next</title><path fill="currentColor" d="m14.523 18.787s4.501-4.505 6.255-6.26c.146-.146.219-.338.219-.53s-.073-.383-.219-.53c-1.753-1.754-6.255-6.258-6.255-6.258-.144-.145-.334-.217-.524-.217-.193 0-.385.074-.532.221-.293.292-.295.766-.004 1.056l4.978 4.978h-14.692c-.414 0-.75.336-.75.75s.336.75.75.75h14.692l-4.979 4.979c-.289.289-.286.762.006 1.054.148.148.341.222.533.222.19 0 .378-.072.522-.215z" fill-rule="nonzero"/></svg>
+                            </button>
+                        </div>
+                    </template>
 
                     <template v-if="page=='#content1'" class="row">
                         <div class="col-xl-6 pr-xl-5 pr-4">
@@ -272,6 +280,9 @@
                             <p><strong>{{viewAlm.updatedAt|format_date('MMM DD, YYYY hh:mm A')}}</strong></p>
                         </div>
                         <div class="col-xl-12 pt-2 text-center">
+                            <button @click="page='#content0'" class="btn btn-md btn-light rounded">
+                                <svg width="24px" height="24px" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Previous</title><path fill="currentColor" d="m9.474 5.209s-4.501 4.505-6.254 6.259c-.147.146-.22.338-.22.53s.073.384.22.53c1.752 1.754 6.252 6.257 6.252 6.257.145.145.336.217.527.217.191-.001.383-.074.53-.221.293-.293.294-.766.004-1.057l-4.976-4.976h14.692c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-14.692l4.978-4.979c.289-.289.287-.761-.006-1.054-.147-.147-.339-.221-.53-.221-.191-.001-.38.071-.525.215z" fill-rule="nonzero"/></svg>
+                            </button>
                             <a href="/admin/alumni-records/{{viewAlm.refNumber}}/basic-info/edit" class="btn btn-md btn-primary rounded mx-2">Edit</a>
                             <button @click="page='#content2'" class="btn btn-md btn-light rounded">
                                 <svg width="24px" height="24px" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Next</title><path fill="currentColor" d="m14.523 18.787s4.501-4.505 6.255-6.26c.146-.146.219-.338.219-.53s-.073-.383-.219-.53c-1.753-1.754-6.255-6.258-6.255-6.258-.144-.145-.334-.217-.524-.217-.193 0-.385.074-.532.221-.293.292-.295.766-.004 1.056l4.978 4.978h-14.692c-.414 0-.75.336-.75.75s.336.75.75.75h14.692l-4.979 4.979c-.289.289-.286.762.006 1.054.148.148.341.222.533.222.19 0 .378-.072.522-.215z" fill-rule="nonzero"/></svg>
@@ -504,7 +515,7 @@
                             <table class="table table-sm table-striped mb-0">
                                 <thead>
                                     <tr>
-                                        <th rowspan="2" class="table-v-align-center">No.</th>
+                                        <th rowspan="2" class="table-v-align-center text-center">No.</th>
                                         <th rowspan="2" class="table-v-align-center">Name</th>
                                         <th rowspan="2" class="table-v-align-center table-cell-hidden">Rating</th>
                                         <th colspan="2" class="text-center">Exam</th>
@@ -525,7 +536,7 @@
                                     {% else %}
                                         {% for row in eligibility %}
                                             <tr>
-                                                <td>{{loop.index}}</td>
+                                                <td class="text-center">{{loop.index}}</td>
                                                 <td>{{row.eligibilityType}}</td>
                                                 <td class="table-cell-hidden">
                                                     {% if row.rating %}
@@ -587,7 +598,7 @@
         delimiters: ["${", "}"],
         data: {
             pending: false,
-            page: '#content1',
+            page: '#content0',
             selectedFile: null,
             responseFile: null,
             dbResponseFile: '{{users.imgPath}}',
@@ -596,23 +607,20 @@
             page: function page(newPage, oldPage) {
                 var me = this;
                 if (newPage === '#' || newPage === '') {
-                    me.page = '#content1';
+                    me.page = '#content0';
                 } else {
                     window.location.hash = newPage;
                 }
 
-                if(me.page != '#content1' && me.page != '#content2' && me.page != '#content3' && me.page != '#content4'){
-                    me.page = '#content1';
+                if(me.page != '#content0' && me.page != '#content1' && me.page != '#content2' && me.page != '#content3' && me.page != '#content4'){
+                    me.page = '#content0';
                 }
             }
         },
         mounted: function mounted() {
             var me = this;
 
-            me.page = window.location.hash || '#content1';
-            if(me.page != ' #content1' && me.page != '#content2' && me.page != '#content3' && me.page != '#content4'){
-                me.page = '#content1'
-            }
+            me.page = window.location.hash || '#content0';
         },
         computed: {
             uploadText: function uploadText() {
@@ -685,7 +693,9 @@
                     var me = this;
                     var submitterId = e.submitter.id;
 
-                    if (submitterId === 'tab1') {
+                    if (submitterId === 'tab0') {
+                        me.page = '#content0'
+                    } else if (submitterId === 'tab1') {
                         me.page = '#content1'
                     } else if (submitterId === 'tab2') {
                         me.page = '#content2'
