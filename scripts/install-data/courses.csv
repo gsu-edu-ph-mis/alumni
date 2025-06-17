@@ -10,6 +10,7 @@ BSA,Bachelor of Science in Agriculture
 BSBA-FM,Bachelor of Science in Business Administration - Financial Management
 BSBA-HRM,Bachelor of Science in Business Administration - Human Resource Management
 BSBA-MM,Bachelor of Science in Business Administration - Marketing Management
+BSBA-MA,Bachelor of Science in Business Administration - Management Accounting
 BSCS,Bachelor of Science in Computer Science
 BSCrim,Bachelor of Science in Criminology
 BSEE,Bachelor of Science in Electrical Engineering
@@ -48,4 +49,3 @@ MED-FIL,Master of Education major in Filipino
 MED-GENSCI,Master of Education major in General Science
 MED-SOCSCI,Master of Education major in Social Science
 MED-TLE,Master of Education major in Technology and Livelihood Education
-O,Others
