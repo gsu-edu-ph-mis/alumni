@@ -51,6 +51,9 @@
                         <p class="mb-0 text-line-height">College: <strong>{{s3}}</strong></p>
                         <p class="mb-0 text-line-height">Course: <strong>{{s4}}</strong></p>
                         {% endif %}
+                        {% if s7 === 'Vocational' %}
+                        <p class="mb-0 text-line-height">Course: <strong>{{s4}}</strong></p>
+                        {% endif %}
                         {% if s7 === 'Senior High School' %}
                         <p class="mb-0 text-line-height">Track: <strong>{{s5}}</strong></p>
                         <p class="mb-0 text-line-height">Strand: <strong>{{s6}}</strong></p>
@@ -148,6 +151,28 @@
                                 v-on:clear="course=''"
                                 >
                             </autocomplete>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="degreeMatch == 'Vocational'" class="col-xl-4">
+                    <div class="row">
+                        <div class="col-xl-6 form-group mb-2">
+                            <select v-model="course" name="course" id="course" class="form-control">
+                                <option value="">Select a technical/trade course</option>
+                                <option v-for="t in technicalTradeCoursesList" :value="t">${t}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="degreeMatch == 'Polytechnic'" class="col-xl-4">
+                    <div class="row">
+                        <div class="col-xl-6 form-group mb-2">
+                            <select v-model="course" name="course" id="course" class="form-control">
+                                <option value="">Select a technical course</option>
+                                <option v-for="t in polytechnicCoursesList" :value="t">${t}</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -265,6 +290,8 @@
     const employmentLocationsList = {{employmentLocations|default([], true)|stringify|safe}}
     const employmentSectorsList = {{employmentSectors|default([], true)|stringify|safe}}
     const alumniList = {{alumni|default([], true)|stringify|safe}};
+    const technicalTradeCoursesList = {{technicalTradeCourses|default([], true)|stringify|safe}}
+    const polytechnicCoursesList = {{polytechnicCourses|default([], true)|stringify|safe}}
 
     const vApp = new Vue({
         el: '#vApp',
@@ -284,6 +311,8 @@
             employmentStatusesList: employmentStatusesList,
             employmentLocationsList: employmentLocationsList,
             employmentSectorsList: employmentSectorsList,
+            technicalTradeCoursesList: technicalTradeCoursesList,
+            polytechnicCoursesList: polytechnicCoursesList,
 
             chart1: null,
             chart2: null,

@@ -1,37 +1,45 @@
 BEED-GE,Bachelor of Elementary Education - General Education
-BAEL,Bachelor of Arts in English Language Studies
-BIT-AT,Bachelor of Industrial Technology - Automotive Technology
-BIT-ELT,Bachelor of Industrial Technology - Electrical Technology
-BIT-EXT,Bachelor of Industrial Technology - Electronics Technology
-BIT-MT,Bachelor of Industrial Technology - Mechanical Technology
+AB English,Bachelor of Arts major in English
+BAEL,Bachelor of Arts in English Language
+BAELS,Bachelor of Arts in English Language Studies
+BIT-AT,Bachelor of Industrial Technology major in Automotive Technology
+BIT-ELT,Bachelor of Industrial Technology major in Electrical Technology
+BIT-EXT,Bachelor of Industrial Technology major in Electronics Technology
+BIT-MT,Bachelor of Industrial Technology major in Mechanical Technology
+BIT-MCT,Bachelor of Industrial Technology major in Machine Technology
 BPED,Bachelor of Physical Education
 BPA,Bachelor of Public Administration
 BSA,Bachelor of Science in Agriculture
-BSBA-FM,Bachelor of Science in Business Administration - Financial Management
-BSBA-HRM,Bachelor of Science in Business Administration - Human Resource Management
-BSBA-MM,Bachelor of Science in Business Administration - Marketing Management
-BSBA-MA,Bachelor of Science in Business Administration - Management Accounting
+BSBA-FM,Bachelor of Science in Business Administration major in Financial Management
+BSBA-HRM,Bachelor of Science in Business Administration major in Human Resource Management
+BSBA-MM,Bachelor of Science in Business Administration major in Marketing Management
+BSBA-MAE,Bachelor of Science in Business Administration major in Management Accounting and Entrepreneurship
 BSCS,Bachelor of Science in Computer Science
 BSCrim,Bachelor of Science in Criminology
 BSEE,Bachelor of Science in Electrical Engineering
 BSEntrep,Bachelor of Science in Entrepreneurship
 BSF,Bachelor of Science in Fisheries
 BSFT,Bachelor of Science in Food Technology
+BSTM,Bachelor of Science in Tourism Management
 BSHM,Bachelor of Science in Hospitality Management
-BSIS,Bachelor of Science in Information Systems
+BSHRM,Bachelor of Science in Hotel and Restaurant Management
+HRST,Hotel and Restaurant Services Technology 
+BSIS,Bachelor of Science in Information System
 BSIT,Bachelor of Science in Information Technology
+BSEMC,Bachelor of Science in Entertainment and Multimedia Computing
+BLIS,Bachelor of Library and Information Science
 BSME,Bachelor of Science in Mechanical Engineering
 BSREM,Bachelor of Science in Real Estate Management
-BSTM,Bachelor of Science in Tourism Management
-BSED-ENG,Bachelor of Secondary Education - English
-BSED-FIL,Bachelor of Secondary Education - Filipino
-BSED-MATH,Bachelor of Secondary Education - Mathematics
-BSED-SCI,Bachelor of Secondary Education - Science
-BSED-SOCSCI,Bachelor of Secondary Education - Social Science
-BTLED,Bachelor of Technology and Livelihood Education - Home Economics and Livelihood Education
-DM-BA,Doctor in Management - Business Administration
-DM-HRM,Doctor in Management - Human Resource Management
-DMPM,Doctor in Management - Public Management
+BSED-ENG,Bachelor of Secondary Education major in English
+BSED-FIL,Bachelor of Secondary Education major in Filipino
+BSED-MATH,Bachelor of Secondary Education major in Mathematics
+BSED-SCI,Bachelor of Secondary Education major in Science
+BSED-SOCSCI,Bachelor of Secondary Education major in Social Science
+BTLED,Bachelor of Technology and Livelihood Education major in Home Economics and Livelihood Education
+DIT,Diploma in Teaching
+DM-BA,Doctor in Management major in Business Administration
+DM-HRM,Doctor in Management major in Human Resource Management
+DM-PM,Doctor in Management major in Public Management
 EDD,Doctor of Education in Curriculum and Instruction
 PHD-EM,Doctor of Philosophy in Educational Management
 MBA,Master in Business Administration
@@ -41,7 +49,7 @@ MAED-FIL,Master of Arts in Education major in Filipino
 MAED-GENSCI,Master of Arts in Education major in General Science
 MAED-SOCSCI,Master of Arts in Education major in Social Science
 MAED-TLE,Master of Arts in Education major in Technology and Livelihood Education
-MAED-EM,Master of Arts in Education-Educational Management
+MAED-EM,Master of Arts in Education major in Educational Management
 MATM,Master of Arts in Teaching Mathematics
 MED-EM,Master of Education major in Educational Management
 MED-ENG,Master of Education major in English

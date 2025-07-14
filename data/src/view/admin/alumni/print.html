@@ -252,6 +252,18 @@
                                 {% else %}
                                     <span>...</span>
                                 {% endif %}
+                            {% elseif educ.degree === 'Vocational' %}
+                                {% if educ.course %}
+                                    <span>{{educ.course}}</span>
+                                {% else %}
+                                    <span>...</span>
+                                {% endif %}
+                            {% elseif educ.degree === 'Polytechnic' %}
+                                {% if educ.course %}
+                                    <span>{{educ.course}}</span>
+                                {% else %}
+                                    <span>...</span>
+                                {% endif %}
                             {% else %}
                                 <span>...</span>
                             {% endif %}

@@ -840,6 +840,8 @@ router.get('/admin/alumni-records/reports', middlewares.guardRoute(['read_all_al
             tracks: CONFIG.tracks,
             strands: CONFIG.strands,
             employmentStatuses: CONFIG.employmentStatuses,
+            technicalTradeCourses: CONFIG.technicalTradeCourses,
+            polytechnicCourses: CONFIG.polytechnicCourses,
             s1, s2, s3, s4, s5, s6, s7, s8
         }
 
@@ -1065,6 +1067,8 @@ router.get('/admin/alumni-records/:almId/education/edit', middlewares.guardRoute
             degrees: CONFIG.degrees,
             tracks: CONFIG.tracks,
             strands: CONFIG.strands,
+            technicalTradeCourses: CONFIG.technicalTradeCourses,
+            polytechnicCourses: CONFIG.polytechnicCourses,
             editAlmEduc,
             editAlm
         }
@@ -1122,7 +1126,19 @@ router.patch('/admin/alumni-records/:almId/education/edit', middlewares.antiCsrf
             course = ''
         }
 
-        if (degree != 'College' && degree != 'Graduate Studies' && degree != 'Senior High School') {
+        if (degree == 'Vocational') {
+            college = ''
+            track = ''
+            strand = ''
+        }
+
+        if (degree == 'Polytechnic') {
+            college = ''
+            track = ''
+            strand = ''
+        }
+
+        if (degree != 'College' && degree != 'Graduate Studies' && degree != 'Senior High School' && degree != 'Vocational' && degree != 'Polytechnic') {
             college = ''
             course = ''
             track = ''
@@ -1721,6 +1737,8 @@ router.get('/admin/alumni-records/report-visualization', middlewares.guardRoute(
             employmentStatuses: CONFIG.employmentStatuses,
             employmentLocations: CONFIG.employmentLocations,
             employmentSectors: CONFIG.employmentSectors,
+            technicalTradeCourses: CONFIG.technicalTradeCourses,
+            polytechnicCourses: CONFIG.polytechnicCourses,
             s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11
         }
 
@@ -1733,5 +1751,122 @@ router.get('/admin/alumni-records/report-visualization', middlewares.guardRoute(
         return res.redirect('/admin/alumni-records/report-visualization')
     }
 });
+
+// //// Testimonial Routes
+// router.use('/admin/testimonials', middlewares.requireAuthUser)
+
+// // All Testimonials
+// // A.1 Display Testimonials
+// router.get('/admin/testimonials', middlewares.guardRoute(['read_all_testimonial']), async (req, res, next) => {
+//     try {
+//         const searchKey = req.query?.searchKey || '';
+//         const page = parseInt(req.query.page) || 1; // Current page
+//         const limit = 100; // Records per page
+//         const offset = (page - 1) * limit; // Calculate offset
+//         let sessionUser = res.locals.user;
+
+//         let testimonials = [];
+//         let totalRecords = 0;
+
+//         const whereClause = searchKey ? {
+//             fullName: { 
+//                 [Op.like]: `%${searchKey}%` 
+//             } 
+//         } : {};
+
+//         // Get total count of records
+//         totalRecords = await req.app.locals.db.models.Testimonial.count({ where: whereClause });
+
+//         // Fetch records with pagination
+//         testimonials = await req.app.locals.db.models.Testimonial.findAll({
+//             where: whereClause,
+//             order: [['createdAt', 'DESC']],
+//             limit: limit,
+//             offset: offset
+//         });
+
+//         if(searchKey) {
+//             if (testimonials.length <= 0) {
+//                 flash.error(req, 'testimonial', `Found ${testimonials.length} record(s) with Name "${searchKey}".`);
+//             } else {
+//                 flash.ok(req, 'testimonial', `Found ${testimonials.length} record(s) with Name "${searchKey}".`);
+//             }
+//         }
+
+//         // Calculate total pages
+//         const totalPages = Math.ceil(totalRecords / limit);
+        
+//         const data = {
+//             flash: flash.get(req, 'testimonial'),
+//             testimonials,
+//             searchKey,
+//             sessionUser,
+//             currentPage: page,
+//             totalPages
+//         };
+        
+//         res.render('admin/testimonial/all.html', data);
+//     } catch (err) {
+//         console.error(err)
+//         flash.error(req, 'testimonial', err.message)
+//         return res.redirect('/admin/testimonials')
+//     }
+// });
+
+// // Create Testimonial
+// // B.1 Display Create Testimonial
+// router.get('/admin/testimonials/create', middlewares.guardRoute(['create_testimonial']), async (req, res, next) => {
+//     try {
+//         let data = {
+//             flash: flash.get(req, 'create-testimonial'),
+//             departments: CONFIG.departments
+//         }
+
+//         res.render('admin/testimonial/create.html', data);
+//     } catch (err) {
+//         console.error(err)
+//         flash.error(req, 'testimonial', err.message)
+//         return res.redirect('/admin/testimonials')
+//     }
+// });
+
+// // B.2 Submit Create Testimonial
+// router.post('/admin/testimonials/create', middlewares.antiCsrfCheck, middlewares.guardRoute(['create_testimonial']), async (req, res, next) => {
+//     try {
+//         let payload = JSON.parse(req?.body?.payload)
+//         console.log(payload)
+
+//         let department = lodash.trim(lodash.get(payload, 'department', ''))
+//         let fullName = lodash.trim(lodash.get(payload, 'fullName', ''))
+//         let course = lodash.trim(lodash.get(payload, 'course', ''))
+//         let batch = lodash.trim(lodash.get(payload, 'batch', ''))
+//         let caption = lodash.trim(lodash.get(payload, 'caption', ''))
+//         let fileType = lodash.trim(lodash.get(payload, 'fileType', ''))
+//         let filePath1 = lodash.trim(lodash.get(payload, 'filePath1', ''))
+//         let filePath2 = lodash.trim(lodash.get(payload, 'filePath2', ''))
+
+        
+
+//         let refNo = passwordMan.randomString(16)
+//         await req.app.locals.db.models.Eligibility.create({
+//             refNumber: refNo,
+//             department: department,
+//             fullName: fullName,
+//             course: course,
+//             batch: batch,
+//             caption: caption,
+//             fileType: fileType,
+//             filePath1: filePath1,
+//             filePath2: filePath2
+//         })
+
+//         flash.ok(req, 'testimonial', 'Added a testimonial.')
+//         res.redirect(`/admin/testimonials`)
+//     } catch (err) {
+//         console.error(err)
+//         flash.error(req, 'create-testimonial', err.message)
+//         return res.redirect(`/admin/testimonial/create`)
+//     }
+// });
 
 module.exports = router;

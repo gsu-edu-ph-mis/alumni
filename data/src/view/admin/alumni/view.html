@@ -358,6 +358,32 @@
                             </div>
                             {% endif %}
 
+                            {% if educ.degree === 'Vocational' %}
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Technical & Trade Course</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if educ.course %}
+                                        <span>{{educ.course}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {% if educ.degree === 'Polytechnic' %}
+                            <div class="row mb-2">
+                                <div class="col-4 text-right v-align-center-right"><b>Technical Course</b></div>
+                                <div class="col-8 bg-light-gray rounded py-2">
+                                    {% if educ.course %}
+                                        <span>{{educ.course}}</span>
+                                    {% else %}
+                                        <span>...</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+
                             {% if educ.degree === 'Senior High School' %}
                             <div class="row mb-2">
                                 <div class="col-4 text-right v-align-center-right"><b>Track</b></div>

@@ -224,6 +224,8 @@ router.get('/me/education', middlewares.guardRoute(['read_own_record']), async (
             degrees: CONFIG.degrees,
             tracks: CONFIG.tracks,
             strands: CONFIG.strands,
+            technicalTradeCourses: CONFIG.technicalTradeCourses,
+            polytechnicCourses: CONFIG.polytechnicCourses,
             alumni,
             educ,
             app: { title: `Educational Records | ${CONFIG.app.title}` } 
@@ -281,7 +283,19 @@ router.patch('/me/:almId/education', middlewares.antiCsrfCheck, middlewares.guar
             course = ''
         }
 
-        if (degree != 'College' && degree != 'Graduate Studies' && degree != 'Senior High School') {
+        if (degree == 'Vocational') {
+            college = ''
+            track = ''
+            strand = ''
+        }
+
+        if (degree == 'Polytechnic') {
+            college = ''
+            track = ''
+            strand = ''
+        }
+
+        if (degree != 'College' && degree != 'Graduate Studies' && degree != 'Senior High School' && degree != 'Vocational' && degree != 'Polytechnic') {
             college = ''
             course = ''
             track = ''

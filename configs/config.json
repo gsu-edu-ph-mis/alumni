@@ -97,10 +97,12 @@
     "Abroad"
   ],
   "degrees": [
+    "Elementary",
     "High School",
     "Senior High School",
     "College",
     "Graduate Studies",
+    "Polytechnic",
     "Vocational"
   ],
   "tracks": [
@@ -116,6 +118,22 @@
     "Information and Communications Technology (ICT)",
     "Agri-Fishery Arts (AFA)",
     "Industrial Arts (IA)"
+  ],
+  "technicalTradeCourses": [
+    "Automotive",
+    "Electricity",
+    "Building Construction",
+    "Furniture and Cabinet Making",
+    "Dressmaking",
+    "Food Trades"
+  ],
+  "polytechnicCourses": [
+    "Auto Diesel Technology",
+    "Electrical Technology",
+    "Civil Technology",
+    "Garments Technology",
+    "Food Technology",
+    "Machine Shop Technology"
   ],
   "eligibilityTypes": [
     "Career Service Sub-Professional",
@@ -166,5 +184,20 @@
     "Registered Social Worker (R.S.W.)",
     "Registered Speech-Language Pathologist (R.S.L.P.)",
     "Registered Veterinarian (R.V.M.)"
+  ],
+  "departments": [
+    "Elementary",
+    "High School",
+    "Senior High School",
+    "College of Agricultural Science",
+    "College of Arts and Sciences",
+    "College of Business and Management",
+    "College of Criminal Justice Education",
+    "College of Engineering and Industrial Technology",
+    "College of Science and Technology",
+    "College of Teacher Education",
+    "College of Tourism and Hospitality Management",
+    "Graduate Studies",
+    "Vocational"
   ]
 }

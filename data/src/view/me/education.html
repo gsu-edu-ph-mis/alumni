@@ -105,6 +105,30 @@
                                         </div>
                                     </div>
 
+                                    <div v-if="degreeMatch == 'Vocational'" class="col-xl-12">
+                                        <div class="row">        
+                                            <div class="col-xl-12 form-group mb-2" :data-error="errors.course" @click="errors.course=false">
+                                                <label for="course" class="form-label">Technical & Trade Course <span class="text-danger">*</span></label>
+                                                <select v-model="course" name="course" id="course" class="form-control">
+                                                    <option value=""></option>
+                                                    <option v-for="t in technicalTradeCoursesList" :value="t">${t}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div v-if="degreeMatch == 'Polytechnic'" class="col-xl-12">
+                                        <div class="row">        
+                                            <div class="col-xl-12 form-group mb-2" :data-error="errors.course" @click="errors.course=false">
+                                                <label for="course" class="form-label">Technical Course <span class="text-danger">*</span></label>
+                                                <select v-model="course" name="course" id="course" class="form-control">
+                                                    <option value=""></option>
+                                                    <option v-for="t in polytechnicCoursesList" :value="t">${t}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div v-if="degreeMatch == 'Senior High School'" class="col-xl-12">
                                         <div class="row">
                                             <div class="col-xl-12 form-group mb-2" :data-error="errors.track" @click="errors.track=false">
@@ -155,6 +179,9 @@
     const degreesList = {{degrees|default([], true)|stringify|safe}}
     const tracksList = {{tracks|default([], true)|stringify|safe}}
     const strandsList = {{strands|default([], true)|stringify|safe}}
+    const technicalTradeCoursesList = {{technicalTradeCourses|default([], true)|stringify|safe}}
+    const polytechnicCoursesList = {{polytechnicCourses|default([], true)|stringify|safe}}
+
     const vApp = new Vue({
         el: '#vApp',
         delimiters: ["${", "}"],
@@ -169,6 +196,8 @@
             degreesList: degreesList,
             tracksList: tracksList,
             strandsList: strandsList,
+            technicalTradeCoursesList: technicalTradeCoursesList,
+            polytechnicCoursesList: polytechnicCoursesList,
             idNumber: `{{educ.idNumber}}`,
             yearGraduated: `{{educ.yearGraduated}}`,
             degree: `{{educ.degree}}`,
@@ -258,6 +287,13 @@
                             me.errors.college = true
                             throw new Error('College is required.')
                         }
+                        if(!me.course){
+                            me.errors.course = true
+                            throw new Error('Course is required.')
+                        }
+                    }
+
+                    if(me.degree == 'Vocational' || me.degree == 'Polytechnic'){
                         if(!me.course){
                             me.errors.course = true
                             throw new Error('Course is required.')
